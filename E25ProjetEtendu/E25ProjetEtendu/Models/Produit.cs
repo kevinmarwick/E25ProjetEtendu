@@ -6,7 +6,7 @@ namespace E25ProjetEtendu.Models
     public class Produit
     {
         [Key]
-        public int id { get; set; }
+        public int ProduitId { get; set; }
 
         [Required(ErrorMessage = "Le nom est obligatoire")]
         [StringLength(200, ErrorMessage = "Le nom ne peut pas dépasser 200 caractères")]

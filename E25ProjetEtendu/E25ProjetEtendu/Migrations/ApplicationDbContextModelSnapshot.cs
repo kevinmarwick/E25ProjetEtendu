@@ -23,11 +23,11 @@ namespace E25ProjetEtendu.Migrations
 
             modelBuilder.Entity("E25ProjetEtendu.Models.Produit", b =>
                 {
-                    b.Property<int>("id")
+                    b.Property<int>("ProduitId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProduitId"));
 
                     b.Property<bool>("EstActif")
                         .HasColumnType("bit");
@@ -56,16 +56,16 @@ namespace E25ProjetEtendu.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.HasKey("id");
+                    b.HasKey("ProduitId");
 
                     b.ToTable("produits");
 
                     b.HasData(
                         new
                         {
-                            id = 1,
+                            ProduitId = 1,
                             EstActif = true,
-                            Image = "redbull.jpg",
+                            Image = "redbull.png",
                             Nom = "Red Bull",
                             Note = 4,
                             Prix = 3m,
@@ -74,7 +74,7 @@ namespace E25ProjetEtendu.Migrations
                         },
                         new
                         {
-                            id = 2,
+                            ProduitId = 2,
                             EstActif = true,
                             Image = "pogo.jpg",
                             Nom = "Pogo",
@@ -85,7 +85,7 @@ namespace E25ProjetEtendu.Migrations
                         },
                         new
                         {
-                            id = 3,
+                            ProduitId = 3,
                             EstActif = true,
                             Image = "eau.jpg",
                             Nom = "Bouteille d'eau",
@@ -96,7 +96,7 @@ namespace E25ProjetEtendu.Migrations
                         },
                         new
                         {
-                            id = 4,
+                            ProduitId = 4,
                             EstActif = true,
                             Image = "chips.jpg",
                             Nom = "Chips Lay’s",
@@ -107,7 +107,7 @@ namespace E25ProjetEtendu.Migrations
                         },
                         new
                         {
-                            id = 5,
+                            ProduitId = 5,
                             EstActif = true,
                             Image = "nutella.jpg",
                             Nom = "Nutella",
@@ -118,7 +118,7 @@ namespace E25ProjetEtendu.Migrations
                         },
                         new
                         {
-                            id = 6,
+                            ProduitId = 6,
                             EstActif = true,
                             Image = "activia.jpg",
                             Nom = "Yogourt Activia",
@@ -129,7 +129,7 @@ namespace E25ProjetEtendu.Migrations
                         },
                         new
                         {
-                            id = 7,
+                            ProduitId = 7,
                             EstActif = true,
                             Image = "pizza.jpg",
                             Nom = "Pizza congelée",
@@ -140,7 +140,7 @@ namespace E25ProjetEtendu.Migrations
                         },
                         new
                         {
-                            id = 8,
+                            ProduitId = 8,
                             EstActif = true,
                             Image = "granola.jpg",
                             Nom = "Barre de granola",
@@ -151,7 +151,7 @@ namespace E25ProjetEtendu.Migrations
                         },
                         new
                         {
-                            id = 9,
+                            ProduitId = 9,
                             EstActif = true,
                             Image = "coca.jpg",
                             Nom = "Coca-Cola",
@@ -162,7 +162,7 @@ namespace E25ProjetEtendu.Migrations
                         },
                         new
                         {
-                            id = 10,
+                            ProduitId = 10,
                             EstActif = true,
                             Image = "sandwich.jpg",
                             Nom = "Sandwich jambon-fromage",

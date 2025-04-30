@@ -7,7 +7,7 @@
 namespace E25ProjetEtendu.Migrations
 {
     /// <inheritdoc />
-    public partial class seedProduit : Migration
+    public partial class ajoutSeedProduit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,7 +16,7 @@ namespace E25ProjetEtendu.Migrations
                 name: "produits",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
+                    ProduitId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nom = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     Qty = table.Column<int>(type: "int", nullable: false),
@@ -28,15 +28,15 @@ namespace E25ProjetEtendu.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_produits", x => x.id);
+                    table.PrimaryKey("PK_produits", x => x.ProduitId);
                 });
 
             migrationBuilder.InsertData(
                 table: "produits",
-                columns: new[] { "id", "EstActif", "Image", "Nom", "Note", "Prix", "Qty", "ValeurNutritive" },
+                columns: new[] { "ProduitId", "EstActif", "Image", "Nom", "Note", "Prix", "Qty", "ValeurNutritive" },
                 values: new object[,]
                 {
-                    { 1, true, "redbull.jpg", "Red Bull", 4, 3m, 120, "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g" },
+                    { 1, true, "redbull.png", "Red Bull", 4, 3m, 120, "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g" },
                     { 2, true, "pogo.jpg", "Pogo", 3, 2m, 200, "Calories: 190, Lipides: 9g, Glucides: 20g, Protéines: 6g, Sodium: 500mg" },
                     { 3, true, "eau.jpg", "Bouteille d'eau", 5, 1m, 300, "Calories: 0, Lipides: 0g, Sucres: 0g, Sodium: 0mg" },
                     { 4, true, "chips.jpg", "Chips Lay’s", 4, 2m, 100, "Calories: 160, Lipides: 10g, Glucides: 15g, Sucres: 1g, Sodium: 170mg" },

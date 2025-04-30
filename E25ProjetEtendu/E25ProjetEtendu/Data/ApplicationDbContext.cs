@@ -19,18 +19,18 @@ namespace E25ProjetEtendu.Data
             modelBuilder.Entity<Produit>().HasData(
                 new Produit
                 {
-                    id = 1,
+                    ProduitId = 1,
                     Nom = "Red Bull",
                     Qty = 120,
                     Prix = 3,
-                    Image = "redbull.jpg",
+                    Image = "redbull.png",
                     EstActif = true,
                     Note = 4,
                     ValeurNutritive = "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g"
                 },
     new Produit
     {
-        id = 2,
+        ProduitId = 2,
         Nom = "Pogo",
         Qty = 200,
         Prix = 2,
@@ -41,7 +41,7 @@ namespace E25ProjetEtendu.Data
     },
     new Produit
     {
-        id = 3,
+        ProduitId = 3,
         Nom = "Bouteille d'eau",
         Qty = 300,
         Prix = 1,
@@ -52,7 +52,7 @@ namespace E25ProjetEtendu.Data
     },
     new Produit
     {
-        id = 4,
+        ProduitId = 4,
         Nom = "Chips Lay’s",
         Qty = 100,
         Prix = 2,
@@ -63,7 +63,7 @@ namespace E25ProjetEtendu.Data
     },
     new Produit
     {
-        id = 5,
+        ProduitId = 5,
         Nom = "Nutella",
         Qty = 80,
         Prix = 5,
@@ -74,7 +74,7 @@ namespace E25ProjetEtendu.Data
     },
     new Produit
     {
-        id = 6,
+        ProduitId = 6,
         Nom = "Yogourt Activia",
         Qty = 150,
         Prix = 3,
@@ -85,7 +85,7 @@ namespace E25ProjetEtendu.Data
     },
     new Produit
     {
-        id = 7,
+        ProduitId = 7,
         Nom = "Pizza congelée",
         Qty = 60,
         Prix = 6,
@@ -96,7 +96,7 @@ namespace E25ProjetEtendu.Data
     },
     new Produit
     {
-        id = 8,
+        ProduitId = 8,
         Nom = "Barre de granola",
         Qty = 180,
         Prix = 2,
@@ -107,7 +107,7 @@ namespace E25ProjetEtendu.Data
     },
     new Produit
     {
-        id = 9,
+        ProduitId = 9,
         Nom = "Coca-Cola",
         Qty = 220,
         Prix = 2,
@@ -118,7 +118,7 @@ namespace E25ProjetEtendu.Data
     },
     new Produit
     {
-        id = 10,
+        ProduitId = 10,
         Nom = "Sandwich jambon-fromage",
         Qty = 75,
         Prix = 4,
