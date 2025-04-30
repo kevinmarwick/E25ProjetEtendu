@@ -1,0 +1,130 @@
+﻿@model IEnumerable<E25ProjetEtendu.Models.Produit>
+
+@{
+    ViewData["Title"] = "Index";
+    var currentPage = ViewBag.CurrentPage as int? ?? 1;
+    var totalPages = ViewBag.TotalPages as int? ?? 1;
+    var recherche = ViewBag.Search as string ?? "";
+    var tri = ViewBag.Sort as string ?? "";
+}
+
+<h2 class="mb-4">Produits disponibles</h2>
+
+<!-- 🔍 Barre de recherche -->
+<form asp-action="Index" method="get" class="row g-3 align-items-center mb-4">
+    <div class="col-auto">
+        <input type="text" name="recherche" value="@recherche" maxlenght="200" class="form-control" placeholder="Rechercher un produit..." />
+    </div>
+    <div class="col-auto">
+        <select name="tri" class="form-select" onchange="this.form.submit()">
+            <option disabled selected>Trier par...</option>
+
+            @if (tri == "prix")
+            {
+                <option value="prix" selected>Prix croissant</option>
+            }
+            else
+            {
+                <option value="prix">Prix croissant</option>
+            }
+
+            @if (tri == "prix_desc")
+            {
+                <option value="prix_desc" selected>Prix décroissant</option>
+            }
+            else
+            {
+                <option value="prix_desc">Prix décroissant</option>
+            }
+
+            @if (tri == "note")
+            {
+                <option value="note" selected>Note croissante</option>
+            }
+            else
+            {
+                <option value="note">Note croissante</option>
+            }
+
+            @if (tri == "note_desc")
+            {
+                <option value="note_desc" selected>Note décroissante</option>
+            }
+            else
+            {
+                <option value="note_desc">Note décroissante</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Appliquer</button>
+    </div>
+</form>
+
+<!-- 🧾 Cartes des produits -->
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <img src="~/images/@item.Image" class="card-img-top" alt="@item.Nom" style="height: 200px; object-fit: cover;" />
+                <div class="card-body">
+                    <h5 class="card-title">@item.Nom</h5>
+                    <p class="card-text"><strong>Prix :</strong> @item.Prix $</p>
+                    <p class="card-text"><strong>Quantité :</strong> @item.Qty</p>
+                    <p class="card-text"><strong>Note :</strong> @item.Note / 5</p>
+                    <p class="card-text small text-muted">@item.ValeurNutritive</p>
+                    
+                        <a class=" btn btn-outline-primary text-dark" asp-area="" asp-controller="Produit" asp-action="Details">Details du produit</a>
+                        <a class=" btn btn-outline-primary text-dark" asp-area="" asp-controller="Produit" asp-action="Details">ajouter au pannier</a>
+                   
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- 📄 Pagination -->
+<nav aria-label="Pagination">
+    <ul class="pagination justify-content-center mt-4">
+        @if (currentPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(currentPage - 1)"
+                   asp-route-recherche="@recherche"
+                   asp-route-tri="@tri">
+                    Précédent
+                </a>
+            </li>
+        }
+
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == currentPage ? "active" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@i"
+                   asp-route-recherche="@recherche"
+                   asp-route-tri="@tri">
+                    @i
+                </a>
+            </li>
+        }
+
+        @if (currentPage < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(currentPage + 1)"
+                   asp-route-recherche="@recherche"
+                   asp-route-tri="@tri">
+                    Suivant
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
+
