@@ -13,7 +13,7 @@
 <!-- 🔍 Barre de recherche -->
 <form asp-action="Index" method="get" class="row g-3 align-items-center mb-4">
     <div class="col-auto">
-        <input type="text" name="recherche" value="@recherche" class="form-control" placeholder="Rechercher un produit..." />
+        <input type="text" name="recherche" value="@recherche" maxlenght="100" class="form-control" placeholder="Rechercher un produit..." />
     </div>
     <div class="col-auto">
         <select name="tri" class="form-select" onchange="this.form.submit()">
@@ -74,9 +74,10 @@
                     <p class="card-text"><strong>Quantité :</strong> @item.Qty</p>
                     <p class="card-text"><strong>Note :</strong> @item.Note / 5</p>
                     <p class="card-text small text-muted">@item.ValeurNutritive</p>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Produit" asp-action="Details">Details du produit</a>
-                    </li>
+                    
+                        <a class=" btn btn-outline-primary text-dark" asp-area="" asp-controller="Produit" asp-action="Details">Details du produit</a>
+                        <a class=" btn btn-outline-primary text-dark" asp-area="" asp-controller="Produit" asp-action="Details">ajouter au pannier</a>
+                   
                 </div>
             </div>
         </div>

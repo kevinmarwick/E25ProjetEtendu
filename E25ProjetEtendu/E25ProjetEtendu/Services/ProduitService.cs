@@ -24,8 +24,9 @@ namespace E25ProjetEtendu.Services
         {
             IQueryable<Produit> query = _context.produits.Where(p => p.EstActif);
 
-            if (!string.IsNullOrWhiteSpace(recherche))
+            if (!string.IsNullOrWhiteSpace(recherche) && recherche.Length > 200)
             {
+                recherche = recherche.Substring(0, 200); // tronque à 100 caractères max
                 query = query.Where(p => p.Nom.ToLower().Contains(recherche.ToLower()));
             }
 
