@@ -19,14 +19,22 @@ namespace E25ProjetEtendu.Services
                                           .OrderBy(p => p.Nom)
                                           .ToListAsync();
         }    
-                 
+            
+        /// <summary>
+        /// cette méthode sers a gérer la recherche de produit et faire la pagination
+        /// </summary>
+        /// <param name="recherche">le mots clé mis dans la barre de recherche</param>
+        /// <param name="tri">les differents options de tri pour la recherche</param>
+        /// <param name="page">la pagination</param>
+        /// <param name="pageSize">le nombre de produit accepter dans une page</param>
+        /// <returns></returns>
         public async Task<(List<Produit> produits, int totalProduits)> GetFilteredProductsAsync(string recherche, string tri, int page, int pageSize)
         {
             IQueryable<Produit> query = _context.produits.Where(p => p.EstActif);
 
             if (!string.IsNullOrWhiteSpace(recherche) && recherche.Length > 200)
             {
-                recherche = recherche.Substring(0, 200); // tronque à 100 caractères max
+                recherche = recherche.Substring(0, 200); // tronque à 200 caractères max
                 query = query.Where(p => p.Nom.ToLower().Contains(recherche.ToLower()));
             }
 

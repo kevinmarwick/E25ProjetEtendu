@@ -15,12 +15,19 @@ namespace E25ProjetEtendu.Controllers
             _produitService = produitService;
         }
         // GET: ProduitController
-        [HttpGet]
+        /// <summary>
+        /// cette methode retourne une liste de produit actif
+        /// </summary>
+        /// <param name="recherche">le mots clé mise dans la barre de recherche</param>
+        /// <param name="page">la page ou l'utilisateur est présentement</param>
+        /// <param name="tri">l'option de tri choisi par l'utilisateur</param>
+        /// <returns></returns>
+        [HttpGet]       
         public async Task<ActionResult> Index(string recherche, int page = 1, string tri = "")
         {
             const int pageSize = 5;
 
-            var (produits, totalProduits) = await _produitService.GetFilteredProductsAsync(recherche, tri, page, pageSize);
+            (List<Produit> produits, int totalProduits) = await _produitService.GetFilteredProductsAsync(recherche, tri, page, pageSize);
 
             ViewBag.Search = recherche;
             ViewBag.CurrentPage = page;
