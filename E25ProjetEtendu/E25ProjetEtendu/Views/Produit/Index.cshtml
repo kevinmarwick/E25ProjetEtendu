@@ -5,15 +5,40 @@
     var currentPage = ViewBag.CurrentPage as int? ?? 1;
     var totalPages = ViewBag.TotalPages as int? ?? 1;
     var recherche = ViewBag.Search as string ?? "";
+    var tri = ViewBag.Sort as string ?? "";
 }
 
 <h2 class="mb-4">Produits disponibles</h2>
 
 <!-- 🔍 Barre de recherche -->
-<form asp-action="Index" method="get" class="mb-4">
-    <div class="input-group">
+<form asp-action="Index" method="get" class="row g-3 align-items-center mb-4">
+    <div class="col-auto">
         <input type="text" name="recherche" value="@recherche" class="form-control" placeholder="Rechercher un produit..." />
-        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </div>
+    <div class="col-auto">
+        <select name="tri" class="form-select" onchange="this.form.submit()">
+            @if (tri == "prix")
+            {
+                <option value="prix" selected>Prix croissant</option>
+            }
+            else
+            {
+                <option value="prix">Prix croissant</option>
+            }
+            @if (tri == "note")
+            {
+                <option value="note" selected>note croissant</option>
+            }
+            else
+            {
+                <option value="note">note croissant</option>
+            }
+            
+
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Appliquer</button>
     </div>
 </form>
 
@@ -42,22 +67,41 @@
         @if (currentPage > 1)
         {
             <li class="page-item">
-                <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-recherche="@recherche">Précédent</a>
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(currentPage - 1)"
+                   asp-route-recherche="@recherche"
+                   asp-route-tri="@tri">
+                    Précédent
+                </a>
             </li>
         }
 
         @for (int i = 1; i <= totalPages; i++)
         {
             <li class="page-item @(i == currentPage ? "active" : "")">
-                <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-recherche="@recherche">@i</a>
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@i"
+                   asp-route-recherche="@recherche"
+                   asp-route-tri="@tri">
+                    @i
+                </a>
             </li>
         }
 
         @if (currentPage < totalPages)
         {
             <li class="page-item">
-                <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-recherche="@recherche">Suivant</a>
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(currentPage + 1)"
+                   asp-route-recherche="@recherche"
+                   asp-route-tri="@tri">
+                    Suivant
+                </a>
             </li>
         }
     </ul>
 </nav>
+

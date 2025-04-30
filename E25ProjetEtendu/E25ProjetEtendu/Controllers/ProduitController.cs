@@ -2,6 +2,7 @@
 using E25ProjetEtendu.Services.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace E25ProjetEtendu.Controllers
 {
@@ -15,27 +16,16 @@ namespace E25ProjetEtendu.Controllers
         }
         // GET: ProduitController
         [HttpGet]
-        public async Task<ActionResult> Index(string recherche, int page = 1)
+        public async Task<ActionResult> Index(string recherche, int page = 1, string tri = "")
         {
             const int pageSize = 5;
 
-            IEnumerable<Produit> produits;
-            int totalProduits;
-
-            if (string.IsNullOrWhiteSpace(recherche))
-            {
-                produits = await _produitService.GetProductsPageAsync(page, pageSize);
-                totalProduits = await _produitService.CountActifProductsAsync();
-            }
-            else
-            {
-                produits = await _produitService.SearchProductsPageAsync(recherche, page, pageSize);
-                totalProduits = await _produitService.CountSearchResultsAsync(recherche);
-            }
+            var (produits, totalProduits) = await _produitService.GetFilteredProductsAsync(recherche, tri, page, pageSize);
 
             ViewBag.Search = recherche;
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalProduits / pageSize);
+            ViewBag.Sort = tri;
 
             return View(produits);
         }
