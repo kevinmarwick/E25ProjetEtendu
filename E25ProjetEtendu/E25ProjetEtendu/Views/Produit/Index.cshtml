@@ -1,0 +1,63 @@
+﻿@model IEnumerable<E25ProjetEtendu.Models.Produit>
+
+@{
+    ViewData["Title"] = "Index";
+    var currentPage = ViewBag.CurrentPage as int? ?? 1;
+    var totalPages = ViewBag.TotalPages as int? ?? 1;
+    var recherche = ViewBag.Search as string ?? "";
+}
+
+<h2 class="mb-4">Produits disponibles</h2>
+
+<!-- 🔍 Barre de recherche -->
+<form asp-action="Index" method="get" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="recherche" value="@recherche" class="form-control" placeholder="Rechercher un produit..." />
+        <button type="submit" class="btn btn-primary">Rechercher</button>
+    </div>
+</form>
+
+<!-- 🧾 Cartes des produits -->
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <img src="~/images/@item.Image" class="card-img-top" alt="@item.Nom" style="height: 200px; object-fit: cover;" />
+                <div class="card-body">
+                    <h5 class="card-title">@item.Nom</h5>
+                    <p class="card-text"><strong>Prix :</strong> @item.Prix $</p>
+                    <p class="card-text"><strong>Quantité :</strong> @item.Qty</p>
+                    <p class="card-text"><strong>Note :</strong> @item.Note / 5</p>
+                    <p class="card-text small text-muted">@item.ValeurNutritive</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- 📄 Pagination -->
+<nav aria-label="Pagination">
+    <ul class="pagination justify-content-center mt-4">
+        @if (currentPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-recherche="@recherche">Précédent</a>
+            </li>
+        }
+
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == currentPage ? "active" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-recherche="@recherche">@i</a>
+            </li>
+        }
+
+        @if (currentPage < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-recherche="@recherche">Suivant</a>
+            </li>
+        }
+    </ul>
+</nav>

@@ -1,4 +1,6 @@
 using E25ProjetEtendu.Data;
+using E25ProjetEtendu.Services.IServices;
+using E25ProjetEtendu.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +10,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("NomConnection")));
+builder.Services.AddScoped<IProduitService, ProduitService>();
+
 
 
 var app = builder.Build();
