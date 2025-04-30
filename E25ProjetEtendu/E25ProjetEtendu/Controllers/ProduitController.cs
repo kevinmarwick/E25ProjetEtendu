@@ -14,6 +14,7 @@ namespace E25ProjetEtendu.Controllers
             _produitService = produitService;
         }
         // GET: ProduitController
+        [HttpGet]
         public async Task<ActionResult> Index(string recherche, int page = 1)
         {
             const int pageSize = 5;

@@ -29,29 +29,29 @@ namespace E25ProjetEtendu.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
+                    b.Property<bool>("EstActif")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Image")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("Qty")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("estActif")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("nom")
+                    b.Property<string>("Nom")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("note")
+                    b.Property<int>("Note")
                         .HasColumnType("int");
 
-                    b.Property<int>("prix")
+                    b.Property<decimal>("Prix")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Qty")
                         .HasColumnType("int");
 
-                    b.Property<string>("valeurNutritive")
+                    b.Property<string>("ValeurNutritive")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -64,112 +64,112 @@ namespace E25ProjetEtendu.Migrations
                         new
                         {
                             id = 1,
+                            EstActif = true,
                             Image = "redbull.jpg",
+                            Nom = "Red Bull",
+                            Note = 4,
+                            Prix = 3m,
                             Qty = 120,
-                            estActif = true,
-                            nom = "Red Bull",
-                            note = 4,
-                            prix = 3,
-                            valeurNutritive = "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g"
+                            ValeurNutritive = "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g"
                         },
                         new
                         {
                             id = 2,
+                            EstActif = true,
                             Image = "pogo.jpg",
+                            Nom = "Pogo",
+                            Note = 3,
+                            Prix = 2m,
                             Qty = 200,
-                            estActif = true,
-                            nom = "Pogo",
-                            note = 3,
-                            prix = 2,
-                            valeurNutritive = "Calories: 190, Lipides: 9g, Glucides: 20g, Protéines: 6g, Sodium: 500mg"
+                            ValeurNutritive = "Calories: 190, Lipides: 9g, Glucides: 20g, Protéines: 6g, Sodium: 500mg"
                         },
                         new
                         {
                             id = 3,
+                            EstActif = true,
                             Image = "eau.jpg",
+                            Nom = "Bouteille d'eau",
+                            Note = 5,
+                            Prix = 1m,
                             Qty = 300,
-                            estActif = true,
-                            nom = "Bouteille d'eau",
-                            note = 5,
-                            prix = 1,
-                            valeurNutritive = "Calories: 0, Lipides: 0g, Sucres: 0g, Sodium: 0mg"
+                            ValeurNutritive = "Calories: 0, Lipides: 0g, Sucres: 0g, Sodium: 0mg"
                         },
                         new
                         {
                             id = 4,
+                            EstActif = true,
                             Image = "chips.jpg",
+                            Nom = "Chips Lay’s",
+                            Note = 4,
+                            Prix = 2m,
                             Qty = 100,
-                            estActif = true,
-                            nom = "Chips Lay’s",
-                            note = 4,
-                            prix = 2,
-                            valeurNutritive = "Calories: 160, Lipides: 10g, Glucides: 15g, Sucres: 1g, Sodium: 170mg"
+                            ValeurNutritive = "Calories: 160, Lipides: 10g, Glucides: 15g, Sucres: 1g, Sodium: 170mg"
                         },
                         new
                         {
                             id = 5,
+                            EstActif = true,
                             Image = "nutella.jpg",
+                            Nom = "Nutella",
+                            Note = 5,
+                            Prix = 5m,
                             Qty = 80,
-                            estActif = true,
-                            nom = "Nutella",
-                            note = 5,
-                            prix = 5,
-                            valeurNutritive = "Calories: 200, Lipides: 11g, Glucides: 22g, Sucres: 21g, Protéines: 2g"
+                            ValeurNutritive = "Calories: 200, Lipides: 11g, Glucides: 22g, Sucres: 21g, Protéines: 2g"
                         },
                         new
                         {
                             id = 6,
+                            EstActif = true,
                             Image = "activia.jpg",
+                            Nom = "Yogourt Activia",
+                            Note = 4,
+                            Prix = 3m,
                             Qty = 150,
-                            estActif = true,
-                            nom = "Yogourt Activia",
-                            note = 4,
-                            prix = 3,
-                            valeurNutritive = "Calories: 100, Lipides: 2g, Glucides: 15g, Sucres: 12g, Protéines: 5g"
+                            ValeurNutritive = "Calories: 100, Lipides: 2g, Glucides: 15g, Sucres: 12g, Protéines: 5g"
                         },
                         new
                         {
                             id = 7,
+                            EstActif = true,
                             Image = "pizza.jpg",
+                            Nom = "Pizza congelée",
+                            Note = 4,
+                            Prix = 6m,
                             Qty = 60,
-                            estActif = true,
-                            nom = "Pizza congelée",
-                            note = 4,
-                            prix = 6,
-                            valeurNutritive = "Calories: 350, Lipides: 15g, Glucides: 40g, Sucres: 5g, Protéines: 12g"
+                            ValeurNutritive = "Calories: 350, Lipides: 15g, Glucides: 40g, Sucres: 5g, Protéines: 12g"
                         },
                         new
                         {
                             id = 8,
+                            EstActif = true,
                             Image = "granola.jpg",
+                            Nom = "Barre de granola",
+                            Note = 4,
+                            Prix = 2m,
                             Qty = 180,
-                            estActif = true,
-                            nom = "Barre de granola",
-                            note = 4,
-                            prix = 2,
-                            valeurNutritive = "Calories: 190, Lipides: 7g, Glucides: 29g, Sucres: 11g, Protéines: 4g"
+                            ValeurNutritive = "Calories: 190, Lipides: 7g, Glucides: 29g, Sucres: 11g, Protéines: 4g"
                         },
                         new
                         {
                             id = 9,
+                            EstActif = true,
                             Image = "coca.jpg",
+                            Nom = "Coca-Cola",
+                            Note = 3,
+                            Prix = 2m,
                             Qty = 220,
-                            estActif = true,
-                            nom = "Coca-Cola",
-                            note = 3,
-                            prix = 2,
-                            valeurNutritive = "Calories: 140, Sucres: 39g, Glucides: 39g, Sodium: 45mg"
+                            ValeurNutritive = "Calories: 140, Sucres: 39g, Glucides: 39g, Sodium: 45mg"
                         },
                         new
                         {
                             id = 10,
+                            EstActif = true,
                             Image = "sandwich.jpg",
+                            Nom = "Sandwich jambon-fromage",
+                            Note = 4,
+                            Prix = 4m,
                             Qty = 75,
-                            estActif = true,
-                            nom = "Sandwich jambon-fromage",
-                            note = 4,
-                            prix = 4,
-                            valeurNutritive = "Calories: 320, Lipides: 12g, Glucides: 30g, Protéines: 18g, Sodium: 780mg"
+                            ValeurNutritive = "Calories: 320, Lipides: 12g, Glucides: 30g, Protéines: 18g, Sodium: 780mg"
                         });
                 });
 #pragma warning restore 612, 618

@@ -18,7 +18,7 @@ namespace E25ProjetEtendu.Models
 
         [Required(ErrorMessage = "Le prix est obligatoire")]
         [Range(0.01, 10000.00, ErrorMessage = "Le prix doit être supérieur à 0")]
-        public int Prix { get; set; }
+        public decimal Prix { get; set; }
 
         [StringLength(255, ErrorMessage = "Le nom du fichier image ne peut pas dépasser 255 caractères")]
         public string Image { get; set; }
