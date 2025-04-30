@@ -17,6 +17,8 @@
     </div>
     <div class="col-auto">
         <select name="tri" class="form-select" onchange="this.form.submit()">
+            <option disabled selected>Trier par...</option>
+
             @if (tri == "prix")
             {
                 <option value="prix" selected>Prix croissant</option>
@@ -25,16 +27,33 @@
             {
                 <option value="prix">Prix croissant</option>
             }
-            @if (tri == "note")
+
+            @if (tri == "prix_desc")
             {
-                <option value="note" selected>note croissant</option>
+                <option value="prix_desc" selected>Prix décroissant</option>
             }
             else
             {
-                <option value="note">note croissant</option>
+                <option value="prix_desc">Prix décroissant</option>
             }
-            
 
+            @if (tri == "note")
+            {
+                <option value="note" selected>Note croissante</option>
+            }
+            else
+            {
+                <option value="note">Note croissante</option>
+            }
+
+            @if (tri == "note_desc")
+            {
+                <option value="note_desc" selected>Note décroissante</option>
+            }
+            else
+            {
+                <option value="note_desc">Note décroissante</option>
+            }
         </select>
     </div>
     <div class="col-auto">

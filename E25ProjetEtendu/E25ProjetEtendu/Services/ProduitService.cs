@@ -33,10 +33,13 @@ namespace E25ProjetEtendu.Services
             query = tri?.ToLower() switch
             {
                 "prix" => query.OrderBy(p => p.Prix),
-                "note" => query.OrderByDescending(p => p.Note),
+                "prix_desc" => query.OrderByDescending(p => p.Prix),
+                "note" => query.OrderBy(p => p.Note),
+                "note_desc" => query.OrderByDescending(p => p.Note),
                 "popularite" => query.OrderByDescending(p => p.Qty),
                 _ => query.OrderBy(p => p.Nom)
             };
+
 
             int totalProduits = await query.CountAsync();
 
