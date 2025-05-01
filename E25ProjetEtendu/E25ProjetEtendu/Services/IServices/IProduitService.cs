@@ -9,6 +9,8 @@ namespace E25ProjetEtendu.Services.IServices
         Task<(List<Produit> produits, int totalProduits)> GetFilteredProductsAsync(string recherche, string tri, int page, int pageSize);
         Task AddToCartAsync(int productId, int quantity);        
         List<PannierProduitVM> GetCartItems();
-        void EnleverPrduitPannier(int productId);
+        void EnleverProduitPannier(int productId);
+        void AugmenteProduitPannier(int productId);
+        void VidePannier();
     }
 }

@@ -119,7 +119,27 @@ namespace E25ProjetEtendu.Services
         //    _context.produits.Update(produit);
         //    await _context.SaveChangesAsync();
         //}
-        public void EnleverPrduitPannier(int productId)
+        public void EnleverProduitPannier(int productId)
+        {
+            var cart = _httpContextAccessor.HttpContext.Request.Cookies.GetObject<List<PannierProduitVM>>("panier")
+               ?? new List<PannierProduitVM>();
+
+            var item = cart.FirstOrDefault(i => i.ProduitId == productId);
+            if (item != null)
+            {
+                if (item.Quantite > 1)
+                {
+                    item.Quantite--;  // ✅ décrémente la quantité
+                }
+                else
+                {
+                    cart.Remove(item); // ✅ supprime si quantité = 1
+                }
+
+                _httpContextAccessor.HttpContext.Response.Cookies.SetObject("panier", cart);
+            }
+        }
+        public void AugmenteProduitPannier(int productId)
         {
             var cart = _httpContextAccessor.HttpContext.Request.Cookies.GetObject<List<PannierProduitVM>>("panier")
                        ?? new List<PannierProduitVM>();
@@ -127,17 +147,19 @@ namespace E25ProjetEtendu.Services
             var item = cart.FirstOrDefault(i => i.ProduitId == productId);
             if (item != null)
             {
-                if (item.Quantite > 1)
-                {
-                    item.Quantite--;
-                }
-                else
-                {
-                    cart.Remove(item);
-                }
-
-                _httpContextAccessor.HttpContext.Response.Cookies.SetObject("panier", cart);
+                item.Quantite++;  // ✅ incrémente
             }
+            else
+            {
+                cart.Add(new PannierProduitVM
+                {
+                    ProduitId = productId,
+                    Quantite = 1
+                    // autres champs si besoin
+                });
+            }
+
+            _httpContextAccessor.HttpContext.Response.Cookies.SetObject("panier", cart);
         }
 
         public void VidePannier()

@@ -23,7 +23,7 @@ namespace E25ProjetEtendu.Controllers
         /// <param name="page">la page ou l'utilisateur est présentement</param>
         /// <param name="tri">l'option de tri choisi par l'utilisateur</param>
         /// <returns></returns>
-        [HttpGet]       
+        [HttpGet]
         public async Task<ActionResult> Index(string recherche, int page = 1, string tri = "")
         {
             const int pageSize = 5;
@@ -129,5 +129,46 @@ namespace E25ProjetEtendu.Controllers
 
             return RedirectToAction("Index"); // ou redirige vers la page souhaitée
         }
-       
+        [HttpPost]
+        public IActionResult AugmenterProduitAuPannier(int productId)
+        {
+            _produitService.AugmenteProduitPannier(productId);
+
+            var cart = _produitService.GetCartItems();
+            var item = cart.FirstOrDefault(i => i.ProduitId == productId);
+
+            return Json(new
+            {
+                productId = productId,
+                quantity = item?.Quantite ?? 0,
+                subtotal = item != null ? item.Prix * item.Quantite : 0,
+                total = cart.Sum(i => i.Prix * i.Quantite)
+            });
+        }
+
+        [HttpPost]
+        public IActionResult RetirerProduitDuPannier(int productId)
+        {
+            _produitService.EnleverProduitPannier(productId);
+
+            var cart = _produitService.GetCartItems();
+            var item = cart.FirstOrDefault(i => i.ProduitId == productId);
+
+            return Json(new
+            {
+                productId = productId,
+                quantity = item?.Quantite ?? 0,
+                subtotal = item != null ? item.Prix * item.Quantite : 0,
+                total = cart.Sum(i => i.Prix * i.Quantite)
+            });
+        }
+        [HttpPost]
+        public JsonResult ViderPannier()
+        {
+            _produitService.VidePannier();
+            return Json(new { success = true });
+        }
+
+
+    }
 }
