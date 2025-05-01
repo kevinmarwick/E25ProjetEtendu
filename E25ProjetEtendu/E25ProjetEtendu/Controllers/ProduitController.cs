@@ -129,6 +129,5 @@ namespace E25ProjetEtendu.Controllers
 
             return RedirectToAction("Index"); // ou redirige vers la page souhaitée
         }
-
-    }
+       
 }

@@ -101,25 +101,50 @@ namespace E25ProjetEtendu.Services
             _httpContextAccessor.HttpContext.Response.Cookies.SetObject("panier", cart);
 
 
-            // Réserver le stock
-            await ReserveProduitAsync(productId, quantity);
+            
         }
 
-        public async Task ReserveProduitAsync(int productId, int quantity)
+        //public async Task ReserveProduitAsync(int productId, int quantity)
+        //{
+        //    var produit = await _context.produits.FindAsync(productId);
+
+        //    if (produit == null)
+        //        throw new Exception("Produit introuvable.");
+
+        //    produit.Qty -= quantity;
+
+        //    if (produit.Qty < 0)
+        //        throw new Exception("Stock insuffisant.");
+
+        //    _context.produits.Update(produit);
+        //    await _context.SaveChangesAsync();
+        //}
+        public void EnleverPrduitPannier(int productId)
         {
-            var produit = await _context.produits.FindAsync(productId);
+            var cart = _httpContextAccessor.HttpContext.Request.Cookies.GetObject<List<PannierProduitVM>>("panier")
+                       ?? new List<PannierProduitVM>();
 
-            if (produit == null)
-                throw new Exception("Produit introuvable.");
+            var item = cart.FirstOrDefault(i => i.ProduitId == productId);
+            if (item != null)
+            {
+                if (item.Quantite > 1)
+                {
+                    item.Quantite--;
+                }
+                else
+                {
+                    cart.Remove(item);
+                }
 
-            produit.Qty -= quantity;
-
-            if (produit.Qty < 0)
-                throw new Exception("Stock insuffisant.");
-
-            _context.produits.Update(produit);
-            await _context.SaveChangesAsync();
+                _httpContextAccessor.HttpContext.Response.Cookies.SetObject("panier", cart);
+            }
         }
+
+        public void VidePannier()
+        {
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete("panier");
+        }
+
 
 
 
