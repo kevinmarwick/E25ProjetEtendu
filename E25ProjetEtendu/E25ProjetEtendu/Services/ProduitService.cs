@@ -1,6 +1,9 @@
 ﻿using E25ProjetEtendu.Data;
+using E25ProjetEtendu.Extensions;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services.IServices;
+using E25ProjetEtendu.ViewModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace E25ProjetEtendu.Services
@@ -8,10 +11,12 @@ namespace E25ProjetEtendu.Services
     public class ProduitService : IProduitService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProduitService(ApplicationDbContext context)
+        public ProduitService(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<IEnumerable<Produit>> GetAllActifProduct()
         {
@@ -59,6 +64,63 @@ namespace E25ProjetEtendu.Services
 
             return (produits, totalProduits);
         }
+        public List<PannierProduitVM> GetCartItems()
+        {
+            var cart = _httpContextAccessor.HttpContext.Request.Cookies.GetObject<List<PannierProduitVM>>("panier") ?? new List<PannierProduitVM>();
+            return cart;
+        }
+
+        public async Task AddToCartAsync(int productId, int quantity)
+        {
+            var produit = await _context.produits.FindAsync(productId);
+
+            if (produit == null || produit.Qty < quantity)
+                throw new Exception("Produit non disponible ou stock insuffisant.");
+
+
+            var cart = _httpContextAccessor.HttpContext.Request.Cookies.GetObject<List<PannierProduitVM>>("panier") ?? new List<PannierProduitVM>();
+
+
+            var item = cart.FirstOrDefault(i => i.ProduitId == productId);
+            if (item != null)
+            {
+                item.Quantite += quantity;
+            }
+            else
+            {
+                cart.Add(new PannierProduitVM
+                {
+                    ProduitId = produit.ProduitId,
+                    Nom = produit.Nom,
+                    Prix = produit.Prix,
+                    Quantite = quantity,
+                    Image = produit.Image
+                });
+            }
+
+            _httpContextAccessor.HttpContext.Response.Cookies.SetObject("panier", cart);
+
+
+            // Réserver le stock
+            await ReserveProduitAsync(productId, quantity);
+        }
+
+        public async Task ReserveProduitAsync(int productId, int quantity)
+        {
+            var produit = await _context.produits.FindAsync(productId);
+
+            if (produit == null)
+                throw new Exception("Produit introuvable.");
+
+            produit.Qty -= quantity;
+
+            if (produit.Qty < 0)
+                throw new Exception("Stock insuffisant.");
+
+            _context.produits.Update(produit);
+            await _context.SaveChangesAsync();
+        }
+
 
 
 

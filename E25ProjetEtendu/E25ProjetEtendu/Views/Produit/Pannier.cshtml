@@ -1,0 +1,36 @@
+﻿@using E25ProjetEtendu.ViewModels
+
+@model List<PannierProduitVM>
+
+<h2>Votre panier</h2>
+
+@if (!Model.Any())
+{
+    <p>Votre panier est vide.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Prix</th>
+                <th>Quantité</th>
+                <th>Sous-total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Nom</td>
+                    <td>@item.Prix $</td>
+                    <td>@item.Quantite</td>
+                    <td>@(item.Prix * item.Quantite) $</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p><strong>Total :</strong> @Model.Sum(i => i.Prix * i.Quantite) $</p>
+}

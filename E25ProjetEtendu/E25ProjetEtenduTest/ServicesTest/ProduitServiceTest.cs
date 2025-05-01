@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using Moq;
 
 
 namespace E25ProjetEtenduTest.ServicesTest
@@ -38,16 +40,21 @@ namespace E25ProjetEtenduTest.ServicesTest
         {
             // Arrange
             ApplicationDbContext db = GetInMemoryDbContext();
-            ProduitService service = new ProduitService(db);
+
+            var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
+            mockHttpContextAccessor.Setup(x => x.HttpContext).Returns((HttpContext)null); // pas besoin d'implémenter pour ce test
+
+            ProduitService service = new ProduitService(db, mockHttpContextAccessor.Object);
 
             // Act
-            (List<Produit> produits, int total) = await service.GetFilteredProductsAsync("Pomme", "Note", 1, 10);
+            (List<Produit> produits, int total) = await service.GetFilteredProductsAsync("pomme", "note", 1, 10);
 
             // Assert
             Assert.Single(produits);
-            Assert.Equal("Pomme", produits[0].Nom);
+            Assert.Equal("pomme", produits[0].Nom, ignoreCase: true);
             Assert.Equal(1, total);
         }
+
     }
 
 }

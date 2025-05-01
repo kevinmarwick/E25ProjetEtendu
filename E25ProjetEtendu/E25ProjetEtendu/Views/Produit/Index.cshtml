@@ -76,7 +76,12 @@
                     <p class="card-text small text-muted">@item.ValeurNutritive</p>
                     
                         <a class=" btn btn-outline-primary text-dark" asp-area="" asp-controller="Produit" asp-action="Details">Details du produit</a>
-                        <a class=" btn btn-outline-primary text-dark" asp-area="" asp-controller="Produit" asp-action="Details">ajouter au pannier</a>
+                    <form asp-action="AddToCart" method="post">
+                        <input type="hidden" name="productId" value="@item.ProduitId" />
+                        <input type="number" name="quantity" value="1" min="1" />
+                        <button type="submit" class="btn btn-primary">Ajouter au panier</button>
+                    </form>
+
                    
                 </div>
             </div>

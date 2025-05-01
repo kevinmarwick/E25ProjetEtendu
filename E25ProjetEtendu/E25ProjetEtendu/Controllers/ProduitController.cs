@@ -1,4 +1,5 @@
 ﻿using E25ProjetEtendu.Models;
+using E25ProjetEtendu.ViewModels;
 using E25ProjetEtendu.Services.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -106,5 +107,28 @@ namespace E25ProjetEtendu.Controllers
                 return View();
             }
         }
+        public ActionResult Pannier()
+        {
+            // Récupérer le panier actuel depuis la session
+            var cart = _produitService.GetCartItems();
+
+            return View(cart); // Passer la liste à la vue
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
+        {
+            try
+            {
+                await _produitService.AddToCartAsync(productId, quantity);
+                TempData["Success"] = "Produit ajouté au panier !";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Erreur : {ex.Message}";
+            }
+
+            return RedirectToAction("Index"); // ou redirige vers la page souhaitée
+        }
+
     }
 }
