@@ -22,14 +22,10 @@ namespace E25ProjetEtendu.Models
         [Display(Name = "Full Name")]
         public string FullName => $"{FirstName} {LastName}";
 
-        //navigation properties
-        [ValidateNever]
-        public BuyerProfile? BuyerProfile { get; set; }
-
-        [ValidateNever]
-        public DelivererProfile? DelivererProfile { get; set; }
-
-        [ValidateNever]
-        public AdminProfile? AdminProfile { get; set; }
+        [Required]
+        [Range(0, 1000, ErrorMessage = "Le solde doit être entre 0 $ et 1 000 $.")]
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Balance { get; set; } = 0;        
+        
     }
 }
