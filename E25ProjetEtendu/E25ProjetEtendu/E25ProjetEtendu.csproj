@@ -23,9 +23,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
-    <Folder Include="wwwroot\Images\" />  
-  <ItemGroup>
-    <Folder Include="Services\IServices\" />
-  </ItemGroup>
+    
 
 </Project>
