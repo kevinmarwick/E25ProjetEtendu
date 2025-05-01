@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace E25ProjetEtendu.Models
 {
@@ -8,7 +9,9 @@ namespace E25ProjetEtendu.Models
         [Key]
         public int BuyerProfileId { get; set; }
 
-        [Required]       
+        [Required]
+        [Range(0, 1000, ErrorMessage = "Le solde doit être entre 0 $ et 1 000 $.")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Balance { get; set; }
 
         //Navigation properties

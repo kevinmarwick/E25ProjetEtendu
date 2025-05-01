@@ -4,6 +4,7 @@ using E25ProjetEtendu.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E25ProjetEtendu.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250501132538_ADD_IDENTITY_COLUMNS_CONSTRAINTS")]
+    partial class ADD_IDENTITY_COLUMNS_CONSTRAINTS
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,7 +42,7 @@ namespace E25ProjetEtendu.Migrations
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
-                    b.ToTable("AdminProfile", (string)null);
+                    b.ToTable("AdminProfile");
                 });
 
             modelBuilder.Entity("E25ProjetEtendu.Models.ApplicationUser", b =>
@@ -137,7 +140,7 @@ namespace E25ProjetEtendu.Migrations
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
-                    b.ToTable("BuyerProfile", (string)null);
+                    b.ToTable("BuyerProfile");
                 });
 
             modelBuilder.Entity("E25ProjetEtendu.Models.DelivererProfile", b =>
@@ -157,7 +160,7 @@ namespace E25ProjetEtendu.Migrations
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
-                    b.ToTable("DelivererProfile", (string)null);
+                    b.ToTable("DelivererProfile");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

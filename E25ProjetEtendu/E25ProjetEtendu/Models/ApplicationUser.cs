@@ -9,12 +9,12 @@ namespace E25ProjetEtendu.Models
     public class ApplicationUser :IdentityUser
     {
         [Required(ErrorMessage ="Le prénom est requis")]
-        [MaxLength(30)]
+        [MaxLength(50)]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
-        [Required(ErrorMessage = "Le prénom est requis")]
-        [MaxLength(30)]
+        [Required(ErrorMessage = "Le nom est requis")]
+        [MaxLength(50)]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
                 
