@@ -98,6 +98,27 @@ namespace E25ProjetEtendu.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "21111111-1111-1111-1111-111111111111",
+                            AccessFailedCount = 0,
+                            Balance = 0m,
+                            ConcurrencyStamp = "49565136-ba29-4f10-8e54-e8f392365cc8",
+                            Email = "admin@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Admin",
+                            LastName = "Admin",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                            NormalizedUserName = "ADMIN@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEqXJvU9JJSQdEKU0XV810x96VEGsG4aYsQO920FBVtI/lfhXlKPgIQ4fKZjAXrMKQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "e074b430-5e1b-4e41-b2f4-fba1846b122d",
+                            TwoFactorEnabled = false,
+                            UserName = "admin@example.com"
+                        });
                 });
 
             modelBuilder.Entity("E25ProjetEtendu.Models.Produit", b =>
@@ -374,6 +395,13 @@ namespace E25ProjetEtendu.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "21111111-1111-1111-1111-111111111111",
+                            RoleId = "admin-role-id"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>

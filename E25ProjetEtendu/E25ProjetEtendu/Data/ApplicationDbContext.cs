@@ -19,17 +19,36 @@ namespace E25ProjetEtendu.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            #region Add Admin Account Seed
+            #region Ajout Admin
+
             modelBuilder.Entity<IdentityRole>().HasData(
             new IdentityRole { Id = "admin-role-id", Name = "Admin", NormalizedName = "ADMIN" }
             );
 
             var hasher = new PasswordHasher<ApplicationUser>();
-            var adminPassword = hasher.HashPassword(null, "Qwerty123!");
+            var adminPassword = hasher.HashPassword(null, "Qwerty123!!");
 
+            modelBuilder.Entity<ApplicationUser>().HasData(
+            new ApplicationUser
+            {
+                Id = "21111111-1111-1111-1111-111111111111", 
+                UserName = "admin@example.com",
+                FirstName = "Admin",
+                LastName = "Admin",
+                NormalizedUserName = "ADMIN@EXAMPLE.COM",
+                Email = "admin@example.com",
+                NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                EmailConfirmed = true,
+                PasswordHash = adminPassword,
+                SecurityStamp = Guid.NewGuid().ToString()
+            }
+            );
 
-
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+            new IdentityUserRole<string> { UserId = "21111111-1111-1111-1111-111111111111", RoleId = "admin-role-id" }
+            );
             #endregion
+
 
 
 
