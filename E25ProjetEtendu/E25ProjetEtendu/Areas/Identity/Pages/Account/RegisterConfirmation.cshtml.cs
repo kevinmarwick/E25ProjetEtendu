@@ -56,8 +56,8 @@ namespace E25ProjetEtendu.Areas.Identity.Pages.Account
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
-                return NotFound($"Unable to load user with email '{email}'.");
-            }
+				return NotFound($"Impossible de charger l'utilisateur avec l'adresse courriel '{email}'.");
+			}
 
             Email = email;
             // Once you add a real email sender, you should remove this code that lets you confirm the account
