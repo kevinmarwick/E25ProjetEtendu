@@ -50,7 +50,7 @@ namespace E25ProjetEtendu.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "Le champ {0} doit contenir entre {2} et {1} caractères.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
@@ -59,8 +59,8 @@ namespace E25ProjetEtendu.Areas.Identity.Pages.Account
             ///     directly from your code. This API may change or be removed in future releases.
             /// </summary>
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Confirmer le mot de passe")]
+            [Compare("Password", ErrorMessage = "Le mot de passe et sa confirmation ne correspondent pas.")]
             public string ConfirmPassword { get; set; }
 
             /// <summary>
@@ -76,7 +76,7 @@ namespace E25ProjetEtendu.Areas.Identity.Pages.Account
         {
             if (code == null)
             {
-                return BadRequest("A code must be supplied for password reset.");
+                return BadRequest("Un code doit être fourni pour réinitialiser le mot de passe.");
             }
             else
             {

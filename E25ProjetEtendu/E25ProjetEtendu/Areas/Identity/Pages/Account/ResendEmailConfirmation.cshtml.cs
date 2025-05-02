@@ -65,7 +65,7 @@ namespace E25ProjetEtendu.Areas.Identity.Pages.Account
             var user = await _userManager.FindByEmailAsync(Input.Email);
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+                ModelState.AddModelError(string.Empty, "Le courriel de vérification a été envoyé. Veuillez vérifier votre boîte de réception.");
                 return Page();
             }
 
@@ -78,11 +78,11 @@ namespace E25ProjetEtendu.Areas.Identity.Pages.Account
                 values: new { userId = userId, code = code },
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(
-                Input.Email,
-                "Confirm your email",
-                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+               Input.Email,
+               "Confirmez votre adresse courriel",
+               $"Veuillez confirmer votre compte en <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>cliquant ici</a>.");
 
-            ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+            ModelState.AddModelError(string.Empty, "Le courriel de vérification a été envoyé. Veuillez vérifier votre boîte de réception.");
             return Page();
         }
     }
