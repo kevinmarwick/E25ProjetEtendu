@@ -109,11 +109,9 @@ namespace E25ProjetEtendu.Controllers
         }
         public ActionResult Pannier()
         {
-            // Récupérer le panier actuel depuis la session
-            var cart = _produitService.GetCartItems();
-
-            return View(cart); // Passer la liste à la vue
+            return View(); // juste retourner la vue, sans modèle
         }
+
         [HttpPost]
         public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
         {

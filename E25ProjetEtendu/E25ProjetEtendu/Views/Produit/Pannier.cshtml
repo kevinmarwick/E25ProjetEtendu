@@ -1,103 +1,100 @@
-﻿@using E25ProjetEtendu.ViewModels
-@model List<PannierProduitVM>
+﻿<h2 class="mb-4">Votre panier</h2>
 
-<h2 class="mb-4">Votre panier</h2>
+<div id="panier-container">
+    <!-- Le tableau sera généré par JS -->
+</div>
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info">Votre panier est vide.</div>
-}
-else
-{
-    <div class="table-responsive">
-        <table class="table align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>Produit</th>
-                    <th>Prix unitaire</th>
-                    <th>Quantité</th>
-                    <th>Sous-total</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr id="row-@item.ProduitId">
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="~/images/@item.Image" alt="@item.Nom" style="width: 80px; height: 80px; object-fit: cover; margin-right: 15px;" />
-                                <span>@item.Nom</span>
-                            </div>
-                        </td>
-                        <td>@item.Prix $</td>
-                        <td id="qty-@item.ProduitId">@item.Quantite</td>
-                        <td id="subtotal-@item.ProduitId">@(@item.Prix * @item.Quantite) $</td>
-                        <td>
-                            <div class="d-flex">
-                                <button type="button" class="btn btn-sm btn-success increase-btn me-1" data-productid="@item.ProduitId">
-                                    <i>+</i>
-                                </button>
-                                <button type="button" class="btn btn-sm btn-warning decrease-btn" data-productid="@item.ProduitId">
-                                    <i>-</i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>  
-        
-        <div class="text-end">
-            <h4>Total général : <span id="total" class="text-primary">@Model.Sum(i => i.Prix * i.Quantite) $</span></h4>
-            <button type="button" id="clear-cart-btn" class="btn btn-danger btn-lg mt-3">
-                Vider le panier
-            </button>
-            <a href="#" class="btn btn-primary btn-lg mt-3">Passer à la caisse</a>
-        </div>
+<div class="text-end">
+    <h4>Total général : <span id="total" class="text-primary">0 $</span></h4>
+    <button type="button" id="clear-cart-btn" class="btn btn-danger btn-lg mt-3">
+        Vider le panier
+    </button>
+    <a href="#" class="btn btn-primary btn-lg mt-3">Passer à la caisse</a>
+</div>
 
-        
-    
-}
+@section Scripts {
+    <script>
+        function Pannier() {
+            console.log("Pannier() appelée.");
+            let cart = JSON.parse(localStorage.getItem('panier')) || [];
+            let html = '';
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    // Utilisation de 'on' pour bien attacher les événements même sur des éléments dynamiques
-    $(document).on('click', '.increase-btn', function () {
-        var productId = $(this).data('productid');
-
-        $.post('@Url.Action("AugmenterProduitAuPannier", "Produit")', { productId: productId }, function (data) {
-            $('#qty-' + data.productId).text(data.quantity);
-            $('#subtotal-' + data.productId).text(data.subtotal + ' $');
-            $('#total').text(data.total + ' $');
-        });
-    });
-
-    $(document).on('click', '.decrease-btn', function () {
-        var productId = $(this).data('productid');
-
-        $.post('@Url.Action("RetirerProduitDuPannier", "Produit")', { productId: productId }, function (data) {
-            if (data.quantity > 0) {
-                $('#qty-' + data.productId).text(data.quantity);
-                $('#subtotal-' + data.productId).text(data.subtotal + ' $');
-            } else {
-                $('#row-' + data.productId).remove();
-            }
-            $('#total').text(data.total + ' $');
-        });
-    });
-    $(document).on('click', '#clear-cart-btn', function () {
-        $.post('@Url.Action("ViderPannier", "Produit")', function (data) {
-            if (data.success) {
-                // Supprimer toutes les lignes du tableau
-                $('tr[id^="row-"]').remove();
-                // Remettre le total à 0
+            if (cart.length === 0) {
+                html = '<div class="alert alert-info">Votre panier est vide.</div>';
                 $('#total').text('0 $');
-                // Afficher un message ou remplacer le tableau par "panier vide"
-                $('.table-responsive').html('<div class="alert alert-info">Votre panier est vide.</div>');
-            }
-        });
-    });
+            } else {
+                html += `<div class="table-responsive">
+                                    <table class="table align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Produit</th>
+                                                <th>Prix unitaire</th>
+                                                <th>Quantité</th>
+                                                <th>Sous-total</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>`;
 
-</script>
+                let total = 0;
+                cart.forEach(item => {
+                    let subtotal = item.Prix * item.Quantite;
+                    total += subtotal;
+
+                    html += `<tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="/images/${item.Image}" alt="${item.Nom}" style="width:80px; height:80px; object-fit:cover; margin-right:15px;" />
+                                                <span>${item.Nom}</span>
+                                            </div>
+                                        </td>
+                                        <td>${item.Prix} $</td>
+                                        <td>${item.Quantite}</td>
+                                        <td>${subtotal} $</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-success increase-btn" data-productid="${item.ProduitId}">+</button>
+                                            <button class="btn btn-sm btn-warning decrease-btn" data-productid="${item.ProduitId}">-</button>
+                                        </td>
+                                     </tr>`;
+                });
+
+                html += `</tbody></table></div>`;
+                $('#total').text(total + ' $');
+            }
+
+            $('#panier-container').html(html);
+        }
+
+        $(document).ready(function () {
+            Pannier();
+
+            $(document).on('click', '.increase-btn', function () {
+                let productId = parseInt($(this).data('productid'));
+                let cart = JSON.parse(localStorage.getItem('panier')) || [];
+                let item = cart.find(p => p.ProduitId === productId);
+                if (item) { item.Quantite += 1; }
+                localStorage.setItem('panier', JSON.stringify(cart));
+                Pannier();
+            });
+
+            $(document).on('click', '.decrease-btn', function () {
+                let productId = parseInt($(this).data('productid'));
+                let cart = JSON.parse(localStorage.getItem('panier')) || [];
+                let item = cart.find(p => p.ProduitId === productId);
+                if (item) {
+                    item.Quantite -= 1;
+                    if (item.Quantite <= 0) {
+                        cart = cart.filter(p => p.ProduitId !== productId);
+                    }
+                }
+                localStorage.setItem('panier', JSON.stringify(cart));
+                Pannier();
+            });
+
+            $('#clear-cart-btn').click(function () {
+                localStorage.removeItem('panier');
+                Pannier();
+            });
+        });
+    </script>
+}
