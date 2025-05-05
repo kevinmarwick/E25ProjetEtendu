@@ -48,3 +48,28 @@ body {
     right: 10px;
     z-index: 1100;
 }
+@keyframes cart-bounce {
+    0% {
+        transform: translateY(0);
+    }
+
+    30% {
+        transform: translateY(-10px);
+    }
+
+    50% {
+        transform: translateY(0);
+    }
+
+    70% {
+        transform: translateY(-5px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.bounce {
+    animation: cart-bounce 0.5s;
+}

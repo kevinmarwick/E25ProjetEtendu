@@ -142,8 +142,9 @@
 <!-- expose l’ID utilisateur -->
 <script>
     var isAuthenticated = @User.Identity.IsAuthenticated.ToString().ToLower();
-    var userId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+    var userId = "@(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)";
 </script>
+
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -162,6 +163,8 @@
         let image = $(this).data('image');
 
         let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+
+
         let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
 
         let item = cart.find(p => p.ProduitId === productId);

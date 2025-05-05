@@ -18,7 +18,8 @@
 
         function Pannier() {
             console.log("Pannier() appelée.");
-            let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+            let storageKey = 'panier_' + userId;
+
             let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
             let html = '';
 
@@ -73,7 +74,9 @@
 
             $(document).on('click', '.increase-btn', function () {
                 let productId = parseInt($(this).data('productid'));
-                let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+                let storageKey = 'panier_' + userId;
+
+
                 let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
                 let item = cart.find(p => p.ProduitId === productId);
                 if (item) { item.Quantite += 1; }
@@ -83,7 +86,9 @@
 
             $(document).on('click', '.decrease-btn', function () {
                 let productId = parseInt($(this).data('productid'));
-                let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+                let storageKey = 'panier_' + userId;
+
+
                 let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
                 let item = cart.find(p => p.ProduitId === productId);
                 if (item) {
@@ -97,7 +102,9 @@
             });
 
             $('#clear-cart-btn').click(function () {
-                let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+                let storageKey = 'panier_' + userId;
+
+
                 localStorage.removeItem(storageKey);
                 Pannier();
             });
