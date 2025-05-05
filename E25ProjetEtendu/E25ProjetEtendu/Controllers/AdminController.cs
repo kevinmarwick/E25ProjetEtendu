@@ -42,5 +42,18 @@ namespace E25ProjetEtendu.Controllers
             }
         }
 
+        //GET
+        public async Task<IActionResult> AddProduct()
+        {
+            return View();
+        }
+
+        ////POST
+        //[HttpPost]
+        //public async Task<Produit> AddProduct(Produit produit)
+        //{
+
+        //}
+
     }
 }

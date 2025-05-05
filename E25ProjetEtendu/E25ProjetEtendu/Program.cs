@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,14 @@ builder.Services.Configure<SmtpSettings>(
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
+// Set UI culture (dates, strings, etc.)
+var uiCulture = new CultureInfo("fr-CA");
+
+// Set invariant culture for binding (e.g., decimal parsing)
+var bindingCulture = new CultureInfo("en-US");
+
+CultureInfo.DefaultThreadCurrentCulture = bindingCulture;
+CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
 
 
 var app = builder.Build();

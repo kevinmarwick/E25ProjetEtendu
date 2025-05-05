@@ -7,7 +7,7 @@
 <h1>IndexProduits</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="AddProduct">Ajouter un produit</a>
 </p>
 <table id="productTable" class="table">
     <thead>
@@ -73,7 +73,76 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            $('#productTable').DataTable();
+            //  Initialize DataTable
+            $('#productTable').DataTable({
+                language: {
+                    search: "Rechercher:",
+                    lengthMenu: "Afficher _MENU_ entrées",
+                    info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                    paginate: {
+                        first: "Premier",
+                        last: "Dernier",
+                        next: "Suivant",
+                        previous: "Précédent"
+                    },
+                    zeroRecords: "Aucun produit trouvé",
+                    infoEmpty: "Aucune entrée disponible",
+                    infoFiltered: "(filtré de _MAX_ entrées au total)"
+                }
+            });
+
+            //  Store original values on page load
+            $('#productTable tbody tr').each(function () {
+                const row = $(this);
+                row.data('original-qty', row.find('.qty-input').val());
+                row.data('original-prix', row.find('.prix-input').val());
+            });
+
+            //  Show Save/Cancel when input changes
+            $('#productTable').on('input', '.qty-input, .prix-input', function () {
+                const row = $(this).closest('tr');
+                row.addClass('edited');
+                row.find('.save-btn, .cancel-btn').removeClass('d-none');
+            });
+
+            //  Cancel button — revert changes
+            $('#productTable').on('click', '.cancel-btn', function () {
+                const row = $(this).closest('tr');
+                row.find('.qty-input').val(row.data('original-qty'));
+                row.find('.prix-input').val(row.data('original-prix'));
+                row.removeClass('edited');
+                row.find('.save-btn, .cancel-btn').addClass('d-none');
+            });
+
+            $('#productTable').on('click', '.save-btn', function () {
+                const row = $(this).closest('tr');
+                const id = row.data('id');
+                const qty = row.find('.qty-input').val();
+                const prix = parseFloat(row.find('.prix-input').val().replace(',', '.')); // handle comma
+
+                $.ajax({
+                    url: '@Url.Action("UpdateInventoryAndPrice", "Admin")',
+                    method: 'POST',
+                    data: {
+                        produitId: id,
+                        qty: qty,
+                        prix: prix
+                    },
+                    success: function () {
+                        console.log(" 1Produit mis à jour !");
+                        row.data('original-qty', qty);
+                        row.data('original-prix', prix.toFixed(2).replace('.', ','));
+                        row.find('.prix-input').val(prix.toFixed(2).replace('.', ','));
+                        row.removeClass('edited');
+                        row.find('.save-btn, .cancel-btn').addClass('d-none');
+                    },
+                    error: function () {
+                        alert(" Erreur lors de la mise à jour.");
+                    }
+                });
+            });
+
         });
     </script>
 }
+

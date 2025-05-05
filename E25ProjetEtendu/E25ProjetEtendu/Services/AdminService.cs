@@ -1,7 +1,9 @@
 ﻿using E25ProjetEtendu.Data;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services.IServices;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace E25ProjetEtendu.Services
 {
@@ -14,6 +16,11 @@ namespace E25ProjetEtendu.Services
         {
             _context = context;
             _produitService = produitService;
+        }
+
+        public Task<Produit> AddProduct(Produit produit)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<Produit>> GetAllProduits()
@@ -33,5 +40,7 @@ namespace E25ProjetEtendu.Services
 
             await _context.SaveChangesAsync();
         }
+
+        
     }
 }

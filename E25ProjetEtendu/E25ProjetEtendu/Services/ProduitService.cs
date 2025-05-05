@@ -21,8 +21,7 @@ namespace E25ProjetEtendu.Services
         /// <returns></returns>
         public async Task<Produit?> GetProduitById(int produitId)
         {
-            return await _context.produits.Include(p => p.Qty).Include(p => p.Prix)
-                                 .FirstOrDefaultAsync(p => p.ProduitId == produitId); 
+            return await _context.produits.FirstOrDefaultAsync(p => p.ProduitId == produitId); 
         }
 
         /// <summary>
