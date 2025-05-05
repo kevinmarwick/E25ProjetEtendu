@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace E25ProjetEtendu.Migrations
 {
     /// <inheritdoc />
-    public partial class ADD_APPLICATIONUSERS_20 : Migration
+    public partial class MIGRATION_RESET : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,8 +32,9 @@ namespace E25ProjetEtendu.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -53,6 +56,25 @@ namespace E25ProjetEtendu.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "produits",
+                columns: table => new
+                {
+                    ProduitId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nom = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Qty = table.Column<int>(type: "int", nullable: false),
+                    Prix = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    EstActif = table.Column<bool>(type: "bit", nullable: false),
+                    Note = table.Column<int>(type: "int", nullable: false),
+                    ValeurNutritive = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_produits", x => x.ProduitId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -69,25 +91,6 @@ namespace E25ProjetEtendu.Migrations
                         name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AdminProfile",
-                columns: table => new
-                {
-                    AdminProfileId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AdminProfile", x => x.AdminProfileId);
-                    table.ForeignKey(
-                        name: "FK_AdminProfile_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -117,8 +120,8 @@ namespace E25ProjetEtendu.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -162,8 +165,8 @@ namespace E25ProjetEtendu.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -177,50 +180,27 @@ namespace E25ProjetEtendu.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "BuyerProfile",
-                columns: table => new
-                {
-                    BuyerProfileId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BuyerProfile", x => x.BuyerProfileId);
-                    table.ForeignKey(
-                        name: "FK_BuyerProfile_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { "admin-role-id", null, "Admin", "ADMIN" });
 
-            migrationBuilder.CreateTable(
-                name: "DelivererProfile",
-                columns: table => new
+            migrationBuilder.InsertData(
+                table: "produits",
+                columns: new[] { "ProduitId", "EstActif", "Image", "Nom", "Note", "Prix", "Qty", "ValeurNutritive" },
+                values: new object[,]
                 {
-                    DelivererProfileId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DelivererProfile", x => x.DelivererProfileId);
-                    table.ForeignKey(
-                        name: "FK_DelivererProfile_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    { 1, true, "redbull.png", "Red Bull", 4, 3m, 120, "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g" },
+                    { 2, true, "pogo.jpg", "Pogo", 3, 2m, 200, "Calories: 190, Lipides: 9g, Glucides: 20g, Protéines: 6g, Sodium: 500mg" },
+                    { 3, true, "eau.jpg", "Bouteille d'eau", 5, 1m, 300, "Calories: 0, Lipides: 0g, Sucres: 0g, Sodium: 0mg" },
+                    { 4, true, "chips.jpg", "Chips Lay’s", 4, 2m, 100, "Calories: 160, Lipides: 10g, Glucides: 15g, Sucres: 1g, Sodium: 170mg" },
+                    { 5, true, "nutella.jpg", "Nutella", 5, 5m, 80, "Calories: 200, Lipides: 11g, Glucides: 22g, Sucres: 21g, Protéines: 2g" },
+                    { 6, true, "activia.jpg", "Yogourt Activia", 4, 3m, 150, "Calories: 100, Lipides: 2g, Glucides: 15g, Sucres: 12g, Protéines: 5g" },
+                    { 7, true, "pizza.jpg", "Pizza congelée", 4, 6m, 60, "Calories: 350, Lipides: 15g, Glucides: 40g, Sucres: 5g, Protéines: 12g" },
+                    { 8, true, "granola.jpg", "Barre de granola", 4, 2m, 180, "Calories: 190, Lipides: 7g, Glucides: 29g, Sucres: 11g, Protéines: 4g" },
+                    { 9, true, "coca.jpg", "Coca-Cola", 3, 2m, 220, "Calories: 140, Sucres: 39g, Glucides: 39g, Sodium: 45mg" },
+                    { 10, true, "sandwich.jpg", "Sandwich jambon-fromage", 4, 4m, 75, "Calories: 320, Lipides: 12g, Glucides: 30g, Protéines: 18g, Sodium: 780mg" }
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AdminProfile_ApplicationUserId",
-                table: "AdminProfile",
-                column: "ApplicationUserId",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -260,26 +240,11 @@ namespace E25ProjetEtendu.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BuyerProfile_ApplicationUserId",
-                table: "BuyerProfile",
-                column: "ApplicationUserId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DelivererProfile_ApplicationUserId",
-                table: "DelivererProfile",
-                column: "ApplicationUserId",
-                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "AdminProfile");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -296,10 +261,7 @@ namespace E25ProjetEtendu.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "BuyerProfile");
-
-            migrationBuilder.DropTable(
-                name: "DelivererProfile");
+                name: "produits");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

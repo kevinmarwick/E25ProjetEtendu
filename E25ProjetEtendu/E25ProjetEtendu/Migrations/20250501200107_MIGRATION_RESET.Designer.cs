@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E25ProjetEtendu.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250430190008_ADD_APPLICATIONUSERS_2.0")]
-    partial class ADD_APPLICATIONUSERS_20
+    [Migration("20250501200107_MIGRATION_RESET")]
+    partial class MIGRATION_RESET
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,26 +25,6 @@ namespace E25ProjetEtendu.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("E25ProjetEtendu.Models.AdminProfile", b =>
-                {
-                    b.Property<int>("AdminProfileId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminProfileId"));
-
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("AdminProfileId");
-
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique();
-
-                    b.ToTable("AdminProfile");
-                });
-
             modelBuilder.Entity("E25ProjetEtendu.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -52,6 +32,9 @@ namespace E25ProjetEtendu.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -66,11 +49,13 @@ namespace E25ProjetEtendu.Migrations
 
                     b.Property<string>("FirstName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("LastName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -118,47 +103,156 @@ namespace E25ProjetEtendu.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("E25ProjetEtendu.Models.BuyerProfile", b =>
+            modelBuilder.Entity("E25ProjetEtendu.Models.Produit", b =>
                 {
-                    b.Property<int>("BuyerProfileId")
+                    b.Property<int>("ProduitId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BuyerProfileId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProduitId"));
 
-                    b.Property<string>("ApplicationUserId")
+                    b.Property<bool>("EstActif")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Image")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
-                    b.Property<decimal>("Balance")
+                    b.Property<string>("Nom")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Note")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Prix")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("BuyerProfileId");
-
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique();
-
-                    b.ToTable("BuyerProfile");
-                });
-
-            modelBuilder.Entity("E25ProjetEtendu.Models.DelivererProfile", b =>
-                {
-                    b.Property<int>("DelivererProfileId")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("Qty")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DelivererProfileId"));
-
-                    b.Property<string>("ApplicationUserId")
+                    b.Property<string>("ValeurNutritive")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
-                    b.HasKey("DelivererProfileId");
+                    b.HasKey("ProduitId");
 
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique();
+                    b.ToTable("produits");
 
-                    b.ToTable("DelivererProfile");
+                    b.HasData(
+                        new
+                        {
+                            ProduitId = 1,
+                            EstActif = true,
+                            Image = "redbull.png",
+                            Nom = "Red Bull",
+                            Note = 4,
+                            Prix = 3m,
+                            Qty = 120,
+                            ValeurNutritive = "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g"
+                        },
+                        new
+                        {
+                            ProduitId = 2,
+                            EstActif = true,
+                            Image = "pogo.jpg",
+                            Nom = "Pogo",
+                            Note = 3,
+                            Prix = 2m,
+                            Qty = 200,
+                            ValeurNutritive = "Calories: 190, Lipides: 9g, Glucides: 20g, Protéines: 6g, Sodium: 500mg"
+                        },
+                        new
+                        {
+                            ProduitId = 3,
+                            EstActif = true,
+                            Image = "eau.jpg",
+                            Nom = "Bouteille d'eau",
+                            Note = 5,
+                            Prix = 1m,
+                            Qty = 300,
+                            ValeurNutritive = "Calories: 0, Lipides: 0g, Sucres: 0g, Sodium: 0mg"
+                        },
+                        new
+                        {
+                            ProduitId = 4,
+                            EstActif = true,
+                            Image = "chips.jpg",
+                            Nom = "Chips Lay’s",
+                            Note = 4,
+                            Prix = 2m,
+                            Qty = 100,
+                            ValeurNutritive = "Calories: 160, Lipides: 10g, Glucides: 15g, Sucres: 1g, Sodium: 170mg"
+                        },
+                        new
+                        {
+                            ProduitId = 5,
+                            EstActif = true,
+                            Image = "nutella.jpg",
+                            Nom = "Nutella",
+                            Note = 5,
+                            Prix = 5m,
+                            Qty = 80,
+                            ValeurNutritive = "Calories: 200, Lipides: 11g, Glucides: 22g, Sucres: 21g, Protéines: 2g"
+                        },
+                        new
+                        {
+                            ProduitId = 6,
+                            EstActif = true,
+                            Image = "activia.jpg",
+                            Nom = "Yogourt Activia",
+                            Note = 4,
+                            Prix = 3m,
+                            Qty = 150,
+                            ValeurNutritive = "Calories: 100, Lipides: 2g, Glucides: 15g, Sucres: 12g, Protéines: 5g"
+                        },
+                        new
+                        {
+                            ProduitId = 7,
+                            EstActif = true,
+                            Image = "pizza.jpg",
+                            Nom = "Pizza congelée",
+                            Note = 4,
+                            Prix = 6m,
+                            Qty = 60,
+                            ValeurNutritive = "Calories: 350, Lipides: 15g, Glucides: 40g, Sucres: 5g, Protéines: 12g"
+                        },
+                        new
+                        {
+                            ProduitId = 8,
+                            EstActif = true,
+                            Image = "granola.jpg",
+                            Nom = "Barre de granola",
+                            Note = 4,
+                            Prix = 2m,
+                            Qty = 180,
+                            ValeurNutritive = "Calories: 190, Lipides: 7g, Glucides: 29g, Sucres: 11g, Protéines: 4g"
+                        },
+                        new
+                        {
+                            ProduitId = 9,
+                            EstActif = true,
+                            Image = "coca.jpg",
+                            Nom = "Coca-Cola",
+                            Note = 3,
+                            Prix = 2m,
+                            Qty = 220,
+                            ValeurNutritive = "Calories: 140, Sucres: 39g, Glucides: 39g, Sodium: 45mg"
+                        },
+                        new
+                        {
+                            ProduitId = 10,
+                            EstActif = true,
+                            Image = "sandwich.jpg",
+                            Nom = "Sandwich jambon-fromage",
+                            Note = 4,
+                            Prix = 4m,
+                            Qty = 75,
+                            ValeurNutritive = "Calories: 320, Lipides: 12g, Glucides: 30g, Protéines: 18g, Sodium: 780mg"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -186,6 +280,14 @@ namespace E25ProjetEtendu.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "admin-role-id",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -241,10 +343,12 @@ namespace E25ProjetEtendu.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -281,10 +385,12 @@ namespace E25ProjetEtendu.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -292,39 +398,6 @@ namespace E25ProjetEtendu.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("E25ProjetEtendu.Models.AdminProfile", b =>
-                {
-                    b.HasOne("E25ProjetEtendu.Models.ApplicationUser", "ApplicationUser")
-                        .WithOne("AdminProfile")
-                        .HasForeignKey("E25ProjetEtendu.Models.AdminProfile", "ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-                });
-
-            modelBuilder.Entity("E25ProjetEtendu.Models.BuyerProfile", b =>
-                {
-                    b.HasOne("E25ProjetEtendu.Models.ApplicationUser", "ApplicationUser")
-                        .WithOne("BuyerProfile")
-                        .HasForeignKey("E25ProjetEtendu.Models.BuyerProfile", "ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-                });
-
-            modelBuilder.Entity("E25ProjetEtendu.Models.DelivererProfile", b =>
-                {
-                    b.HasOne("E25ProjetEtendu.Models.ApplicationUser", "ApplicationUser")
-                        .WithOne("DelivererProfile")
-                        .HasForeignKey("E25ProjetEtendu.Models.DelivererProfile", "ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -376,15 +449,6 @@ namespace E25ProjetEtendu.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("E25ProjetEtendu.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("AdminProfile");
-
-                    b.Navigation("BuyerProfile");
-
-                    b.Navigation("DelivererProfile");
                 });
 #pragma warning restore 612, 618
         }
