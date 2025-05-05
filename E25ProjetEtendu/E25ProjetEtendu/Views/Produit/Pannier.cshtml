@@ -14,9 +14,12 @@
 
 @section Scripts {
     <script>
+        var userId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+
         function Pannier() {
             console.log("Pannier() appelée.");
-            let cart = JSON.parse(localStorage.getItem('panier')) || [];
+            let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+            let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
             let html = '';
 
             if (cart.length === 0) {
@@ -55,7 +58,7 @@
                                             <button class="btn btn-sm btn-success increase-btn" data-productid="${item.ProduitId}">+</button>
                                             <button class="btn btn-sm btn-warning decrease-btn" data-productid="${item.ProduitId}">-</button>
                                         </td>
-                                     </tr>`;
+                                    </tr>`;
                 });
 
                 html += `</tbody></table></div>`;
@@ -70,16 +73,18 @@
 
             $(document).on('click', '.increase-btn', function () {
                 let productId = parseInt($(this).data('productid'));
-                let cart = JSON.parse(localStorage.getItem('panier')) || [];
+                let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+                let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
                 let item = cart.find(p => p.ProduitId === productId);
                 if (item) { item.Quantite += 1; }
-                localStorage.setItem('panier', JSON.stringify(cart));
+                localStorage.setItem(storageKey, JSON.stringify(cart));
                 Pannier();
             });
 
             $(document).on('click', '.decrease-btn', function () {
                 let productId = parseInt($(this).data('productid'));
-                let cart = JSON.parse(localStorage.getItem('panier')) || [];
+                let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+                let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
                 let item = cart.find(p => p.ProduitId === productId);
                 if (item) {
                     item.Quantite -= 1;
@@ -87,12 +92,13 @@
                         cart = cart.filter(p => p.ProduitId !== productId);
                     }
                 }
-                localStorage.setItem('panier', JSON.stringify(cart));
+                localStorage.setItem(storageKey, JSON.stringify(cart));
                 Pannier();
             });
 
             $('#clear-cart-btn').click(function () {
-                localStorage.removeItem('panier');
+                let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+                localStorage.removeItem(storageKey);
                 Pannier();
             });
         });

@@ -138,18 +138,30 @@
 
 <!-- 📝 Script pour gérer le bouton Ajouter au panier -->
 <!-- ✅ Charge jQuery AVANT ton script -->
+<!-- expose l’ID utilisateur -->
+<script>
+    var isAuthenticated = @User.Identity.IsAuthenticated.ToString().ToLower();
+    var userId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+</script>
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
     $(document).on('click', '.add-to-cart', function () {
-        alert("Test clic fonctionne !"); // test pour vérifier
+        if (!isAuthenticated) {
+            // Redirige vers la page de connexion
+            window.location.href = '/Identity/Account/Login';
+            return;
+        }
 
         let productId = parseInt($(this).data('productid'));
         let productName = $(this).data('productname');
         let price = parseFloat($(this).data('price'));
         let image = $(this).data('image');
 
-        let cart = JSON.parse(localStorage.getItem('panier')) || [];
+        let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+        let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
 
         let item = cart.find(p => p.ProduitId === productId);
         if (item) {
@@ -164,7 +176,8 @@
             });
         }
 
-        localStorage.setItem('panier', JSON.stringify(cart));
+        localStorage.setItem(storageKey, JSON.stringify(cart));
         alert(productName + " a été ajouté au panier !");
-    });
+    });   
 </script>
+
