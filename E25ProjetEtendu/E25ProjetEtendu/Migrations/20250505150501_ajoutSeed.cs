@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace E25ProjetEtendu.Migrations
 {
     /// <inheritdoc />
-    public partial class ADD_APPLICATIONUSERS_20 : Migration
+    public partial class ajoutSeed : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,8 +32,8 @@ namespace E25ProjetEtendu.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -50,6 +52,25 @@ namespace E25ProjetEtendu.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "produits",
+                columns: table => new
+                {
+                    ProduitId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nom = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Qty = table.Column<int>(type: "int", nullable: false),
+                    Prix = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    EstActif = table.Column<bool>(type: "bit", nullable: false),
+                    Note = table.Column<int>(type: "int", nullable: false),
+                    ValeurNutritive = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_produits", x => x.ProduitId);
                 });
 
             migrationBuilder.CreateTable(
@@ -117,8 +138,8 @@ namespace E25ProjetEtendu.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -162,8 +183,8 @@ namespace E25ProjetEtendu.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -214,6 +235,43 @@ namespace E25ProjetEtendu.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "produits",
+                columns: new[] { "ProduitId", "EstActif", "Image", "Nom", "Note", "Prix", "Qty", "ValeurNutritive" },
+                values: new object[,]
+                {
+                    { 1, true, "redbull.png", "Red Bull", 4, 3m, 120, "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g" },
+                    { 2, true, "pogo.jpg", "Pogo", 3, 2m, 200, "Calories: 190, Lipides: 9g, Glucides: 20g, Protéines: 6g, Sodium: 500mg" },
+                    { 3, true, "eau.jpg", "Bouteille d'eau", 5, 1m, 300, "Calories: 0, Lipides: 0g, Sucres: 0g, Sodium: 0mg" },
+                    { 4, true, "chips.jpg", "Chips Lay’s", 4, 2m, 100, "Calories: 160, Lipides: 10g, Glucides: 15g, Sucres: 1g, Sodium: 170mg" },
+                    { 5, true, "nutella.jpg", "Nutella", 5, 5m, 80, "Calories: 200, Lipides: 11g, Glucides: 22g, Sucres: 21g, Protéines: 2g" },
+                    { 6, true, "activia.jpg", "Yogourt Activia", 4, 3m, 150, "Calories: 100, Lipides: 2g, Glucides: 15g, Sucres: 12g, Protéines: 5g" },
+                    { 7, true, "pizza.jpg", "Pizza congelée", 4, 6m, 60, "Calories: 350, Lipides: 15g, Glucides: 40g, Sucres: 5g, Protéines: 12g" },
+                    { 8, true, "granola.jpg", "Barre de granola", 4, 2m, 180, "Calories: 190, Lipides: 7g, Glucides: 29g, Sucres: 11g, Protéines: 4g" },
+                    { 9, true, "coca.jpg", "Coca-Cola", 3, 2m, 220, "Calories: 140, Sucres: 39g, Glucides: 39g, Sodium: 45mg" },
+                    { 10, true, "sandwich.jpg", "Sandwich jambon-fromage", 4, 4m, 75, "Calories: 320, Lipides: 12g, Glucides: 30g, Protéines: 18g, Sodium: 780mg" },
+                    { 11, true, "starbucks.jpg", "Café Starbucks", 4, 4m, 90, "Calories: 150, Sucres: 20g, Caféine: 95mg" },
+                    { 12, true, "axe.jpg", "Déodorant Axe", 5, 6m, 50, "Sans calories" },
+                    { 13, true, "headshoulders.jpg", "Shampooing Head & Shoulders", 4, 7m, 60, "Sans calories" },
+                    { 14, true, "benjerry.jpg", "Crème glacée Ben & Jerry's", 5, 8m, 40, "Calories: 270, Lipides: 14g, Sucres: 26g" },
+                    { 15, true, "pain.jpg", "Pain tranché", 3, 3m, 120, "Calories: 80, Glucides: 15g, Protéines: 3g" },
+                    { 16, true, "cheddar.jpg", "Fromage cheddar", 4, 5m, 100, "Calories: 110, Lipides: 9g, Protéines: 7g" },
+                    { 17, true, "yaourt.jpg", "Yaourt grec", 4, 4m, 130, "Calories: 120, Protéines: 10g, Sucres: 8g" },
+                    { 18, true, "ritz.jpg", "Crackers Ritz", 3, 3m, 80, "Calories: 160, Lipides: 8g, Glucides: 20g" },
+                    { 19, true, "soupe.jpg", "Soupe Campbell", 4, 2m, 70, "Calories: 90, Sodium: 480mg" },
+                    { 20, true, "tropicana.jpg", "Jus d'orange Tropicana", 4, 3m, 150, "Calories: 110, Sucres: 23g" },
+                    { 21, true, "colgate.jpg", "Brosse à dents Colgate", 4, 2m, 200, "Sans calories" },
+                    { 22, true, "sensodyne.jpg", "Dentifrice Sensodyne", 5, 5m, 150, "Sans calories" },
+                    { 23, true, "dove.jpg", "Savon Dove", 4, 2m, 180, "Sans calories" },
+                    { 24, true, "gatorade.jpg", "Boisson Gatorade", 4, 3m, 110, "Calories: 80, Sucres: 21g" },
+                    { 25, true, "kinder.jpg", "Chocolat Kinder", 5, 2m, 100, "Calories: 120, Sucres: 12g" },
+                    { 26, true, "cheerios.jpg", "Céréales Cheerios", 4, 4m, 90, "Calories: 110, Glucides: 20g, Protéines: 3g" },
+                    { 27, true, "oreo.jpg", "Biscuit Oreo", 4, 3m, 130, "Calories: 160, Sucres: 14g" },
+                    { 28, true, "beurre.jpg", "Beurre d'arachide", 4, 5m, 70, "Calories: 190, Lipides: 16g, Protéines: 7g" },
+                    { 29, true, "perrier.jpg", "Eau gazeuse Perrier", 4, 2m, 200, "Calories: 0" },
+                    { 30, true, "muffin.jpg", "Muffin aux bleuets", 5, 3m, 60, "Calories: 380, Lipides: 16g, Sucres: 28g" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -300,6 +358,9 @@ namespace E25ProjetEtendu.Migrations
 
             migrationBuilder.DropTable(
                 name: "DelivererProfile");
+
+            migrationBuilder.DropTable(
+                name: "produits");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

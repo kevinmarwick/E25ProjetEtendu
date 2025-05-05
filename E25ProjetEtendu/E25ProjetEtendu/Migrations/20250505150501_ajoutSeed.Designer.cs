@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E25ProjetEtendu.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250501195755_Produits")]
-    partial class Produits
+    [Migration("20250505150501_ajoutSeed")]
+    partial class ajoutSeed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -312,6 +312,226 @@ namespace E25ProjetEtendu.Migrations
                             Prix = 4m,
                             Qty = 75,
                             ValeurNutritive = "Calories: 320, Lipides: 12g, Glucides: 30g, Protéines: 18g, Sodium: 780mg"
+                        },
+                        new
+                        {
+                            ProduitId = 11,
+                            EstActif = true,
+                            Image = "starbucks.jpg",
+                            Nom = "Café Starbucks",
+                            Note = 4,
+                            Prix = 4m,
+                            Qty = 90,
+                            ValeurNutritive = "Calories: 150, Sucres: 20g, Caféine: 95mg"
+                        },
+                        new
+                        {
+                            ProduitId = 12,
+                            EstActif = true,
+                            Image = "axe.jpg",
+                            Nom = "Déodorant Axe",
+                            Note = 5,
+                            Prix = 6m,
+                            Qty = 50,
+                            ValeurNutritive = "Sans calories"
+                        },
+                        new
+                        {
+                            ProduitId = 13,
+                            EstActif = true,
+                            Image = "headshoulders.jpg",
+                            Nom = "Shampooing Head & Shoulders",
+                            Note = 4,
+                            Prix = 7m,
+                            Qty = 60,
+                            ValeurNutritive = "Sans calories"
+                        },
+                        new
+                        {
+                            ProduitId = 14,
+                            EstActif = true,
+                            Image = "benjerry.jpg",
+                            Nom = "Crème glacée Ben & Jerry's",
+                            Note = 5,
+                            Prix = 8m,
+                            Qty = 40,
+                            ValeurNutritive = "Calories: 270, Lipides: 14g, Sucres: 26g"
+                        },
+                        new
+                        {
+                            ProduitId = 15,
+                            EstActif = true,
+                            Image = "pain.jpg",
+                            Nom = "Pain tranché",
+                            Note = 3,
+                            Prix = 3m,
+                            Qty = 120,
+                            ValeurNutritive = "Calories: 80, Glucides: 15g, Protéines: 3g"
+                        },
+                        new
+                        {
+                            ProduitId = 16,
+                            EstActif = true,
+                            Image = "cheddar.jpg",
+                            Nom = "Fromage cheddar",
+                            Note = 4,
+                            Prix = 5m,
+                            Qty = 100,
+                            ValeurNutritive = "Calories: 110, Lipides: 9g, Protéines: 7g"
+                        },
+                        new
+                        {
+                            ProduitId = 17,
+                            EstActif = true,
+                            Image = "yaourt.jpg",
+                            Nom = "Yaourt grec",
+                            Note = 4,
+                            Prix = 4m,
+                            Qty = 130,
+                            ValeurNutritive = "Calories: 120, Protéines: 10g, Sucres: 8g"
+                        },
+                        new
+                        {
+                            ProduitId = 18,
+                            EstActif = true,
+                            Image = "ritz.jpg",
+                            Nom = "Crackers Ritz",
+                            Note = 3,
+                            Prix = 3m,
+                            Qty = 80,
+                            ValeurNutritive = "Calories: 160, Lipides: 8g, Glucides: 20g"
+                        },
+                        new
+                        {
+                            ProduitId = 19,
+                            EstActif = true,
+                            Image = "soupe.jpg",
+                            Nom = "Soupe Campbell",
+                            Note = 4,
+                            Prix = 2m,
+                            Qty = 70,
+                            ValeurNutritive = "Calories: 90, Sodium: 480mg"
+                        },
+                        new
+                        {
+                            ProduitId = 20,
+                            EstActif = true,
+                            Image = "tropicana.jpg",
+                            Nom = "Jus d'orange Tropicana",
+                            Note = 4,
+                            Prix = 3m,
+                            Qty = 150,
+                            ValeurNutritive = "Calories: 110, Sucres: 23g"
+                        },
+                        new
+                        {
+                            ProduitId = 21,
+                            EstActif = true,
+                            Image = "colgate.jpg",
+                            Nom = "Brosse à dents Colgate",
+                            Note = 4,
+                            Prix = 2m,
+                            Qty = 200,
+                            ValeurNutritive = "Sans calories"
+                        },
+                        new
+                        {
+                            ProduitId = 22,
+                            EstActif = true,
+                            Image = "sensodyne.jpg",
+                            Nom = "Dentifrice Sensodyne",
+                            Note = 5,
+                            Prix = 5m,
+                            Qty = 150,
+                            ValeurNutritive = "Sans calories"
+                        },
+                        new
+                        {
+                            ProduitId = 23,
+                            EstActif = true,
+                            Image = "dove.jpg",
+                            Nom = "Savon Dove",
+                            Note = 4,
+                            Prix = 2m,
+                            Qty = 180,
+                            ValeurNutritive = "Sans calories"
+                        },
+                        new
+                        {
+                            ProduitId = 24,
+                            EstActif = true,
+                            Image = "gatorade.jpg",
+                            Nom = "Boisson Gatorade",
+                            Note = 4,
+                            Prix = 3m,
+                            Qty = 110,
+                            ValeurNutritive = "Calories: 80, Sucres: 21g"
+                        },
+                        new
+                        {
+                            ProduitId = 25,
+                            EstActif = true,
+                            Image = "kinder.jpg",
+                            Nom = "Chocolat Kinder",
+                            Note = 5,
+                            Prix = 2m,
+                            Qty = 100,
+                            ValeurNutritive = "Calories: 120, Sucres: 12g"
+                        },
+                        new
+                        {
+                            ProduitId = 26,
+                            EstActif = true,
+                            Image = "cheerios.jpg",
+                            Nom = "Céréales Cheerios",
+                            Note = 4,
+                            Prix = 4m,
+                            Qty = 90,
+                            ValeurNutritive = "Calories: 110, Glucides: 20g, Protéines: 3g"
+                        },
+                        new
+                        {
+                            ProduitId = 27,
+                            EstActif = true,
+                            Image = "oreo.jpg",
+                            Nom = "Biscuit Oreo",
+                            Note = 4,
+                            Prix = 3m,
+                            Qty = 130,
+                            ValeurNutritive = "Calories: 160, Sucres: 14g"
+                        },
+                        new
+                        {
+                            ProduitId = 28,
+                            EstActif = true,
+                            Image = "beurre.jpg",
+                            Nom = "Beurre d'arachide",
+                            Note = 4,
+                            Prix = 5m,
+                            Qty = 70,
+                            ValeurNutritive = "Calories: 190, Lipides: 16g, Protéines: 7g"
+                        },
+                        new
+                        {
+                            ProduitId = 29,
+                            EstActif = true,
+                            Image = "perrier.jpg",
+                            Nom = "Eau gazeuse Perrier",
+                            Note = 4,
+                            Prix = 2m,
+                            Qty = 200,
+                            ValeurNutritive = "Calories: 0"
+                        },
+                        new
+                        {
+                            ProduitId = 30,
+                            EstActif = true,
+                            Image = "muffin.jpg",
+                            Nom = "Muffin aux bleuets",
+                            Note = 5,
+                            Prix = 3m,
+                            Qty = 60,
+                            ValeurNutritive = "Calories: 380, Lipides: 16g, Sucres: 28g"
                         });
                 });
 
