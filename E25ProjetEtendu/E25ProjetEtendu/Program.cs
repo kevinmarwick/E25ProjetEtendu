@@ -17,14 +17,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IProduitService, ProduitService>();
 
 
-builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
-
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 builder.Services.AddRazorPages()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
 
+//Identity Authentication and Roles
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+//SMTP Server config (Connexion in appsettings.json)
 builder.Services.Configure<SmtpSettings>(
     builder.Configuration.GetSection("SmtpSettings"));
 
@@ -55,6 +59,7 @@ app.UseRequestLocalization(localizationOptions);
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

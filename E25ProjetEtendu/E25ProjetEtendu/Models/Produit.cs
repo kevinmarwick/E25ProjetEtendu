@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace E25ProjetEtendu.Models
 {
@@ -18,6 +19,7 @@ namespace E25ProjetEtendu.Models
 
         [Required(ErrorMessage = "Le prix est obligatoire")]
         [Range(0.01, 10000.00, ErrorMessage = "Le prix doit être supérieur à 0")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Prix { get; set; }
 
         [StringLength(255, ErrorMessage = "Le nom du fichier image ne peut pas dépasser 255 caractères")]
