@@ -4,6 +4,7 @@ namespace E25ProjetEtendu.Services.IServices
 {
     public interface IAdminService
     {
-        Task<IEnumerable<Produit>> GetAllProduitsAsync();
+        Task<IEnumerable<Produit>> GetAllProduits();
+        Task UpdateInventoryAndPrice(int produitId, int qty, decimal prix);
     }
 }

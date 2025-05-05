@@ -9,7 +9,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+<table id="productTable" class="table">
     <thead>
         <tr>
             <th>
@@ -22,53 +22,58 @@
                 @Html.DisplayNameFor(model => model.Prix)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Image)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EstActif)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Note)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ValeurNutritive)
-            </th>
+            <th></th>
             <th></th>
         </tr>
     </thead>
-    @if(Model != null){
     <tbody>
-        @foreach (var item in Model)
+        @if (Model != null)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nom)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Qty)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Prix)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Image)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EstActif)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Note)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ValeurNutritive)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ProduitId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ProduitId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ProduitId">Delete</a>
-                </td>
-            </tr>
+            @foreach (var item in Model)
+            {
+                <tr data-id="@item.ProduitId">
+                    <td>@item.Nom</td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm qty-input" value="@item.Qty" />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm prix-input" value="@item.Prix.ToString("0.00")" />
+                    </td>
+
+                    <td>
+                        <button class="btn btn-sm btn-success save-btn d-none">Save</button>
+                        <button class="btn btn-sm btn-secondary cancel-btn d-none">Cancel</button>
+                    </td>
+                    <!--Note-->
+                    <td>
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= item.Note)
+                            {
+                                <span class="text-warning">&#9733;</span> <!-- solid star -->
+                            }
+                            else
+                            {
+                                <span class="text-muted">&#9734;</span> <!-- empty star -->
+                            }
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ProduitId">Modifier produit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ProduitId">Rendre indisponible</a>
+                    </td>
+                </tr>
+            }
         }
     </tbody>
-    }
 </table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#productTable').DataTable();
+        });
+    </script>
+}

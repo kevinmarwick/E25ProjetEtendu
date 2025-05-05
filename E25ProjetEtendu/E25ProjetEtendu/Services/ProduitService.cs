@@ -13,7 +13,23 @@ namespace E25ProjetEtendu.Services
         {
             _context = context;
         }
-        public async Task<IEnumerable<Produit>> GetAllActifProduct()
+
+        /// <summary>
+        /// Returns a product using it's Id as parameter
+        /// </summary>
+        /// <param name="produitId"></param>
+        /// <returns></returns>
+        public async Task<Produit?> GetProduitById(int produitId)
+        {
+            return await _context.produits.Include(p => p.Qty).Include(p => p.Prix)
+                                 .FirstOrDefaultAsync(p => p.ProduitId == produitId); 
+        }
+
+        /// <summary>
+        /// Returns a list of all active products
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<Produit>> GetAllActiveProduct()
         {
             return await _context.produits.Where(p => p.EstActif)
                                           .OrderBy(p => p.Nom)
@@ -21,7 +37,7 @@ namespace E25ProjetEtendu.Services
         }    
             
         /// <summary>
-        /// cette méthode sers a gérer la recherche de produit et faire la pagination
+        /// Returns a list of products using filters in parameters
         /// </summary>
         /// <param name="recherche">le mots clé mis dans la barre de recherche</param>
         /// <param name="tri">les differents options de tri pour la recherche</param>

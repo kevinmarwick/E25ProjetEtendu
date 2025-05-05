@@ -15,6 +15,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("NomConnection")));
 builder.Services.AddScoped<IProduitService, ProduitService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+
 
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
