@@ -1,40 +1,29 @@
-﻿using E25ProjetEtendu.Controllers;
+﻿using Xunit;
+using Moq;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using E25ProjetEtendu.Controllers;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services.IServices;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace E25ProjetEtenduTest.ControllerTest
+public class ProduitControllerTests
 {
-    public class ProduitsControllerTests
+    [Fact]
+    public async Task Index_Returns_View_With_Products()
     {
-        [Fact]
-        public async Task Index_ReturnsCorrectView_WithSearchAndSort()
-        {
-            // Arrange
-            var mockService = new Mock<IProduitService>();
-            mockService
-                .Setup(s => s.GetFilteredProductsAsync("test", "note_desc", 1, 5))
-                .ReturnsAsync((new List<Produit>
-                {
-                new Produit { ProduitId = 1, Nom = "Test", Note = 5, EstActif = true }
-                }, 1));
+        var mockService = new Mock<IProduitService>();
+        mockService.Setup(s => s.GetFilteredProducts(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()))
+                   .ReturnsAsync((new List<Produit> { new Produit { Nom = "Coca-Cola" } }, 1));
 
-            var controller = new ProduitController(mockService.Object);
+        var controller = new ProduitController(mockService.Object);
 
-            // Act
-            var result = await controller.Index("test", 1, "note_desc") as ViewResult;
+        var result = await controller.Index("Coca", null, 1);
 
-            // Assert
-            Assert.NotNull(result);
-            var model = result.Model as IEnumerable<Produit>;
-            Assert.Single(model);
-        }
+        var viewResult = Assert.IsType<ViewResult>(result);
+        var model = Assert.IsAssignableFrom<IEnumerable<Produit>>(viewResult.Model);
+
+        Assert.Single(model);
+        Assert.Equal("Coca-Cola", model.First().Nom);
     }
-
 }
