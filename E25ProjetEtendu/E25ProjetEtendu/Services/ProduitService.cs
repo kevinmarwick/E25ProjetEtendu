@@ -18,13 +18,13 @@ namespace E25ProjetEtendu.Services
             _context = context;
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<IEnumerable<Produit>> GetAllActifProduct()
+        public async Task<IEnumerable<Produit>> GetAllActiveProduct()
         {
             return await _context.produits.Where(p => p.EstActif)
                                           .OrderBy(p => p.Nom)
                                           .ToListAsync();
-        }    
-            
+        }
+
         /// <summary>
         /// cette méthode sers a gérer la recherche de produit et faire la pagination
         /// </summary>
@@ -33,14 +33,18 @@ namespace E25ProjetEtendu.Services
         /// <param name="page">la pagination</param>
         /// <param name="pageSize">le nombre de produit accepter dans une page</param>
         /// <returns></returns>
-        public async Task<(List<Produit> produits, int totalProduits)> GetFilteredProductsAsync(string recherche, string tri, int page, int pageSize)
+        public async Task<(List<Produit> produits, int totalProduits)> GetFilteredProducts(string recherche, string tri, int page, int pageSize)
         {
             IQueryable<Produit> query = _context.produits.Where(p => p.EstActif);
 
-            if (!string.IsNullOrWhiteSpace(recherche) && recherche.Length > 200)
+            if (!string.IsNullOrEmpty(recherche) && recherche.Length > 200)
             {
-                recherche = recherche.Substring(0, 200); // tronque à 200 caractères max
-                query = query.Where(p => p.Nom.ToLower().Contains(recherche.ToLower()));
+                recherche = recherche.Substring(0, 200);
+            }
+
+            if (!string.IsNullOrEmpty(recherche))
+            {
+                query = query.Where(p => p.Nom.Contains(recherche));
             }
 
             // tri
@@ -54,7 +58,6 @@ namespace E25ProjetEtendu.Services
                 _ => query.OrderBy(p => p.Nom)
             };
 
-
             int totalProduits = await query.CountAsync();
 
             var produits = await query
@@ -64,13 +67,14 @@ namespace E25ProjetEtendu.Services
 
             return (produits, totalProduits);
         }
+
         public List<PannierProduitVM> GetCartItems()
         {
             var cart = _httpContextAccessor.HttpContext.Request.Cookies.GetObject<List<PannierProduitVM>>("panier") ?? new List<PannierProduitVM>();
             return cart;
         }
 
-        public async Task AddToCartAsync(int productId, int quantity)
+        public async Task AddToCart(int productId, int quantity)
         {
             var produit = await _context.produits.FindAsync(productId);
 

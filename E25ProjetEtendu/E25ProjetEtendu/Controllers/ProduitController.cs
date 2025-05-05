@@ -24,19 +24,18 @@ namespace E25ProjetEtendu.Controllers
         /// <param name="tri">l'option de tri choisi par l'utilisateur</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult> Index(string recherche, int page = 1, string tri = "")
+        public async Task<IActionResult> Index(string recherche, string tri, int page = 1)
         {
-            const int pageSize = 5;
+            var (produits, totalProduits) = await _produitService.GetFilteredProducts(recherche, tri, page, 9);
 
-            (List<Produit> produits, int totalProduits) = await _produitService.GetFilteredProductsAsync(recherche, tri, page, pageSize);
-
-            ViewBag.Search = recherche;
             ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalProduits / pageSize);
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalProduits / 9);
+            ViewBag.Search = recherche;
             ViewBag.Sort = tri;
 
             return View(produits);
         }
+
 
 
         // GET: ProduitController/Details/5
@@ -117,7 +116,7 @@ namespace E25ProjetEtendu.Controllers
         {
             try
             {
-                await _produitService.AddToCartAsync(productId, quantity);
+                await _produitService.AddToCart(productId, quantity);
                 TempData["Success"] = "Produit ajouté au panier !";
             }
             catch (Exception ex)
