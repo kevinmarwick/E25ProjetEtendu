@@ -1,6 +1,7 @@
 ﻿using E25ProjetEtendu.Data;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services.IServices;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace E25ProjetEtendu.Services
@@ -29,9 +30,28 @@ namespace E25ProjetEtendu.Services
                 throw new Exception("Produit non trouvé");
 
             produit.Qty = qty;
-            produit.Prix = prix;
+            produit.Prix = prix;      
+            
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task EditProduit(Produit product)
+        {
+            var dbProduit = await _produitService.GetProduitById(product.ProduitId);
+            if (dbProduit == null)
+                throw new Exception("Produit non trouvé");
+
+            // Update only editable fields
+            dbProduit.Nom = product.Nom;
+            dbProduit.Image = product.Image;
+            dbProduit.ValeurNutritive = product.ValeurNutritive;
+            
 
             await _context.SaveChangesAsync();
         }
+
+
+
     }
+
 }

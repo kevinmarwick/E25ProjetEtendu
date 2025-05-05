@@ -1,4 +1,5 @@
 ﻿using E25ProjetEtendu.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace E25ProjetEtendu.Services.IServices
 {
@@ -6,5 +7,6 @@ namespace E25ProjetEtendu.Services.IServices
     {
         Task<IEnumerable<Produit>> GetAllProduits();
         Task UpdateInventoryAndPrice(int produitId, int qty, decimal prix);
+        Task EditProduit(Produit produit);
     }
 }
