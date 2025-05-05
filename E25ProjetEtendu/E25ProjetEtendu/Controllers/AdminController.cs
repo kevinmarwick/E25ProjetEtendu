@@ -10,5 +10,10 @@ namespace E25ProjetEtendu.Controllers
         {
             return View();
         }
+
+        public IActionResult IndexProduits()
+        {
+            return View();
+        }
     }
 }
