@@ -4,6 +4,7 @@ using E25ProjetEtendu.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E25ProjetEtendu.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250505150501_ajoutSeed")]
+    partial class ajoutSeed
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,8 +25,6 @@ namespace E25ProjetEtendu.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-<<<<<<< HEAD
-=======
             modelBuilder.Entity("E25ProjetEtendu.Models.AdminProfile", b =>
                 {
                     b.Property<int>("AdminProfileId")
@@ -44,7 +45,6 @@ namespace E25ProjetEtendu.Migrations
                     b.ToTable("AdminProfile");
                 });
 
->>>>>>> US_432
             modelBuilder.Entity("E25ProjetEtendu.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -52,9 +52,6 @@ namespace E25ProjetEtendu.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -121,59 +118,23 @@ namespace E25ProjetEtendu.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "21111111-1111-1111-1111-111111111111",
-                            AccessFailedCount = 0,
-                            Balance = 0m,
-                            ConcurrencyStamp = "678bab9d-45ac-4207-9f7d-eaa04f4c432b",
-                            Email = "admin@example.com",
-                            EmailConfirmed = true,
-                            FirstName = "Admin",
-                            LastName = "Admin",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@EXAMPLE.COM",
-                            NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECbReskhCdED4vO0EPDothqCei5wanygUXHGBAws8T14dDktKJZqdQx4o07ptUFobw==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "e338b144-e11b-412d-824d-075c8c0f51fa",
-                            TwoFactorEnabled = false,
-                            UserName = "admin@example.com"
-                        });
                 });
 
-            modelBuilder.Entity("E25ProjetEtendu.Models.Produit", b =>
+            modelBuilder.Entity("E25ProjetEtendu.Models.BuyerProfile", b =>
                 {
-                    b.Property<int>("ProduitId")
+                    b.Property<int>("BuyerProfileId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProduitId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BuyerProfileId"));
 
-                    b.Property<bool>("EstActif")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Image")
+                    b.Property<string>("ApplicationUserId")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Nom")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("Note")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Prix")
+                    b.Property<decimal>("Balance")
                         .HasColumnType("decimal(18,2)");
 
-<<<<<<< HEAD
-                    b.Property<int>("Qty")
-=======
                     b.HasKey("BuyerProfileId");
 
                     b.HasIndex("ApplicationUserId")
@@ -186,20 +147,19 @@ namespace E25ProjetEtendu.Migrations
                 {
                     b.Property<int>("DelivererProfileId")
                         .ValueGeneratedOnAdd()
->>>>>>> US_432
                         .HasColumnType("int");
 
-                    b.Property<string>("ValeurNutritive")
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DelivererProfileId"));
+
+                    b.Property<string>("ApplicationUserId")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("ProduitId");
+                    b.HasKey("DelivererProfileId");
 
-                    b.ToTable("produits");
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique();
 
-<<<<<<< HEAD
-=======
                     b.ToTable("DelivererProfile");
                 });
 
@@ -242,7 +202,6 @@ namespace E25ProjetEtendu.Migrations
 
                     b.ToTable("produits");
 
->>>>>>> US_432
                     b.HasData(
                         new
                         {
@@ -353,8 +312,6 @@ namespace E25ProjetEtendu.Migrations
                             Prix = 4m,
                             Qty = 75,
                             ValeurNutritive = "Calories: 320, Lipides: 12g, Glucides: 30g, Protéines: 18g, Sodium: 780mg"
-<<<<<<< HEAD
-=======
                         },
                         new
                         {
@@ -575,7 +532,6 @@ namespace E25ProjetEtendu.Migrations
                             Prix = 3m,
                             Qty = 60,
                             ValeurNutritive = "Calories: 380, Lipides: 16g, Sucres: 28g"
->>>>>>> US_432
                         });
                 });
 
@@ -604,14 +560,6 @@ namespace E25ProjetEtendu.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "admin-role-id",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -701,13 +649,6 @@ namespace E25ProjetEtendu.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "21111111-1111-1111-1111-111111111111",
-                            RoleId = "admin-role-id"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -729,6 +670,39 @@ namespace E25ProjetEtendu.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("E25ProjetEtendu.Models.AdminProfile", b =>
+                {
+                    b.HasOne("E25ProjetEtendu.Models.ApplicationUser", "ApplicationUser")
+                        .WithOne("AdminProfile")
+                        .HasForeignKey("E25ProjetEtendu.Models.AdminProfile", "ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("E25ProjetEtendu.Models.BuyerProfile", b =>
+                {
+                    b.HasOne("E25ProjetEtendu.Models.ApplicationUser", "ApplicationUser")
+                        .WithOne("BuyerProfile")
+                        .HasForeignKey("E25ProjetEtendu.Models.BuyerProfile", "ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("E25ProjetEtendu.Models.DelivererProfile", b =>
+                {
+                    b.HasOne("E25ProjetEtendu.Models.ApplicationUser", "ApplicationUser")
+                        .WithOne("DelivererProfile")
+                        .HasForeignKey("E25ProjetEtendu.Models.DelivererProfile", "ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -780,6 +754,15 @@ namespace E25ProjetEtendu.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("E25ProjetEtendu.Models.ApplicationUser", b =>
+                {
+                    b.Navigation("AdminProfile");
+
+                    b.Navigation("BuyerProfile");
+
+                    b.Navigation("DelivererProfile");
                 });
 #pragma warning restore 612, 618
         }

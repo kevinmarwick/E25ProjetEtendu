@@ -16,6 +16,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         builder.Configuration.GetConnectionString("NomConnection")));
 builder.Services.AddScoped<IProduitService, ProduitService>();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
@@ -48,6 +51,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSession();
 
 var supportedCultures = new[] { "fr", "en" };
 var localizationOptions = new RequestLocalizationOptions()

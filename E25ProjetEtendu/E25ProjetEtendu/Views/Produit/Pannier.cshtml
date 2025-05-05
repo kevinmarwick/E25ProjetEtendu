@@ -1,0 +1,106 @@
+﻿<h2 class="mb-4">Votre panier</h2>
+
+<div id="panier-container">
+    <!-- Le tableau sera généré par JS -->
+</div>
+
+<div class="text-end">
+    <h4>Montant total : <span id="total" class="text-primary">0 $</span></h4>
+    <button type="button" id="clear-cart-btn" class="btn btn-danger btn-lg mt-3">
+        Vider le panier
+    </button>
+    <a href="#" class="btn btn-primary btn-lg mt-3">Passer à la caisse</a>
+</div>
+
+@section Scripts {
+    <script>
+        var userId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+
+        function Pannier() {
+            console.log("Pannier() appelée.");
+            let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+            let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
+            let html = '';
+
+            if (cart.length === 0) {
+                html = '<div class="alert alert-info">Votre panier est vide.</div>';
+                $('#total').text('0 $');
+            } else {
+                html += `<div class="table-responsive">
+                                    <table class="table align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Produit</th>
+                                                <th>Prix unitaire</th>
+                                                <th>Quantité</th>
+                                                <th>Sous-total</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>`;
+
+                let total = 0;
+                cart.forEach(item => {
+                    let subtotal = item.Prix * item.Quantite;
+                    total += subtotal;
+
+                    html += `<tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="/images/${item.Image}" alt="${item.Nom}" style="width:80px; height:80px; object-fit:cover; margin-right:15px;" />
+                                                <span>${item.Nom}</span>
+                                            </div>
+                                        </td>
+                                        <td>${item.Prix} $</td>
+                                        <td>${item.Quantite}</td>
+                                        <td>${subtotal} $</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-success increase-btn" data-productid="${item.ProduitId}">+</button>
+                                            <button class="btn btn-sm btn-warning decrease-btn" data-productid="${item.ProduitId}">-</button>
+                                        </td>
+                                    </tr>`;
+                });
+
+                html += `</tbody></table></div>`;
+                $('#total').text(total + ' $');
+            }
+
+            $('#panier-container').html(html);
+        }
+
+        $(document).ready(function () {
+            Pannier();
+
+            $(document).on('click', '.increase-btn', function () {
+                let productId = parseInt($(this).data('productid'));
+                let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+                let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
+                let item = cart.find(p => p.ProduitId === productId);
+                if (item) { item.Quantite += 1; }
+                localStorage.setItem(storageKey, JSON.stringify(cart));
+                Pannier();
+            });
+
+            $(document).on('click', '.decrease-btn', function () {
+                let productId = parseInt($(this).data('productid'));
+                let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+                let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
+                let item = cart.find(p => p.ProduitId === productId);
+                if (item) {
+                    item.Quantite -= 1;
+                    if (item.Quantite <= 0) {
+                        cart = cart.filter(p => p.ProduitId !== productId);
+                    }
+                }
+                localStorage.setItem(storageKey, JSON.stringify(cart));
+                Pannier();
+            });
+
+            $('#clear-cart-btn').click(function () {
+                let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+                localStorage.removeItem(storageKey);
+                Pannier();
+            });
+        });
+    </script>
+}

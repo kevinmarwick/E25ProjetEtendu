@@ -1,4 +1,5 @@
 ﻿using E25ProjetEtendu.Models;
+using E25ProjetEtendu.ViewModels;
 using E25ProjetEtendu.Services.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,20 +23,19 @@ namespace E25ProjetEtendu.Controllers
         /// <param name="page">la page ou l'utilisateur est présentement</param>
         /// <param name="tri">l'option de tri choisi par l'utilisateur</param>
         /// <returns></returns>
-        [HttpGet]       
-        public async Task<ActionResult> Index(string recherche, int page = 1, string tri = "")
+        [HttpGet]
+        public async Task<IActionResult> Index(string recherche, string tri, int page = 1)
         {
-            const int pageSize = 5;
+            var (produits, totalProduits) = await _produitService.GetFilteredProducts(recherche, tri, page, 9);
 
-            (List<Produit> produits, int totalProduits) = await _produitService.GetFilteredProductsAsync(recherche, tri, page, pageSize);
-
-            ViewBag.Search = recherche;
             ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalProduits / pageSize);
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalProduits / 9);
+            ViewBag.Search = recherche;
             ViewBag.Sort = tri;
 
             return View(produits);
         }
+
 
 
         // GET: ProduitController/Details/5
@@ -106,5 +106,66 @@ namespace E25ProjetEtendu.Controllers
                 return View();
             }
         }
+        public ActionResult Pannier()
+        {
+            return View(); // juste retourner la vue, sans modèle
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToCart(int productId, int quantity = 1)
+        {
+            try
+            {
+                await _produitService.AddToCart(productId, quantity);
+                TempData["Success"] = "Produit ajouté au panier !";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Erreur : {ex.Message}";
+            }
+
+            return RedirectToAction("Index"); // ou redirige vers la page souhaitée
+        }
+        [HttpPost]
+        public IActionResult AugmenterProduitAuPannier(int productId)
+        {
+            _produitService.AugmenteProduitPannier(productId);
+
+            var cart = _produitService.GetCartItems();
+            var item = cart.FirstOrDefault(i => i.ProduitId == productId);
+
+            return Json(new
+            {
+                productId = productId,
+                quantity = item?.Quantite ?? 0,
+                subtotal = item != null ? item.Prix * item.Quantite : 0,
+                total = cart.Sum(i => i.Prix * i.Quantite)
+            });
+        }
+
+        [HttpPost]
+        public IActionResult RetirerProduitDuPannier(int productId)
+        {
+            _produitService.EnleverProduitPannier(productId);
+
+            var cart = _produitService.GetCartItems();
+            var item = cart.FirstOrDefault(i => i.ProduitId == productId);
+
+            return Json(new
+            {
+                productId = productId,
+                quantity = item?.Quantite ?? 0,
+                subtotal = item != null ? item.Prix * item.Quantite : 0,
+                total = cart.Sum(i => i.Prix * i.Quantite)
+            });
+        }
+        [HttpPost]
+        public JsonResult ViderPannier()
+        {
+            _produitService.VidePannier();
+            return Json(new { success = true });
+        }
+
+
     }
 }
