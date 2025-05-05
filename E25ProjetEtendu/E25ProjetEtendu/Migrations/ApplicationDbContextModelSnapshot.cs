@@ -22,29 +22,6 @@ namespace E25ProjetEtendu.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-<<<<<<< HEAD
-=======
-            modelBuilder.Entity("E25ProjetEtendu.Models.AdminProfile", b =>
-                {
-                    b.Property<int>("AdminProfileId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminProfileId"));
-
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("AdminProfileId");
-
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique();
-
-                    b.ToTable("AdminProfile");
-                });
-
->>>>>>> US_432
             modelBuilder.Entity("E25ProjetEtendu.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
@@ -128,7 +105,7 @@ namespace E25ProjetEtendu.Migrations
                             Id = "21111111-1111-1111-1111-111111111111",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "678bab9d-45ac-4207-9f7d-eaa04f4c432b",
+                            ConcurrencyStamp = "7291ac5c-7d40-47ef-84b6-96cd65010448",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -136,9 +113,9 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECbReskhCdED4vO0EPDothqCei5wanygUXHGBAws8T14dDktKJZqdQx4o07ptUFobw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELJIl8+jjZx8bIzQY7vlE5W0KGA9SeAHgTZj2OHpezf5iX03zc1S7RodC0cmhvyj1A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e338b144-e11b-412d-824d-075c8c0f51fa",
+                            SecurityStamp = "35e08338-8bb2-4e88-b40a-2b8efe8f636f",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         });
@@ -171,65 +148,6 @@ namespace E25ProjetEtendu.Migrations
                     b.Property<decimal>("Prix")
                         .HasColumnType("decimal(18,2)");
 
-<<<<<<< HEAD
-                    b.Property<int>("Qty")
-=======
-                    b.HasKey("BuyerProfileId");
-
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique();
-
-                    b.ToTable("BuyerProfile");
-                });
-
-            modelBuilder.Entity("E25ProjetEtendu.Models.DelivererProfile", b =>
-                {
-                    b.Property<int>("DelivererProfileId")
-                        .ValueGeneratedOnAdd()
->>>>>>> US_432
-                        .HasColumnType("int");
-
-                    b.Property<string>("ValeurNutritive")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasKey("ProduitId");
-
-                    b.ToTable("produits");
-
-<<<<<<< HEAD
-=======
-                    b.ToTable("DelivererProfile");
-                });
-
-            modelBuilder.Entity("E25ProjetEtendu.Models.Produit", b =>
-                {
-                    b.Property<int>("ProduitId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProduitId"));
-
-                    b.Property<bool>("EstActif")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("Nom")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<int>("Note")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Prix")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("Qty")
                         .HasColumnType("int");
 
@@ -242,7 +160,6 @@ namespace E25ProjetEtendu.Migrations
 
                     b.ToTable("produits");
 
->>>>>>> US_432
                     b.HasData(
                         new
                         {
@@ -353,8 +270,6 @@ namespace E25ProjetEtendu.Migrations
                             Prix = 4m,
                             Qty = 75,
                             ValeurNutritive = "Calories: 320, Lipides: 12g, Glucides: 30g, Protéines: 18g, Sodium: 780mg"
-<<<<<<< HEAD
-=======
                         },
                         new
                         {
@@ -575,7 +490,6 @@ namespace E25ProjetEtendu.Migrations
                             Prix = 3m,
                             Qty = 60,
                             ValeurNutritive = "Calories: 380, Lipides: 16g, Sucres: 28g"
->>>>>>> US_432
                         });
                 });
 
@@ -667,12 +581,10 @@ namespace E25ProjetEtendu.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -716,12 +628,10 @@ namespace E25ProjetEtendu.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");

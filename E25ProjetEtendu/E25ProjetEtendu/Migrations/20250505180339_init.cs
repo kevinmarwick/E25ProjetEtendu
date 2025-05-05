@@ -8,11 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace E25ProjetEtendu.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:E25ProjetEtendu/E25ProjetEtendu/Migrations/20250501200107_MIGRATION_RESET.cs
-    public partial class MIGRATION_RESET : Migration
-========
-    public partial class ajoutSeed : Migration
->>>>>>>> US_432:E25ProjetEtendu/E25ProjetEtendu/Migrations/20250505150501_ajoutSeed.cs
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -38,10 +34,7 @@ namespace E25ProjetEtendu.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-<<<<<<<< HEAD:E25ProjetEtendu/E25ProjetEtendu/Migrations/20250501200107_MIGRATION_RESET.cs
                     Balance = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-========
->>>>>>>> US_432:E25ProjetEtendu/E25ProjetEtendu/Migrations/20250505150501_ajoutSeed.cs
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -127,8 +120,8 @@ namespace E25ProjetEtendu.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -172,8 +165,8 @@ namespace E25ProjetEtendu.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -193,21 +186,9 @@ namespace E25ProjetEtendu.Migrations
                 values: new object[] { "admin-role-id", null, "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
-                table: "produits",
-                columns: new[] { "ProduitId", "EstActif", "Image", "Nom", "Note", "Prix", "Qty", "ValeurNutritive" },
-                values: new object[,]
-                {
-                    { 1, true, "redbull.png", "Red Bull", 4, 3m, 120, "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g" },
-                    { 2, true, "pogo.jpg", "Pogo", 3, 2m, 200, "Calories: 190, Lipides: 9g, Glucides: 20g, Protéines: 6g, Sodium: 500mg" },
-                    { 3, true, "eau.jpg", "Bouteille d'eau", 5, 1m, 300, "Calories: 0, Lipides: 0g, Sucres: 0g, Sodium: 0mg" },
-                    { 4, true, "chips.jpg", "Chips Lay’s", 4, 2m, 100, "Calories: 160, Lipides: 10g, Glucides: 15g, Sucres: 1g, Sodium: 170mg" },
-                    { 5, true, "nutella.jpg", "Nutella", 5, 5m, 80, "Calories: 200, Lipides: 11g, Glucides: 22g, Sucres: 21g, Protéines: 2g" },
-                    { 6, true, "activia.jpg", "Yogourt Activia", 4, 3m, 150, "Calories: 100, Lipides: 2g, Glucides: 15g, Sucres: 12g, Protéines: 5g" },
-                    { 7, true, "pizza.jpg", "Pizza congelée", 4, 6m, 60, "Calories: 350, Lipides: 15g, Glucides: 40g, Sucres: 5g, Protéines: 12g" },
-                    { 8, true, "granola.jpg", "Barre de granola", 4, 2m, 180, "Calories: 190, Lipides: 7g, Glucides: 29g, Sucres: 11g, Protéines: 4g" },
-                    { 9, true, "coca.jpg", "Coca-Cola", 3, 2m, 220, "Calories: 140, Sucres: 39g, Glucides: 39g, Sodium: 45mg" },
-                    { 10, true, "sandwich.jpg", "Sandwich jambon-fromage", 4, 4m, 75, "Calories: 320, Lipides: 12g, Glucides: 30g, Protéines: 18g, Sodium: 780mg" }
-                });
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "Balance", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "21111111-1111-1111-1111-111111111111", 0, 0m, "7291ac5c-7d40-47ef-84b6-96cd65010448", "admin@example.com", true, "Admin", "Admin", false, null, "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAELJIl8+jjZx8bIzQY7vlE5W0KGA9SeAHgTZj2OHpezf5iX03zc1S7RodC0cmhvyj1A==", null, false, "35e08338-8bb2-4e88-b40a-2b8efe8f636f", false, "admin@example.com" });
 
             migrationBuilder.InsertData(
                 table: "produits",
@@ -245,6 +226,11 @@ namespace E25ProjetEtendu.Migrations
                     { 29, true, "perrier.jpg", "Eau gazeuse Perrier", 4, 2m, 200, "Calories: 0" },
                     { 30, true, "muffin.jpg", "Muffin aux bleuets", 5, 3m, 60, "Calories: 380, Lipides: 16g, Sucres: 28g" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "admin-role-id", "21111111-1111-1111-1111-111111111111" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -303,9 +289,6 @@ namespace E25ProjetEtendu.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
-                name: "produits");
 
             migrationBuilder.DropTable(
                 name: "produits");
