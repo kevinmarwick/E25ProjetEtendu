@@ -39,8 +39,8 @@ namespace E25ProjetEtendu.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProduct(int id, Produit product)
-        {
+        public async Task<IActionResult> EditProduct(int id, Produit product, IFormFile ImageFile)
+		{
             if (id != product.ProduitId)
             {
                 return NotFound();
@@ -48,8 +48,8 @@ namespace E25ProjetEtendu.Controllers
 
             if (ModelState.IsValid)
             {
-                await _adminService.EditProduit(product);
-                ViewBag.SuccessMessage = " Produit mis à jour avec succès.";
+				await _adminService.EditProduct(product, ImageFile);
+				ViewBag.SuccessMessage = " Produit mis à jour avec succès.";
                 return RedirectToAction("IndexProduits");
 
             }
@@ -59,7 +59,7 @@ namespace E25ProjetEtendu.Controllers
 
         public async Task<IActionResult> IndexProduits()
         {
-            IEnumerable<Produit> produits = await _adminService.GetAllProduits();
+            IEnumerable<Produit> produits = await _adminService.GetAllProducts();
             return View(produits);
         }
 
