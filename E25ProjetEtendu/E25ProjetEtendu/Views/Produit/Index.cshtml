@@ -67,7 +67,8 @@
     @foreach (var item in Model)
     {
         <div class="col">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100 shadow-sm @(item.Qty == 0 ? "disabled-product" : "")">
+
                 <img src="~/images/@item.Image" class="card-img-top" alt="@item.Nom" style="height: 200px; object-fit: cover;" />
                 <div class="card-body">
                     <h5 class="card-title">@item.Nom</h5>
@@ -84,9 +85,11 @@
                             data-productid="@item.ProduitId"
                             data-productname="@item.Nom"
                             data-price="@item.Prix"
-                            data-image="@item.Image">
+                            data-image="@item.Image"
+                        @(item.Qty == 0 ? "disabled" : "")>
                         Ajouter au panier
                     </button>
+
                 </div>
             </div>
         </div>
