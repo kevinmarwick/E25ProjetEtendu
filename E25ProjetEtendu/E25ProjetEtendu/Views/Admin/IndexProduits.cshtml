@@ -20,11 +20,11 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Prix)
-            </th>
+            </th>           
+            <th></th>
             <th>
                 @Html.DisplayNameFor(model => model.Note)
             </th>
-            <th></th>
             <th></th>
         </tr>
     </thead>
@@ -75,6 +75,30 @@
         $(document).ready(function () {
             //  Initialize DataTable
             $('#productTable').DataTable({
+                columnDefs: [
+                    {
+                        targets: [1], // Qty
+                        render: function (data, type, row, meta) {
+                            if (type === 'sort') {
+                                return parseFloat($(data).val()) || 0;
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        targets: [2], // Prix
+                        render: function (data, type, row, meta) {
+                            if (type === 'sort') {
+                                return parseFloat($(data).val().replace(',', '.')) || 0;
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        targets: [3, 5], // Disable sorting on buttons and links
+                        orderable: false
+                    }
+                ],
                 language: {
                     search: "Rechercher:",
                     lengthMenu: "Afficher _MENU_ entrées",
@@ -90,6 +114,8 @@
                     infoFiltered: "(filtré de _MAX_ entrées au total)"
                 }
             });
+
+
 
             //  Store original values on page load
             $('#productTable tbody tr').each(function () {
