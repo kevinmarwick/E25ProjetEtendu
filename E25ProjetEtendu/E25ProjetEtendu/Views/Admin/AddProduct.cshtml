@@ -1,65 +1,86 @@
-﻿@model E25ProjetEtendu.Models.Produit
+﻿@model E25ProjetEtendu.ViewModels.AddProduitViewModel
+
 
 @{
-    ViewData["Title"] = "AddProduct";
+    ViewData["Title"] = "Ajouter un produit";
 }
 
-<h1>AddProduct</h1>
+<h1>Ajouter un produit</h1>
 
 <h4>Produit</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="AddProduct">
+    <div class="col-md-6">
+        <form asp-action="AddProduct" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Nom" class="control-label">Nom du produit</label>
+
+            <div class="form-group mb-3">
+                <label asp-for="Nom" class="form-label">Nom du produit</label>
                 <input asp-for="Nom" class="form-control" />
                 <span asp-validation-for="Nom" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Qty" class="control-label">Quantité disponible</label>
+
+            <div class="form-group mb-3">
+                <label asp-for="Qty" class="form-label">Quantité disponible</label>
                 <input asp-for="Qty" class="form-control" />
                 <span asp-validation-for="Qty" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Prix" class="control-label">Prix</label>
+
+            <div class="form-group mb-3">
+                <label asp-for="Prix" class="form-label">Prix</label>
                 <input asp-for="Prix" class="form-control" />
                 <span asp-validation-for="Prix" class="text-danger"></span>
             </div>
-           <div class="form-group">
-                <label asp-for="Note" class="control-label"></label>
-                <input asp-for="Note" class="form-control" />
-                <span asp-validation-for="Note" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ValeurNutritive" class="control-label">Valeurs Nutritionnelles</label>
-                <input asp-for="ValeurNutritive" class="form-control" />
+
+            <div class="form-group mb-3">
+                <label asp-for="ValeurNutritive" class="form-label">Valeurs nutritionnelles</label>
+                <textarea asp-for="ValeurNutritive" class="form-control" rows="5"></textarea>
                 <span asp-validation-for="ValeurNutritive" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
+
+            <div class="form-group mb-3">
+                <label for="ImageFile" class="form-label">Image du produit</label>
+                <input type="file" id="ImageFile" name="ImageFile" class="form-control" accept="image/*" onchange="previewNewImage(event)" />
+                <div class="mt-2" id="newImagePreview">
+                    <label>Aperçu:</label><br />
+                    <img id="previewImg" class="img-thumbnail preview-image" />
+                </div>
             </div>
-            <br />
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="EstActif" checked /> 
-                </label>
+
+            <div class="form-group form-check mb-3">
+                <input class="form-check-input" asp-for="EstActif" checked />
+                <label class="form-check-label" asp-for="EstActif">Produit actif</label>
             </div>
-            <br />
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+
+            <div class="form-group">                
+                <a asp-action="IndexProduits" class="btn btn-secondary ms-2">Retour à la liste</a>
+                <button type="submit" class="btn btn-primary">Créer</button>
             </div>
+            
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function previewNewImage(event) {
+            const input = event.target;
+            const previewContainer = document.getElementById('newImagePreview');
+            const previewImg = document.getElementById('previewImg');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImg.src = e.target.result;
+                    previewContainer.classList.add('show');
+                }
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                previewContainer.classList.remove('show');
+            }
+        }
+    </script>
 }

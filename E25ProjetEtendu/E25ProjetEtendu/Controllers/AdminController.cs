@@ -1,7 +1,9 @@
 ﻿using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services.IServices;
+using E25ProjetEtendu.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
 
@@ -85,12 +87,21 @@ namespace E25ProjetEtendu.Controllers
             return View();
         }
 
-        ////POST
-        //[HttpPost]
-        //public async Task<Produit> AddProduct(Produit produit)
-        //{
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddProduct(AddProduitViewModel vm)
+        {
+            if (!ModelState.IsValid)
+                return View(vm);
 
-        //}
+            await _adminService.AddProductFromViewModel(vm);
+
+            ViewBag.SuccessMessage = "Produit créé avec succès.";
+            return RedirectToAction("AddProduct");
+        }
+
+
+
 
     }
 }
