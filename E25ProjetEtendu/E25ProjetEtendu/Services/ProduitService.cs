@@ -1,4 +1,4 @@
-﻿using E25ProjetEtendu.Data;
+using E25ProjetEtendu.Data;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services.IServices;
 using Microsoft.EntityFrameworkCore;

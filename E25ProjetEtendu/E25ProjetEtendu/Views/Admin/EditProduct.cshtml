@@ -1,0 +1,58 @@
+﻿@model E25ProjetEtendu.Models.Produit
+
+@{
+	ViewData["Title"] = "Edit Product";
+}
+
+<h1>Edit Product</h1>
+
+<h4>Product</h4>
+<hr />
+<div class="row">
+	<div class="col-md-4">
+		<form asp-action="EditProduct" asp-route-id="@Model.ProduitId" enctype="multipart/form-data">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="ProduitId" />
+			<div class="form-group">
+				<label asp-for="Nom" class="control-label"></label>
+				<input asp-for="Nom" class="form-control" />
+				<span asp-validation-for="Nom" class="text-danger"></span>
+			</div>
+			@if (!string.IsNullOrEmpty(Model.Image))
+			{
+				<div class="mb-2">
+					<img src="/images/@Model.Image" alt="Image actuelle" class="img-thumbnail" style="max-width: 150px;" />
+				</div>
+			}
+
+			<div class="form-group">
+				<label asp-for="Image" class="control-label"></label>
+				<input type="file" name="ImageFile" class="form-control" />
+				<span asp-validation-for="Image" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="ValeurNutritive" class="control-label"></label>
+				<textarea asp-for="ValeurNutritive" class="form-control" rows="5"></textarea>
+				<span asp-validation-for="ValeurNutritive" class="text-danger"></span>
+			</div>
+
+			<div class="form-group">
+				<input type="submit" value="Save" class="btn btn-primary" />
+			</div>
+			<input type="hidden" asp-for="Qty" />
+			<input type="hidden" asp-for="Prix" />
+			<input type="hidden" asp-for="Note" />
+
+		</form>
+	</div>
+</div>
+
+<div>
+	<a asp-action="IndexProduits">Back to List</a>
+</div>
+
+@section Scripts {
+	@{
+		await Html.RenderPartialAsync("_ValidationScriptsPartial");
+	}
+}

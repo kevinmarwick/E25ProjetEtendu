@@ -6,6 +6,13 @@
 
 <h1>IndexProduits</h1>
 
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="alert alert-success">
+        @ViewBag.SuccessMessage
+    </div>
+}
+
 <p>
     <a asp-action="AddProduct">Ajouter un produit</a>
 </p>
@@ -61,8 +68,8 @@
                         }
                     </td>
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.ProduitId">Modifier produit</a> |
-                        <a asp-action="Delete" asp-route-id="@item.ProduitId">Rendre indisponible</a>
+                        <a asp-action="EditProduct" asp-route-id="@item.ProduitId">Modifier produit</a> |
+                        <a asp-action="#" asp-route-id="@item.ProduitId">Rendre indisponible</a>
                     </td>
                 </tr>
             }
