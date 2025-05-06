@@ -7,6 +7,7 @@ using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,14 +38,17 @@ builder.Services.Configure<SmtpSettings>(
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
-// Set UI culture (dates, strings, etc.)
-var uiCulture = new CultureInfo("fr-CA");
+var culture = new CultureInfo("fr-CA");
 
-// Set invariant culture for binding (e.g., decimal parsing)
-var bindingCulture = new CultureInfo("en-US");
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(culture),
+    SupportedCultures = new List<CultureInfo> { culture },
+    SupportedUICultures = new List<CultureInfo> { culture }
+};
 
-CultureInfo.DefaultThreadCurrentCulture = bindingCulture;
-CultureInfo.DefaultThreadCurrentUICulture = uiCulture;
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
 
 
 var app = builder.Build();
@@ -59,12 +63,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-var supportedCultures = new[] { "fr", "en" };
-var localizationOptions = new RequestLocalizationOptions()
-    .SetDefaultCulture("fr")
-    .AddSupportedCultures(supportedCultures)
-    .AddSupportedUICultures(supportedCultures);
 
 app.UseRequestLocalization(localizationOptions);
 
