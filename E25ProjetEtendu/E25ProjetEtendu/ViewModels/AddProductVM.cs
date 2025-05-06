@@ -2,7 +2,7 @@
 
 namespace E25ProjetEtendu.ViewModels
 {
-    public class AddProduitViewModel
+    public class AddProductVM
     {
         [Required(ErrorMessage = "Le nom est requis")]
         [StringLength(200)]

@@ -8,8 +8,8 @@ namespace E25ProjetEtendu.Services.IServices
     {
         Task<IEnumerable<Produit>> GetAllProducts();
         Task UpdateInventoryAndPrice(int produitId, int qty, decimal prix);        
-        Task EditProduct(Produit product, IFormFile imageFile);
-        Task<Produit> AddProductFromViewModel(AddProduitViewModel vm);
+        Task<Produit> AddProductFromVM(AddProductVM vm);
+        Task<Produit> EditProductFromVM(EditProductVM vm);
 
     }
 }

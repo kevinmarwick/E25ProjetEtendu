@@ -32,32 +32,31 @@ namespace E25ProjetEtendu.Controllers
         {
             var produit = await _produitService.GetProduitById(id);
             if (produit == null)
-            {
                 return NotFound();
-            }
 
-            return View(produit);
+            var vm = new EditProductVM
+            {
+                ProduitId = produit.ProduitId,
+                Nom = produit.Nom,
+                ValeurNutritive = produit.ValeurNutritive,
+                CurrentImage = produit.Image
+            };
+
+            return View(vm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProduct(int id, Produit product, IFormFile ImageFile)
-		{
-            if (id != product.ProduitId)
-            {
-                return NotFound();
-            }
+        public async Task<IActionResult> EditProduct(EditProductVM vm)
+        {
+            if (!ModelState.IsValid)
+                return View(vm);
 
-            if (ModelState.IsValid)
-            {
-				await _adminService.EditProduct(product, ImageFile);
-				ViewBag.SuccessMessage = " Produit mis à jour avec succès.";
-                return RedirectToAction("IndexProduits");
-
-            }
-
-            return View(product);
+            await _adminService.EditProductFromVM(vm);
+            TempData["SuccessMessage"] = "Produit mis à jour avec succès.";
+            return RedirectToAction("IndexProduits");
         }
+
 
         public async Task<IActionResult> IndexProduits()
         {
@@ -89,15 +88,16 @@ namespace E25ProjetEtendu.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddProduct(AddProduitViewModel vm)
+        public async Task<IActionResult> AddProduct(AddProductVM vm)
         {
             if (!ModelState.IsValid)
                 return View(vm);
 
-            await _adminService.AddProductFromViewModel(vm);
+            await _adminService.AddProductFromVM(vm);
 
-            ViewBag.SuccessMessage = "Produit créé avec succès.";
+            TempData["SuccessMessage"] = "Produit créé avec succès.";
             return RedirectToAction("AddProduct");
+
         }
 
 

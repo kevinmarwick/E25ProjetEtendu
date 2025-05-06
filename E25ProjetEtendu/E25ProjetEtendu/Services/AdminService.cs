@@ -60,23 +60,7 @@ namespace E25ProjetEtendu.Services
         }
 
       
-        public async Task EditProduct(Produit product, IFormFile imageFile)
-        {
-            var dbProduit = await _produitService.GetProduitById(product.ProduitId);
-            if (dbProduit == null)
-                throw new Exception("Produit non trouvé");
-
-            dbProduit.Nom = product.Nom;
-            dbProduit.ValeurNutritive = product.ValeurNutritive;
-
-            var fileName = await SaveImage(imageFile);
-            if (fileName != null)
-                dbProduit.Image = fileName;
-
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<Produit> AddProductFromViewModel(AddProduitViewModel vm)
+        public async Task<Produit> AddProductFromVM(AddProductVM vm)
         {
             var fileName = await SaveImage(vm.ImageFile);
 
@@ -91,6 +75,25 @@ namespace E25ProjetEtendu.Services
             };
 
             _context.produits.Add(product);
+            await _context.SaveChangesAsync();
+            return product;
+        }
+
+        public async Task<Produit> EditProductFromVM(EditProductVM vm)
+        {
+            var product = await _produitService.GetProduitById(vm.ProduitId);
+            if (product == null)
+                throw new Exception("Produit non trouvé");
+
+            product.Nom = vm.Nom;
+            product.ValeurNutritive = vm.ValeurNutritive;
+
+            if (vm.NewImageFile != null && vm.NewImageFile.Length > 0)
+            {
+                var fileName = await SaveImage(vm.NewImageFile);
+                product.Image = fileName;
+            }
+
             await _context.SaveChangesAsync();
             return product;
         }

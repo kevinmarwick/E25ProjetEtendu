@@ -4,14 +4,15 @@
     ViewData["Title"] = "IndexProduits";
 }
 
-<h1>IndexProduits</h1>
+<h1>Index des Produits</h1>
 
-@if (ViewBag.SuccessMessage != null)
+@if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">
-        @ViewBag.SuccessMessage
+        @TempData["SuccessMessage"]
     </div>
 }
+
 
 <p>
     <a asp-action="AddProduct">Ajouter un produit</a>
