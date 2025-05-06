@@ -23,7 +23,7 @@ namespace E25ProjetEtendu.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IEnumerable<Produit>> GetAllProduits()
+        public async Task<IEnumerable<Produit>> GetAllProducts()
         {            
                 return await _context.produits.OrderBy(p => p.Nom)
                                               .ToListAsync();            
@@ -63,17 +63,10 @@ namespace E25ProjetEtendu.Services
 					await imageFile.CopyToAsync(stream);
 				}
 
-				dbProduit.Image = "/images/" + fileName;
+				dbProduit.Image = fileName;
 			}
 
 			await _context.SaveChangesAsync();
 		}
-
-
-
-
-
-
 	}
-
 }

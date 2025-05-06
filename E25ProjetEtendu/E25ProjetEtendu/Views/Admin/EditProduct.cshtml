@@ -1,58 +1,81 @@
 ﻿@model E25ProjetEtendu.Models.Produit
 
 @{
-	ViewData["Title"] = "Edit Product";
+    ViewData["Title"] = "Edit Product";
 }
 
-<h1>Edit Product</h1>
+<h1>Modifier un produit</h1>
 
-<h4>Product</h4>
+<h4>@Model.Nom</h4>
 <hr />
 <div class="row">
-	<div class="col-md-4">
-		<form asp-action="EditProduct" asp-route-id="@Model.ProduitId" enctype="multipart/form-data">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<input type="hidden" asp-for="ProduitId" />
-			<div class="form-group">
-				<label asp-for="Nom" class="control-label"></label>
-				<input asp-for="Nom" class="form-control" />
-				<span asp-validation-for="Nom" class="text-danger"></span>
-			</div>
-			@if (!string.IsNullOrEmpty(Model.Image))
-			{
-				<div class="mb-2">
-					<img src="/images/@Model.Image" alt="Image actuelle" class="img-thumbnail" style="max-width: 150px;" />
-				</div>
-			}
+    <div class="col-md-6">
+        <form asp-action="EditProduct" asp-route-id="@Model.ProduitId" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ProduitId" />
 
-			<div class="form-group">
-				<label asp-for="Image" class="control-label"></label>
-				<input type="file" name="ImageFile" class="form-control" />
-				<span asp-validation-for="Image" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="ValeurNutritive" class="control-label"></label>
-				<textarea asp-for="ValeurNutritive" class="form-control" rows="5"></textarea>
-				<span asp-validation-for="ValeurNutritive" class="text-danger"></span>
-			</div>
+            <div class="form-group mb-3">
+                <label asp-for="Nom" class="form-label"></label>
+                <input asp-for="Nom" class="form-control" />
+                <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
 
-			<div class="form-group">
-				<input type="submit" value="Save" class="btn btn-primary" />
-			</div>
-			<input type="hidden" asp-for="Qty" />
-			<input type="hidden" asp-for="Prix" />
-			<input type="hidden" asp-for="Note" />
+            @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                <div class="mb-3">
+                    <label>Image actuelle:</label><br />
+                    <img src="/images/@Model.Image" alt="Image actuelle" class="img-thumbnail" style="max-width: 150px;" />
+                </div>
+            }
 
-		</form>
-	</div>
-</div>
+            <div class="form-group mb-3">
+                <label for="ImageFile" class="form-label">Nouvelle Image</label>
+                <input type="file" id="ImageFile" name="ImageFile" class="form-control" accept="image/*" onchange="previewNewImage(event)" />
+                <div class="mt-2" id="newImagePreview" style="display: none;">
+                    <label>Aperçu:</label><br />
+                    <img id="previewImg" class="img-thumbnail" style="max-width: 150px;" />
+                </div>
+            </div>
 
-<div>
-	<a asp-action="IndexProduits">Back to List</a>
+            <div class="form-group mb-3">
+                <label asp-for="ValeurNutritive" class="form-label">Valeurs Nutritionnelles</label>
+                <textarea asp-for="ValeurNutritive" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="ValeurNutritive" class="text-danger"></span>
+            </div>
+
+            <input type="hidden" asp-for="Image" />
+            <input type="hidden" asp-for="Qty" />
+            <input type="hidden" asp-for="Prix" />
+            <input type="hidden" asp-for="Note" />
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Sauvegarder</button>
+                <a asp-action="IndexProduits" class="btn btn-secondary ms-2">Retour à la liste</a>
+            </div>
+        </form>
+    </div>
 </div>
 
 @section Scripts {
-	@{
-		await Html.RenderPartialAsync("_ValidationScriptsPartial");
-	}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function previewNewImage(event) {
+            const input = event.target;
+            const previewContainer = document.getElementById('newImagePreview');
+            const previewImg = document.getElementById('previewImg');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImg.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+    </script>
 }
