@@ -188,7 +188,7 @@ namespace E25ProjetEtendu.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "Balance", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "21111111-1111-1111-1111-111111111111", 0, 0m, "7291ac5c-7d40-47ef-84b6-96cd65010448", "admin@example.com", true, "Admin", "Admin", false, null, "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAELJIl8+jjZx8bIzQY7vlE5W0KGA9SeAHgTZj2OHpezf5iX03zc1S7RodC0cmhvyj1A==", null, false, "35e08338-8bb2-4e88-b40a-2b8efe8f636f", false, "admin@example.com" });
+                values: new object[] { "21111111-1111-1111-1111-111111111111", 0, 0m, "a9811c84-4783-44cc-83fb-9e5011e76bfc", "admin@example.com", true, "Admin", "Admin", false, null, "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEKmnJPqLYPJ4VV239DEmpZh1/a1xbXy0uC3EViQ2cYJeLLSll+Gh3WjxLJn4k8O0Pw==", null, false, "fd433c0f-2a1e-42cd-a04b-a13102764f1f", false, "admin@example.com" });
 
             migrationBuilder.InsertData(
                 table: "produits",
@@ -224,7 +224,8 @@ namespace E25ProjetEtendu.Migrations
                     { 27, true, "oreo.jpg", "Biscuit Oreo", 4, 3m, 130, "Calories: 160, Sucres: 14g" },
                     { 28, true, "beurre.jpg", "Beurre d'arachide", 4, 5m, 70, "Calories: 190, Lipides: 16g, Protéines: 7g" },
                     { 29, true, "perrier.jpg", "Eau gazeuse Perrier", 4, 2m, 200, "Calories: 0" },
-                    { 30, true, "muffin.jpg", "Muffin aux bleuets", 5, 3m, 60, "Calories: 380, Lipides: 16g, Sucres: 28g" }
+                    { 30, true, "muffin.jpg", "Muffin aux bleuets", 5, 3m, 60, "Calories: 380, Lipides: 16g, Sucres: 28g" },
+                    { 31, true, "Aid.jpg", "BandAid", 5, 3m, 0, "Calories: 0" }
                 });
 
             migrationBuilder.InsertData(
