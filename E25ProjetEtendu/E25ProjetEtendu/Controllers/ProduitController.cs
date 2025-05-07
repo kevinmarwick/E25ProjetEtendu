@@ -26,10 +26,10 @@ namespace E25ProjetEtendu.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string recherche, string tri, int page = 1)
         {
-            var (produits, totalProduits) = await _produitService.GetFilteredProducts(recherche, tri, page, 9);
+            var (produits, totalProduits) = await _produitService.GetFilteredProducts(recherche, tri, page, 20);
 
             ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalProduits / 9);
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalProduits / 20);
             ViewBag.Search = recherche;
             ViewBag.Sort = tri;
 
