@@ -38,11 +38,19 @@ namespace E25ProjetEtendu.Controllers
 
 
 
-        // GET: ProduitController/Details/5
-        public ActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
-            return View();
+            var produit = await _produitService.GetByIdAsync(id);
+            if (produit == null)
+                return NotFound();
+
+            var similaires = await _produitService.GetProduitsSimilairesAsync(produit);
+            ViewBag.ProduitsSimilaires = similaires;
+
+            return View(produit);
         }
+
+
 
         // GET: ProduitController/Create
         public ActionResult Create()

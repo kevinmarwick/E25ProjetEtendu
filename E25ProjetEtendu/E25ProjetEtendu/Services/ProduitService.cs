@@ -29,6 +29,10 @@ namespace E25ProjetEtendu.Services
                                           .OrderBy(p => p.Nom)
                                           .ToListAsync();
         }
+        public async Task<Produit?> GetByIdAsync(int id)
+        {
+            return await _context.produits.FindAsync(id);
+        }
 
         /// <summary>
         /// cette méthode sers a gérer la recherche de produit et faire la pagination
@@ -72,6 +76,16 @@ namespace E25ProjetEtendu.Services
 
             return (produits, totalProduits);
         }
+
+        public async Task<List<Produit>> GetProduitsSimilairesAsync(Produit produit, int max = 3)
+        {
+            return await _context.produits
+                .Where(p => p.ProduitId != produit.ProduitId &&
+                           (p.Note == produit.Note || p.Prix == produit.Prix))
+                .Take(max)
+                .ToListAsync();
+        }
+
         #endregion
         #region Methode de gestion de cart 
         /// <summary>
