@@ -79,6 +79,20 @@ namespace E25ProjetEtendu.Services
             return product;
         }
 
+        public async Task<EditProductVM?> GetEditProductVM(int id)
+        {
+            var produit = await _produitService.GetProduitById(id);
+            if (produit == null) return null;
+
+            return new EditProductVM
+            {
+                ProduitId = produit.ProduitId,
+                Nom = produit.Nom,
+                ValeurNutritive = produit.ValeurNutritive,
+                CurrentImage = produit.Image
+            };
+        }
+
         public async Task<Produit> EditProductFromVM(EditProductVM vm)
         {
             var product = await _produitService.GetProduitById(vm.ProduitId);

@@ -44,11 +44,13 @@
                 <tr data-id="@item.ProduitId">
                     <td>@item.Nom</td>
                     <td>
-                        <input type="number" class="form-control form-control-sm qty-input" value="@item.Qty" />
+                        <input type="number" class="form-control form-control-sm qty-input int-only" value="@item.Qty" />
                     </td>
-                    <td>
-                        <input type="text" class="form-control form-control-sm prix-input" value="@item.Prix.ToString("0.00")" />
+                    <td class="input-with-symbol">
+                        <input type="text" class="form-control form-control-sm prix-input decimal-only" value="@item.Prix.ToString("0.00")" />
+                        <span class="symbol"></span>
                     </td>
+
 
                     <td>
                         <button class="btn btn-sm btn-success save-btn d-none">Save</button>
@@ -122,9 +124,7 @@
                     infoFiltered: "(filtré de _MAX_ entrées au total)"
                 }
             });
-
-
-
+           
             //  Store original values on page load
             $('#productTable tbody tr').each(function () {
                 const row = $(this);
@@ -171,7 +171,7 @@
                         row.find('.save-btn, .cancel-btn').addClass('d-none');
                     },
                     error: function () {
-                        alert(" Erreur lors de la mise à jour.");
+                        alert(" Erreur: Les prix et quantités disponibles doivent être inférieurs à 10000");
                     }
                 });
             });

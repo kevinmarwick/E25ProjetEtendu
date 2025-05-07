@@ -9,6 +9,7 @@ namespace E25ProjetEtendu.Services.IServices
         Task<IEnumerable<Produit>> GetAllProducts();
         Task UpdateInventoryAndPrice(int produitId, int qty, decimal prix);        
         Task<Produit> AddProductFromVM(AddProductVM vm);
+        Task<EditProductVM?> GetEditProductVM(int id);
         Task<Produit> EditProductFromVM(EditProductVM vm);
 
     }

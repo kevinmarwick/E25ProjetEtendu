@@ -26,24 +26,17 @@ namespace E25ProjetEtendu.Controllers
             return View();
         }
 
-        // GET: Produit/Edit/id
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> EditProduct(int id)
         {
-            var produit = await _produitService.GetProduitById(id);
-            if (produit == null)
+            var vm = await _adminService.GetEditProductVM(id);
+            if (vm == null)
                 return NotFound();
-
-            var vm = new EditProductVM
-            {
-                ProduitId = produit.ProduitId,
-                Nom = produit.Nom,
-                ValeurNutritive = produit.ValeurNutritive,
-                CurrentImage = produit.Image
-            };
 
             return View(vm);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -64,27 +57,26 @@ namespace E25ProjetEtendu.Controllers
             return View(produits);
         }
 
+
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [IgnoreAntiforgeryToken]
-        public async Task<IActionResult> UpdateInventoryAndPrice(int produitId, int qty, decimal prix)
+        public async Task<IActionResult> UpdateInventoryAndPrice(UpdateProductVM model)
         {
-            try
-            {
-                await _adminService.UpdateInventoryAndPrice(produitId, qty, prix);
-                return Ok();
-            }
-            catch
-            {
-                return BadRequest();
-            }
+            if (!ModelState.IsValid)
+                return BadRequest("Les données envoyées sont invalides.");
+
+            await _adminService.UpdateInventoryAndPrice(model.ProduitId, model.Qty, model.Prix);
+            return Ok();
         }
+
 
         //GET
         public async Task<IActionResult> AddProduct()
         {
             return View();
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -97,11 +89,6 @@ namespace E25ProjetEtendu.Controllers
 
             TempData["SuccessMessage"] = "Produit créé avec succès.";
             return RedirectToAction("AddProduct");
-
         }
-
-
-
-
     }
 }

@@ -8,11 +8,15 @@ using E25ProjetEtendu.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using E25ProjetEtendu.Binders;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
+});
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("NomConnection")));
