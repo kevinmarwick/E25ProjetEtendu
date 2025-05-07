@@ -33,6 +33,11 @@ namespace E25ProjetEtendu.Models
         [StringLength(500, ErrorMessage = "Les valeurs ne peut pas dépasser 500 caractères")]
         public string ValeurNutritive { get; set; }
 
+        [Required]
+        [DataType(DataType.Date)]
+        [Display(Name = "Date d'ajout")]
+        public DateTime DateAjout { get; set; }
+
     }
 }
 

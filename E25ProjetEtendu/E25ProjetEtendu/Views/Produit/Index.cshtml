@@ -66,7 +66,12 @@
     @foreach (var item in Model)
     {
         <div class="col">
-            <div class="card h-100 shadow-sm">
+            <div class="card h-100 shadow-sm position-relative">
+                @if (item.DateAjout >= DateTime.Now.AddMonths(-1))
+                {
+                    <span class="badge bg-success position-absolute top-0 start-0 m-2">Nouveau</span>
+                }
+
                 <img src="~/images/@item.Image" class="card-img-top" alt="@item.Nom" style="height: 200px; object-fit: cover;" />
                 <div class="card-body">
                     <h5 class="card-title">@item.Nom</h5>
@@ -74,10 +79,9 @@
                     <p class="card-text"><strong>Quantité :</strong> @item.Qty</p>
                     <p class="card-text"><strong>Note :</strong> @item.Note / 5</p>
                     <p class="card-text small text-muted">@item.ValeurNutritive</p>
-                    
-                        <a class=" btn btn-outline-primary text-dark" asp-area="" asp-controller="Produit" asp-action="Details">Details du produit</a>
-                        <a class=" btn btn-outline-primary text-dark" asp-area="" asp-controller="Produit" asp-action="Details">Ajouter au panier</a>
-                   
+
+                    <a class="btn btn-outline-primary text-dark" asp-area="" asp-controller="Produit" asp-action="Details" asp-route-id="@item.ProduitId">Détails du produit</a>
+                    <a class="btn btn-outline-primary text-dark" asp-area="" asp-controller="Produit" asp-action="Details" asp-route-id="@item.ProduitId">Ajouter au panier</a>
                 </div>
             </div>
         </div>
@@ -127,4 +131,3 @@
         }
     </ul>
 </nav>
-
