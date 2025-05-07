@@ -1,4 +1,4 @@
-﻿console.log("site.js loaded");
+﻿// Patch jQuery validation to support French decimal commas
 
 $(function () {
     // Make sure jQuery + validation plugins are ready
@@ -19,7 +19,9 @@ $(function () {
     }
 });
 
-// Input filtering still fine outside
+//    Enforce input format:
+// - .decimal-only → max 2 decimals, support comma input
+// - .int-only → digits only
 document.addEventListener('input', function (e) {
     if (e.target.matches('.decimal-only')) {
         let val = e.target.value;
