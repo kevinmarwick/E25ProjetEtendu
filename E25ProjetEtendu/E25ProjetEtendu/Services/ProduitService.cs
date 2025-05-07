@@ -18,6 +18,11 @@ namespace E25ProjetEtendu.Services
             _context = context;
             _httpContextAccessor = httpContextAccessor;
         }
+        #region Methode de recherche & liste de produit
+        /// <summary>
+        /// Permet d'Afficher toute les produits actif a l'utilisateur
+        /// </summary>
+        /// <returns>retourne une list de produit actif</returns>
         public async Task<IEnumerable<Produit>> GetAllActiveProduct()
         {
             return await _context.produits.Where(p => p.EstActif)
@@ -67,13 +72,24 @@ namespace E25ProjetEtendu.Services
 
             return (produits, totalProduits);
         }
-
+        #endregion
+        #region Methode de gestion de cart 
+        /// <summary>
+        /// permet de récuperer les produits du cart
+        /// </summary>
+        /// <returns>retourne un liste de pannierProduitVM</returns>
         public List<PannierProduitVM> GetCartItems()
         {
             var cart = _httpContextAccessor.HttpContext.Request.Cookies.GetObject<List<PannierProduitVM>>("panier") ?? new List<PannierProduitVM>();
             return cart;
         }
-
+        /// <summary>
+        /// Permet d'ajouter au pannier un produit
+        /// </summary>
+        /// <param name="productId">l'id du produit</param>
+        /// <param name="quantity">la quantité du produit dans le panier </param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task AddToCart(int productId, int quantity)
         {
             var produit = await _context.produits.FindAsync(productId);
@@ -105,24 +121,13 @@ namespace E25ProjetEtendu.Services
             _httpContextAccessor.HttpContext.Response.Cookies.SetObject("panier", cart);
 
 
-            
-        }
+                    }
 
-        //public async Task ReserveProduitAsync(int productId, int quantity)
-        //{
-        //    var produit = await _context.produits.FindAsync(productId);
-
-        //    if (produit == null)
-        //        throw new Exception("Produit introuvable.");
-
-        //    produit.Qty -= quantity;
-
-        //    if (produit.Qty < 0)
-        //        throw new Exception("Stock insuffisant.");
-
-        //    _context.produits.Update(produit);
-        //    await _context.SaveChangesAsync();
-        //}
+        /// <summary>
+        /// permet la suppression d'un produit au pannier.
+        /// point important le produit est seulement enlever du pannier et non de la bd
+        /// </summary>
+        /// <param name="productId">le id du produit que l'utilisateur veux retirer du panier </param>
         public void EnleverProduitPannier(int productId)
         {
             var cart = _httpContextAccessor.HttpContext.Request.Cookies.GetObject<List<PannierProduitVM>>("panier")
@@ -143,6 +148,10 @@ namespace E25ProjetEtendu.Services
                 _httpContextAccessor.HttpContext.Response.Cookies.SetObject("panier", cart);
             }
         }
+        /// <summary>
+        /// permet l'ajout d'un produit au pannier.        
+        /// <summary>
+        /// <param name="productId">le id du produit que l'utilisateur veux augmenter du panier</param>
         public void AugmenteProduitPannier(int productId)
         {
             var cart = _httpContextAccessor.HttpContext.Request.Cookies.GetObject<List<PannierProduitVM>>("panier")
@@ -165,15 +174,13 @@ namespace E25ProjetEtendu.Services
 
             _httpContextAccessor.HttpContext.Response.Cookies.SetObject("panier", cart);
         }
-
+        /// <summary>
+        /// Permet de vider le panier d'un coup
+        /// </summary>
         public void VidePannier()
         {
             _httpContextAccessor.HttpContext.Response.Cookies.Delete("panier");
         }
-
-
-
-
-
+        #endregion
     }
 }

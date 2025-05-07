@@ -182,7 +182,8 @@ namespace E25ProjetEtendu.Data
                 new Produit { ProduitId = 27, Nom = "Biscuit Oreo", Qty = 130, Prix = 3, Image = "oreo.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 160, Sucres: 14g" },
                 new Produit { ProduitId = 28, Nom = "Beurre d'arachide", Qty = 70, Prix = 5, Image = "beurre.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 190, Lipides: 16g, Protéines: 7g" },
                 new Produit { ProduitId = 29, Nom = "Eau gazeuse Perrier", Qty = 200, Prix = 2, Image = "perrier.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 0" },
-                new Produit { ProduitId = 30, Nom = "Muffin aux bleuets", Qty = 60, Prix = 3, Image = "muffin.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 380, Lipides: 16g, Sucres: 28g" }
+                new Produit { ProduitId = 30, Nom = "Muffin aux bleuets", Qty = 60, Prix = 3, Image = "muffin.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 380, Lipides: 16g, Sucres: 28g" },
+                new Produit { ProduitId = 31, Nom = "BandAid", Qty = 0, Prix = 3, Image = "Aid.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 0" }
             );
         }
     }
