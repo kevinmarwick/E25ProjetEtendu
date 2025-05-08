@@ -74,7 +74,19 @@
                     <h6 class="card-title fw-bold">@item.Nom</h6>
                     <p class="mb-1"><strong>Prix :</strong> @item.Prix $</p>
                     <p class="mb-1"><strong>Quantité :</strong> @item.Qty</p>
-                    <p class="mb-1"><strong>Note :</strong> @item.Note / 5</p>
+                    <td>
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= item.Note)
+                            {
+                                <span class="text-warning">&#9733;</span> <!-- solid star -->
+                            }
+                            else
+                            {
+                                <span class="text-muted">&#9734;</span> <!-- empty star -->
+                            }
+                        }
+                    </td>
 
                     <a class="btn btn-sm btn-outline-primary w-100 mb-1"
                        asp-controller="Produit" asp-action="Details" asp-route-id="@item.ProduitId">
