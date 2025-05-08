@@ -93,6 +93,29 @@ public class ProduitServiceTests
         Assert.Equal(2, produitsPage1.Count); // First 2
         Assert.Single(produitsPage2);        // Last 1
     }
+    [Fact]
+    public async Task GetProduitsSimilairesAsync_Returns_Similar_Products_By_Note_Or_Price()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var service = new ProduitService(context, null);
 
-   
+        var produitRef = new E25ProjetEtendu.Models.Produit
+        {
+            ProduitId = 99,
+            Nom = "ProduitRef",
+            Prix = 2, // même prix que Coca-Cola
+            Note = 5  // même note que Red Bull
+        };
+
+        var similaires = await service.GetProduitsSimilairesAsync(produitRef);
+
+        // Assert
+        Assert.NotNull(similaires);
+        Assert.Equal(2, similaires.Count); // Coca-Cola (prix) + Red Bull (note)
+        Assert.Contains(similaires, p => p.Nom == "Coca-Cola");
+        Assert.Contains(similaires, p => p.Nom == "Red Bull");
+    }
+
+
 }

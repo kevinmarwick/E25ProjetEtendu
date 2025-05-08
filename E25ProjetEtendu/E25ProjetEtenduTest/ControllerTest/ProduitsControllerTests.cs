@@ -158,6 +158,31 @@ public class ProduitControllerTests
         Assert.NotNull(json);
         Assert.True(json["success"].GetBoolean());
     }
+    [Fact]
+    public async Task Details_Returns_View_With_Produit_And_Similaires()
+    {
+        // Arrange
+        var produit = new Produit { ProduitId = 1, Nom = "ProduitTest", Prix = 5, Note = 4 };
+        var similaires = new List<Produit>
+    {
+        new Produit { ProduitId = 2, Nom = "Similaire1", Prix = 5 },
+        new Produit { ProduitId = 3, Nom = "Similaire2", Note = 4 }
+    };
+
+        var serviceMock = new Mock<IProduitService>();
+        serviceMock.Setup(s => s.GetByIdAsync(1)).ReturnsAsync(produit);
+        serviceMock.Setup(s => s.GetProduitsSimilairesAsync(produit, 3)).ReturnsAsync(similaires);
+
+        var controller = new ProduitController(serviceMock.Object);
+
+        // Act
+        var result = await controller.Details(1);
+
+        // Assert
+        var viewResult = Assert.IsType<ViewResult>(result);
+        Assert.Equal(produit, viewResult.Model);
+        Assert.Equal(similaires, controller.ViewBag.ProduitsSimilaires);
+    }
 
 
 
