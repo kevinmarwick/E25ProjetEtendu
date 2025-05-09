@@ -1,4 +1,4 @@
-﻿        html {
+        html {
           font-size: 14px;
         }
 
@@ -102,4 +102,24 @@
         font-weight: bold;
         color: black;
         z-index: 2;
+    }
+
+/* Adds a trailing $ symbol for price inputs, using French Canadian format (e.g., 3,99 $) */
+.input-with-symbol {
+    position: relative;
+}
+
+    .input-with-symbol input {
+        padding-right: 2rem;
+    }
+
+    .input-with-symbol .symbol::before {
+        content: '\00A0$'; /* non-breaking space + dollar sign */
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        pointer-events: none;
+        font-size: 1rem;
     }

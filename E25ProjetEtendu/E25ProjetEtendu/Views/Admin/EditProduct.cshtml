@@ -1,0 +1,76 @@
+﻿@model E25ProjetEtendu.ViewModels.EditProductVM
+
+@{
+    ViewData["Title"] = "Modifier un produit";
+}
+
+<h1>Modifier un produit</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="EditProduct" asp-route-id="@Model.ProduitId" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ProduitId" />
+
+            <div class="form-group mb-3">
+                <label asp-for="Nom" class="form-label"></label>
+                <input asp-for="Nom" class="form-control" />
+                <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.CurrentImage))
+            {
+                <div class="mb-3">
+                    <label>Image actuelle:</label><br />
+                    <img src="/images/@Model.CurrentImage" alt="Image actuelle" class="img-thumbnail" style="max-width: 150px;" />
+                </div>
+            }
+
+            <div class="form-group mb-3">
+                <label for="NewImageFile" class="form-label">Nouvelle image</label>
+                <input type="file" id="NewImageFile" name="NewImageFile" class="form-control" accept="image/*" onchange="previewNewImage(event)" />
+                <div class="mt-2" id="newImagePreview" style="display: none;">
+                    <label>Aperçu:</label><br />
+                    <img id="previewImg" class="img-thumbnail" style="max-width: 150px;" />
+                </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="ValeurNutritive" class="form-label">Valeurs nutritionnelles</label>
+                <textarea asp-for="ValeurNutritive" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="ValeurNutritive" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <a asp-action="IndexProduits" class="btn btn-secondary ms-2">Retour à la liste</a>
+                <button type="submit" class="btn btn-primary">Sauvegarder</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        function previewNewImage(event) {
+            const input = event.target;
+            const previewContainer = document.getElementById('newImagePreview');
+            const previewImg = document.getElementById('previewImg');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImg.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+    </script>
+}

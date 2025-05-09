@@ -1,4 +1,4 @@
-﻿using E25ProjetEtendu.Data;
+using E25ProjetEtendu.Data;
 using E25ProjetEtendu.Extensions;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services.IServices;
@@ -25,6 +25,15 @@ namespace E25ProjetEtendu.Services
         /// <returns>retourne une list de produit actif</returns>
         public async Task<IEnumerable<Produit>> GetAllActiveProduct()
         {
+            return await _context.produits.FirstOrDefaultAsync(p => p.ProduitId == produitId); 
+        }
+
+        /// <summary>
+        /// Returns a list of all active products
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IEnumerable<Produit>> GetAllActiveProduct()
+        {
             return await _context.produits.Where(p => p.EstActif)
                                           .OrderBy(p => p.Nom)
                                           .ToListAsync();
@@ -35,7 +44,7 @@ namespace E25ProjetEtendu.Services
         }
 
         /// <summary>
-        /// cette méthode sers a gérer la recherche de produit et faire la pagination
+        /// Returns a list of products using filters in parameters
         /// </summary>
         /// <param name="recherche">le mots clé mis dans la barre de recherche</param>
         /// <param name="tri">les differents options de tri pour la recherche</param>

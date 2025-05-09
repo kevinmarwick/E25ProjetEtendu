@@ -6,15 +6,23 @@ using Microsoft.AspNetCore.Identity;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using E25ProjetEtendu.Binders;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.ModelBinderProviders.Insert(0, new DecimalModelBinderProvider());
+});
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("NomConnection")));
 builder.Services.AddScoped<IProduitService, ProduitService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
+
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
@@ -37,6 +45,17 @@ builder.Services.Configure<SmtpSettings>(
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 
+var culture = new CultureInfo("fr-CA");
+
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(culture),
+    SupportedCultures = new List<CultureInfo> { culture },
+    SupportedUICultures = new List<CultureInfo> { culture }
+};
+
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
 
 
 var app = builder.Build();
@@ -52,12 +71,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
-
-var supportedCultures = new[] { "fr", "en" };
-var localizationOptions = new RequestLocalizationOptions()
-    .SetDefaultCulture("fr")
-    .AddSupportedCultures(supportedCultures)
-    .AddSupportedUICultures(supportedCultures);
 
 app.UseRequestLocalization(localizationOptions);
 

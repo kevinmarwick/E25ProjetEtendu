@@ -28,7 +28,7 @@ namespace E25ProjetEtendu.Models
         public bool EstActif { get; set; }
 
         [Range(0, 5, ErrorMessage = "La note doit être entre 0 et 5")]
-        public int Note { get; set; }
+        public int? Note { get; set; }
         [Required(ErrorMessage = "Les valeur nutritive son obligatoire")]
         [StringLength(500, ErrorMessage = "Les valeurs ne peut pas dépasser 500 caractères")]
         public string ValeurNutritive { get; set; }

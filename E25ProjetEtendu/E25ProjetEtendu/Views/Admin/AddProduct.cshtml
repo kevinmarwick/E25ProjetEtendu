@@ -1,0 +1,98 @@
+﻿@model E25ProjetEtendu.ViewModels.AddProductVM
+
+
+@{
+    ViewData["Title"] = "Ajouter un produit";
+}
+
+<h1>Ajouter un produit</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="AddProduct" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Nom" class="form-label">Nom du produit</label>
+                <input asp-for="Nom" class="form-control" />
+                <span asp-validation-for="Nom" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Qty" class="form-label">Quantité disponible</label>
+                <input asp-for="Qty" class="form-control  int-only" />
+                <span asp-validation-for="Qty" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="Prix" class="form-label">Prix</label>
+                <div class="input-with-symbol">
+                    <input asp-for="Prix" class="form-control decimal-only" type="text" inputmode="decimal" />
+                    <span class="symbol"></span>
+                </div>
+                <span asp-validation-for="Prix" class="text-danger"></span>
+            </div>
+
+
+            <div class="form-group mb-3">
+                <label asp-for="ValeurNutritive" class="form-label">Valeurs nutritionnelles</label>
+                <textarea asp-for="ValeurNutritive" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="ValeurNutritive" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="ImageFile" class="form-label">Image du produit</label>
+                <input type="file" id="ImageFile" name="ImageFile" class="form-control" accept="image/*" onchange="previewNewImage(event)" />
+                <div class="mt-2" id="newImagePreview">
+                    <label>Aperçu:</label><br />
+                    <img id="previewImg" class="img-thumbnail preview-image" />
+                </div>
+            </div>
+
+            <div class="form-group form-check mb-3">
+                <input class="form-check-input" asp-for="EstActif" checked />
+                <label class="form-check-label" asp-for="EstActif">Produit actif</label>
+            </div>
+
+            <div class="form-group">                
+                <a asp-action="IndexProduits" class="btn btn-secondary ms-2">Retour à la liste</a>
+                <button type="submit" class="btn btn-primary">Créer</button>
+            </div>
+            
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    
+    <script>
+        function previewNewImage(event) {
+            const input = event.target;
+            const previewContainer = document.getElementById('newImagePreview');
+            const previewImg = document.getElementById('previewImg');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImg.src = e.target.result;
+                    previewContainer.classList.add('show');
+                }
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                previewContainer.classList.remove('show');
+            }
+        }
+    </script>
+}

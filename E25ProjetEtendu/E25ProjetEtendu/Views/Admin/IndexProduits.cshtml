@@ -1,0 +1,182 @@
+﻿@model IEnumerable<E25ProjetEtendu.Models.Produit>
+
+@{
+    ViewData["Title"] = "IndexProduits";
+}
+
+<h1>Index des Produits</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+
+<p>
+    <a asp-action="AddProduct">Ajouter un produit</a>
+</p>
+<table id="productTable" class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Qty)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Prix)
+            </th>           
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Note)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var item in Model)
+            {
+                <tr data-id="@item.ProduitId">
+                    <td>@item.Nom</td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm qty-input int-only" value="@item.Qty" />
+                    </td>
+                    <td class="input-with-symbol">
+                        <input type="text" class="form-control form-control-sm prix-input decimal-only" value="@item.Prix.ToString("0.00")" />
+                        <span class="symbol"></span>
+                    </td>
+
+
+                    <td>
+                        <button class="btn btn-sm btn-success save-btn d-none">Save</button>
+                        <button class="btn btn-sm btn-secondary cancel-btn d-none">Cancel</button>
+                    </td>
+                    <!--Note-->
+                    <td>
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= item.Note)
+                            {
+                                <span class="text-warning">&#9733;</span> <!-- solid star -->
+                            }
+                            else
+                            {
+                                <span class="text-muted">&#9734;</span> <!-- empty star -->
+                            }
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="EditProduct" asp-route-id="@item.ProduitId">Modifier produit</a> |
+                        <a asp-action="#" asp-route-id="@item.ProduitId">Rendre indisponible</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            //  Initialize DataTable
+            $('#productTable').DataTable({
+                columnDefs: [
+                    {
+                        targets: [1], // Qty
+                        render: function (data, type, row, meta) {
+                            if (type === 'sort') {
+                                return parseFloat($(data).val()) || 0;
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        targets: [2], // Prix
+                        render: function (data, type, row, meta) {
+                            if (type === 'sort') {
+                                return parseFloat($(data).val().replace(',', '.')) || 0;
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        targets: [3, 5], // Disable sorting on buttons and links
+                        orderable: false
+                    }
+                ],
+                language: {
+                    search: "Rechercher:",
+                    lengthMenu: "Afficher _MENU_ entrées",
+                    info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+                    paginate: {
+                        first: "Premier",
+                        last: "Dernier",
+                        next: "Suivant",
+                        previous: "Précédent"
+                    },
+                    zeroRecords: "Aucun produit trouvé",
+                    infoEmpty: "Aucune entrée disponible",
+                    infoFiltered: "(filtré de _MAX_ entrées au total)"
+                }
+            });
+           
+            //  Store original values on page load
+            $('#productTable tbody tr').each(function () {
+                const row = $(this);
+                row.data('original-qty', row.find('.qty-input').val());
+                row.data('original-prix', row.find('.prix-input').val());
+            });
+
+            //  Show Save/Cancel when input changes
+            $('#productTable').on('input', '.qty-input, .prix-input', function () {
+                const row = $(this).closest('tr');
+                row.addClass('edited');
+                row.find('.save-btn, .cancel-btn').removeClass('d-none');
+            });
+
+            //  Cancel button — revert changes
+            $('#productTable').on('click', '.cancel-btn', function () {
+                const row = $(this).closest('tr');
+                row.find('.qty-input').val(row.data('original-qty'));
+                row.find('.prix-input').val(row.data('original-prix'));
+                row.removeClass('edited');
+                row.find('.save-btn, .cancel-btn').addClass('d-none');
+            });
+
+            $('#productTable').on('click', '.save-btn', function () {
+                const row = $(this).closest('tr');
+                const id = row.data('id');
+                const qty = row.find('.qty-input').val();
+                const prix = parseFloat(row.find('.prix-input').val().replace(',', '.')); // handle comma
+
+                $.ajax({
+                    url: '@Url.Action("UpdateInventoryAndPrice", "Admin")',
+                    method: 'POST',
+                    data: {
+                        produitId: id,
+                        qty: qty,
+                        prix: prix
+                    },
+                    success: function () {
+                        console.log(" 1Produit mis à jour !");
+                        row.data('original-qty', qty);
+                        row.data('original-prix', prix.toFixed(2).replace('.', ','));
+                        row.find('.prix-input').val(prix.toFixed(2).replace('.', ','));
+                        row.removeClass('edited');
+                        row.find('.save-btn, .cancel-btn').addClass('d-none');
+                    },
+                    error: function () {
+                        alert(" Erreur: Les prix et quantités disponibles doivent être inférieurs à 10000");
+                    }
+                });
+            });
+
+        });
+    </script>
+}
+
