@@ -25,20 +25,11 @@ namespace E25ProjetEtendu.Services
         /// <returns>retourne une list de produit actif</returns>
         public async Task<IEnumerable<Produit>> GetAllActiveProduct()
         {
-            return await _context.produits.FirstOrDefaultAsync(p => p.ProduitId == produitId); 
+            return await _context.produits.Where(p => p.EstActif == true).ToListAsync(); 
         }
 
-        /// <summary>
-        /// Returns a list of all active products
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IEnumerable<Produit>> GetAllActiveProduct()
-        {
-            return await _context.produits.Where(p => p.EstActif)
-                                          .OrderBy(p => p.Nom)
-                                          .ToListAsync();
-        }
-        public async Task<Produit?> GetByIdAsync(int id)
+        
+        public async Task<Produit?> GetProduitById(int id)
         {
             return await _context.produits.FindAsync(id);
         }

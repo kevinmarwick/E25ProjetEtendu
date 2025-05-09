@@ -170,7 +170,7 @@ public class ProduitControllerTests
     };
 
         var serviceMock = new Mock<IProduitService>();
-        serviceMock.Setup(s => s.GetByIdAsync(1)).ReturnsAsync(produit);
+        serviceMock.Setup(s => s.GetProduitById(1)).ReturnsAsync(produit);
         serviceMock.Setup(s => s.GetProduitsSimilairesAsync(produit, 3)).ReturnsAsync(similaires);
 
         var controller = new ProduitController(serviceMock.Object);

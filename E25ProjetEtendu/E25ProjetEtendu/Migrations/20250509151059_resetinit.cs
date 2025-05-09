@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace E25ProjetEtendu.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class resetinit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -66,7 +66,7 @@ namespace E25ProjetEtendu.Migrations
                     Prix = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     EstActif = table.Column<bool>(type: "bit", nullable: false),
-                    Note = table.Column<int>(type: "int", nullable: false),
+                    Note = table.Column<int>(type: "int", nullable: true),
                     ValeurNutritive = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
@@ -188,7 +188,7 @@ namespace E25ProjetEtendu.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "Balance", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "21111111-1111-1111-1111-111111111111", 0, 0m, "a9811c84-4783-44cc-83fb-9e5011e76bfc", "admin@example.com", true, "Admin", "Admin", false, null, "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEKmnJPqLYPJ4VV239DEmpZh1/a1xbXy0uC3EViQ2cYJeLLSll+Gh3WjxLJn4k8O0Pw==", null, false, "fd433c0f-2a1e-42cd-a04b-a13102764f1f", false, "admin@example.com" });
+                values: new object[] { "21111111-1111-1111-1111-111111111111", 0, 0m, "b094cf43-82dc-44eb-96db-020547d3f776", "admin@example.com", true, "Admin", "Admin", false, null, "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEK5DBW34bAZxyef9Zv7tUat8nXQ5lymzZMnzheruQPniCzyzJalGAHseSPqD21dYJw==", null, false, "68014b63-da07-4401-8380-f99f8c890d76", false, "admin@example.com" });
 
             migrationBuilder.InsertData(
                 table: "produits",

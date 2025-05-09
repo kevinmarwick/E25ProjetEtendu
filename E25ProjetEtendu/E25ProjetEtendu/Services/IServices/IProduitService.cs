@@ -13,7 +13,7 @@ namespace E25ProjetEtendu.Services.IServices
         void AugmenteProduitPannier(int productId);
         void VidePannier();
         Task<List<Produit>> GetProduitsSimilairesAsync(Produit produit, int max = 3);
-        Task<Produit?> GetByIdAsync(int id);
+        Task<Produit?> GetProduitById(int id);
 
     }
 }

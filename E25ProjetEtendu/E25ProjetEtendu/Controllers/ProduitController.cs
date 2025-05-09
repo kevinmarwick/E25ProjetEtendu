@@ -40,7 +40,7 @@ namespace E25ProjetEtendu.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var produit = await _produitService.GetByIdAsync(id);
+            var produit = await _produitService.GetProduitById(id);
             if (produit == null)
                 return NotFound();
 
