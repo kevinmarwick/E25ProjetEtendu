@@ -105,7 +105,7 @@ namespace E25ProjetEtendu.Migrations
                             Id = "21111111-1111-1111-1111-111111111111",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "7291ac5c-7d40-47ef-84b6-96cd65010448",
+                            ConcurrencyStamp = "a9811c84-4783-44cc-83fb-9e5011e76bfc",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -113,9 +113,9 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAELJIl8+jjZx8bIzQY7vlE5W0KGA9SeAHgTZj2OHpezf5iX03zc1S7RodC0cmhvyj1A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKmnJPqLYPJ4VV239DEmpZh1/a1xbXy0uC3EViQ2cYJeLLSll+Gh3WjxLJn4k8O0Pw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "35e08338-8bb2-4e88-b40a-2b8efe8f636f",
+                            SecurityStamp = "fd433c0f-2a1e-42cd-a04b-a13102764f1f",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         });
@@ -490,6 +490,17 @@ namespace E25ProjetEtendu.Migrations
                             Prix = 3m,
                             Qty = 60,
                             ValeurNutritive = "Calories: 380, Lipides: 16g, Sucres: 28g"
+                        },
+                        new
+                        {
+                            ProduitId = 31,
+                            EstActif = true,
+                            Image = "Aid.jpg",
+                            Nom = "BandAid",
+                            Note = 5,
+                            Prix = 3m,
+                            Qty = 0,
+                            ValeurNutritive = "Calories: 0"
                         });
                 });
 

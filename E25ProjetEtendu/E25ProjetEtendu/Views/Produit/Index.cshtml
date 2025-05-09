@@ -63,35 +63,51 @@
 </form>
 
 <!-- 🧾 Cartes des produits -->
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+<!-- 🧾 Cartes des produits -->
+<div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
     @foreach (var item in Model)
     {
         <div class="col">
-            <div class="card h-100 shadow-sm">
-                <img src="~/images/@item.Image" class="card-img-top" alt="@item.Nom" style="height: 200px; object-fit: cover;" />
-                <div class="card-body">
-                    <h5 class="card-title">@item.Nom</h5>
-                    <p class="card-text"><strong>Prix :</strong> @item.Prix $</p>
-                    <p class="card-text"><strong>Quantité dispo :</strong> @item.Qty</p>
-                    <p class="card-text"><strong>Note :</strong> @item.Note / 5</p>
-                    <p class="card-text small text-muted">@item.ValeurNutritive</p>
+            <div class="card h-100 shadow-sm @(item.Qty == 0 ? "disabled-product" : "")" style="font-size: 0.85rem;">
+                <img src="~/images/@item.Image" class="card-img-top" alt="@item.Nom" style="height: 140px; object-fit: cover;" />
+                <div class="card-body p-2">
+                    <h6 class="card-title fw-bold">@item.Nom</h6>
+                    <p class="mb-1"><strong>Prix :</strong> @item.Prix $</p>
+                    <p class="mb-1"><strong>Quantité :</strong> @item.Qty</p>
+                    <td>
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i <= item.Note)
+                            {
+                                <span class="text-warning">&#9733;</span> <!-- solid star -->
+                            }
+                            else
+                            {
+                                <span class="text-muted">&#9734;</span> <!-- empty star -->
+                            }
+                        }
+                    </td>
 
-                    <a class="btn btn-outline-primary text-dark" asp-area="" asp-controller="Produit" asp-action="Details" asp-route-id="@item.ProduitId">Détails du produit</a>
+                    <a class="btn btn-sm btn-outline-primary w-100 mb-1"
+                       asp-controller="Produit" asp-action="Details" asp-route-id="@item.ProduitId">
+                        Détails
+                    </a>
 
-                    <!-- Bouton Ajout au panier via localStorage -->
                     <button type="button"
-                            class="btn btn-primary add-to-cart mt-2"
+                            class="btn btn-sm btn-primary w-100 add-to-cart"
                             data-productid="@item.ProduitId"
                             data-productname="@item.Nom"
                             data-price="@item.Prix"
-                            data-image="@item.Image">
-                        Ajouter au panier
+                            data-image="@item.Image"
+                    @(item.Qty == 0 ? "disabled" : "")>
+                        Ajouter
                     </button>
                 </div>
             </div>
         </div>
     }
 </div>
+
 
 <!-- 📄 Pagination -->
 <nav aria-label="Pagination">
@@ -142,8 +158,9 @@
 <!-- expose l’ID utilisateur -->
 <script>
     var isAuthenticated = @User.Identity.IsAuthenticated.ToString().ToLower();
-    var userId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+    var userId = "@(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)";
 </script>
+
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -162,6 +179,8 @@
         let image = $(this).data('image');
 
         let storageKey = userId ? 'panier_' + userId : 'panier_guest';
+
+
         let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
 
         let item = cart.find(p => p.ProduitId === productId);
