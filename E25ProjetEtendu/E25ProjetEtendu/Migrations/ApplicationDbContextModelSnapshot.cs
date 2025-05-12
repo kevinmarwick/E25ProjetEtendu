@@ -177,7 +177,7 @@ namespace E25ProjetEtendu.Migrations
 
                     b.HasKey("ProduitId");
 
-                    b.ToTable("produits");
+                    b.ToTable("produits", (string)null);
 
                     b.HasData(
                         new
