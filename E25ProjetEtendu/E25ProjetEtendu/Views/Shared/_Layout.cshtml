@@ -5,177 +5,188 @@
 <!DOCTYPE html>
 <html lang="fr-CA">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - E25ProjetEtendu</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-          crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="~/E25ProjetEtendu.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/js/site.js" asp-append-version="true" />
-    
-   
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - E25ProjetEtendu</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+		  crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="~/E25ProjetEtendu.styles.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/js/site.js" asp-append-version="true" />
+
+
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">E25ProjetEtendu</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Produit" asp-action="Index">Liste de produit</a>
-                        </li>                        
-                    </ul>
-                    <partial name="_LoginPartial" />
-                    <ul class="navbar-nav">
-                        <li class="nav-item position-relative">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Produit" asp-action="Pannier" id="nav-cart-icon">
-                                <i class="fa-solid fa-cart-shopping fa-xl"></i>
-                                <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                                    0
-                                </span>
-                            </a>
-                        </li>
-                    </ul>
+	<header>
+		<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+			<div class="container-fluid">
+				<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">E25ProjetEtendu</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+						aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+					<ul class="navbar-nav flex-grow-1">
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link text-dark" asp-area="" asp-controller="Produit" asp-action="Index">Liste de produit</a>
+						</li>
+					</ul>
+					<partial name="_LoginPartial" />
+					<ul class="navbar-nav">
+						<li class="nav-item position-relative">
+							@if (SignInManager.IsSignedIn(User))
+							{
+								<a class="nav-link text-dark" asp-area="" asp-controller="Produit" asp-action="Pannier" id="nav-cart-icon">
+									<i class="fa-solid fa-cart-shopping fa-xl"></i>
+									<span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+										0
+									</span>
+								</a>
+							}
+							else
+							{
+								<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="/Produit/Pannier">
 
-                </div>
-            </div>
-        </nav>
-    </header>
+									<i class="fa-solid fa-cart-shopping fa-xl"></i>
+								</a>
+							}
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+						</li>
+					</ul>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - E25ProjetEtendu - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
+				</div>
+			</div>
+		</nav>
+	</header>
 
-    <!-- ✅ bouton flottant pour ouvrir le mini-panier -->
-    <button id="toggle-cart-btn" class="btn btn-primary rounded-circle">
-        <i class="fa fa-shopping-cart"></i>
-    </button>
+	<div class="container">
+		<main role="main" class="pb-3">
+			@RenderBody()
+		</main>
+	</div>
 
-    <!-- ✅ mini-panier rétractable -->
-    <div id="cart-summary">
-        <h5 class="border-bottom pb-2 mb-3">Mon panier</h5>
-        <div id="cart-summary-content">
-            <p>Chargement du panier...</p>
-        </div>
-    </div>
+	<footer class="border-top footer text-muted">
+		<div class="container">
+			&copy; 2025 - E25ProjetEtendu - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+		</div>
+	</footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="~/js/decimal-input-filter.js"></script>
+	<!-- ✅ bouton flottant pour ouvrir le mini-panier -->
+	<button id="toggle-cart-btn" class="btn btn-primary rounded-circle">
+		<i class="fa fa-shopping-cart"></i>
+	</button>
 
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>    
-    @await RenderSectionAsync("Scripts", required: false)
+	<!-- ✅ mini-panier rétractable -->
+	<div id="cart-summary">
+		<h5 class="border-bottom pb-2 mb-3">Mon panier</h5>
+		<div id="cart-summary-content">
+			<p>Chargement du panier...</p>
+		</div>
+	</div>
 
-    <script>
-        $('#toggle-cart-btn').click(function () {
-            $('#cart-summary').toggleClass('show');
-        });
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+	<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+	<script src="~/js/decimal-input-filter.js"></script>
 
-        function afficherMiniPanier() {
-            let userId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
-            let storageKey = 'panier_' + userId;
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	@await RenderSectionAsync("Scripts", required: false)
 
-            let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
+	<script>
+		$('#toggle-cart-btn').click(function () {
+			$('#cart-summary').toggleClass('show');
+		});
 
-            let html = '';
+		function afficherMiniPanier() {
+			let userId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+			let storageKey = 'panier_' + userId;
 
-            if (cart.length === 0) {
-                html = '<p>Le panier est vide</p>';
-            } else {
-                html = '<ul class="list-unstyled">';
-                cart.forEach(item => {
-                    html += `<li class="d-flex align-items-center mb-2">
-                                        <img src="/images/${item.Image}" alt="${item.Nom}" style="width:40px; height:40px; object-fit:cover; margin-right:10px;">
-                                        <div><strong>${item.Nom}</strong><br>Qté: ${item.Quantite}</div>
-                                     </li>`;
-                });
-                let total = cart.reduce((acc, item) => acc + item.Prix * item.Quantite, 0);
-                html += `</ul><p class="mt-2"><strong>Total: ${total.toFixed(2)} $</strong></p>`;
-            }
+			let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
 
-            $('#cart-summary-content').html(html);
-        }
-        function updateCartBadge() {
-            // Récupère l'ID utilisateur exposé côté serveur Razor
-            let userId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+			let html = '';
 
-            if (!userId) {
-                console.warn("Aucun utilisateur connecté. Pas de badge affiché.");
-                return; // On ne montre pas de badge pour utilisateur non connecté
-            }
+			if (cart.length === 0) {
+				html = '<p>Le panier est vide</p>';
+			} else {
+				html = '<ul class="list-unstyled">';
+				cart.forEach(item => {
+					html += `<li class="d-flex align-items-center mb-2">
+												<img src="/images/${item.Image}" alt="${item.Nom}" style="width:40px; height:40px; object-fit:cover; margin-right:10px;">
+												<div><strong>${item.Nom}</strong><br>Qté: ${item.Quantite}</div>
+											 </li>`;
+				});
+				let total = cart.reduce((acc, item) => acc + item.Prix * item.Quantite, 0);
+				html += `</ul><p class="mt-2"><strong>Total: ${total.toFixed(2)} $</strong></p>`;
+			}
 
-            let storageKey = 'panier_' + userId; // ✅ clé unique par utilisateur
-            let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
-            let totalQuantity = cart.reduce((acc, item) => acc + item.Quantite, 0);
+			$('#cart-summary-content').html(html);
+		}
+		function updateCartBadge() {
+			// Récupère l'ID utilisateur exposé côté serveur Razor
+			let userId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+
+			if (!userId) {
+				console.warn("Aucun utilisateur connecté. Pas de badge affiché.");
+				return; // On ne montre pas de badge pour utilisateur non connecté
+			}
+
+			let storageKey = 'panier_' + userId; // ✅ clé unique par utilisateur
+			let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
+			let totalQuantity = cart.reduce((acc, item) => acc + item.Quantite, 0);
 
 
 
-            let badge = document.getElementById("cart-badge");
-            badge.textContent = totalQuantity;
+			let badge = document.getElementById("cart-badge");
+			badge.textContent = totalQuantity;
 
-            if (totalQuantity === 0) {
-                badge.style.display = 'none';
-            } else {
-                badge.style.display = 'inline-block';
-            }
-        }
-        $(document).ready(function () {
-            afficherMiniPanier();
-            $(document).on('click', '.add-to-cart', function () {
-                setTimeout(afficherMiniPanier, 100);
-            });
-            $(document).on('click', '.increase-btn, .decrease-btn, #clear-cart-btn', function () {
-                setTimeout(afficherMiniPanier, 100);
-            });
-        });
-        $(document).ready(function () {
-            // 🔥 Met à jour le badge au chargement
-            updateCartBadge();
+			if (totalQuantity === 0) {
+				badge.style.display = 'none';
+			} else {
+				badge.style.display = 'inline-block';
+			}
+		}
+		$(document).ready(function () {
+			afficherMiniPanier();
+			$(document).on('click', '.add-to-cart', function () {
+				setTimeout(afficherMiniPanier, 100);
+			});
+			$(document).on('click', '.increase-btn, .decrease-btn, #clear-cart-btn', function () {
+				setTimeout(afficherMiniPanier, 100);
+			});
+		});
+		$(document).ready(function () {
+			// 🔥 Met à jour le badge au chargement
+			updateCartBadge();
 
-            // 🔥 Après ajout au panier
-            $(document).on('click', '.add-to-cart', function () {
-                setTimeout(updateCartBadge, 100);
-            });
+			// 🔥 Après ajout au panier
+			$(document).on('click', '.add-to-cart', function () {
+				setTimeout(updateCartBadge, 100);
+			});
 
-            // 🔥 Après augmentation de quantité
-            $(document).on('click', '.increase-btn', function () {
-                setTimeout(updateCartBadge, 100);
-            });
+			// 🔥 Après augmentation de quantité
+			$(document).on('click', '.increase-btn', function () {
+				setTimeout(updateCartBadge, 100);
+			});
 
-            // 🔥 Après diminution de quantité
-            $(document).on('click', '.decrease-btn', function () {
-                setTimeout(updateCartBadge, 100);
-            });
+			// 🔥 Après diminution de quantité
+			$(document).on('click', '.decrease-btn', function () {
+				setTimeout(updateCartBadge, 100);
+			});
 
-            // 🔥 Après vidage du panier
-            $(document).on('click', '#clear-cart-btn', function () {
-                setTimeout(updateCartBadge, 100);
-            });
-        });
+			// 🔥 Après vidage du panier
+			$(document).on('click', '#clear-cart-btn', function () {
+				setTimeout(updateCartBadge, 100);
+			});
+		});
 
-    </script>
+	</script>
 </body>
 </html>
