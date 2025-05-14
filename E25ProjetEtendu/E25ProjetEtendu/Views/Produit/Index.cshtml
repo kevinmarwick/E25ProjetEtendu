@@ -168,7 +168,6 @@
 <script>
     $(document).on('click', '.add-to-cart', function () {
         if (!isAuthenticated) {
-            // Redirige vers la page de connexion
             window.location.href = '/Identity/Account/Login';
             return;
         }
@@ -177,16 +176,22 @@
         let productName = $(this).data('productname');
         let price = parseFloat($(this).data('price'));
         let image = $(this).data('image');
+        let stock = parseInt($(this).data('stock'));
 
         let storageKey = userId ? 'panier_' + userId : 'panier_guest';
-
-
         let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
 
         let item = cart.find(p => p.ProduitId === productId);
+
         if (item) {
+            if (item.Quantite >= stock) {                
+                return;
+            }
             item.Quantite += 1;
         } else {
+            if (stock <= 0) {                
+                return;
+            }
             cart.push({
                 ProduitId: productId,
                 Nom: productName,
@@ -196,7 +201,9 @@
             });
         }
 
-        localStorage.setItem(storageKey, JSON.stringify(cart));        
-    });   
+        localStorage.setItem(storageKey, JSON.stringify(cart));
+        
+    });
 </script>
+
 
