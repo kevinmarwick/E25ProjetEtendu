@@ -47,7 +47,7 @@ public class AdminServiceTests
     {
         using var context = GetInMemoryDbContext();
 
-        var produit = new Produit { ProduitId = 1, Nom = "Test", Qty = 5, Prix = 10, Image = "", ValeurNutritive = "Test" };
+        var produit = new Produit { ProduitId = 1, Nom = "Test", InventoryQuantity = 5, Prix = 10, Image = "", ValeurNutritive = "Test" };
         context.produits.Add(produit);
         await context.SaveChangesAsync();
 
@@ -59,7 +59,7 @@ public class AdminServiceTests
         await service.UpdateInventoryAndPrice(1, 20, 19.99m);
 
         var updated = context.produits.First();
-        Assert.Equal(20, updated.Qty);
+        Assert.Equal(20, updated.InventoryQuantity);
         Assert.Equal(19.99m, updated.Prix);
     }
 

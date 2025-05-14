@@ -25,7 +25,10 @@ namespace E25ProjetEtendu.Models
         [Required]
         [Range(0, 1000, ErrorMessage = "Le solde doit être entre 0 $ et 1 000 $.")]
         [Column(TypeName = "decimal(18,2)")]
-        public decimal Balance { get; set; } = 0;        
+        public decimal Balance { get; set; } = 0;    
         
+        //Navigation properties
+        public List<Order> BoughtOrders { get; set; }
+        public List<Order> DeliveredOrders { get; set; }
     }
 }

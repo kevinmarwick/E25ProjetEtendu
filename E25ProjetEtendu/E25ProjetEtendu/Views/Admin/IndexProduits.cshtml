@@ -24,7 +24,7 @@
                 @Html.DisplayNameFor(model => model.Nom)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Qty)
+                @Html.DisplayNameFor(model => model.InventoryQuantity)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Prix)
@@ -44,7 +44,7 @@
                 <tr data-id="@item.ProduitId">
                     <td>@item.Nom</td>
                     <td>
-                        <input type="number" class="form-control form-control-sm qty-input int-only" value="@item.Qty" />
+                        <input type="number" class="form-control form-control-sm qty-input int-only" value="@item.InventoryQuantity" />
                     </td>
                     <td class="input-with-symbol">
                         <input type="text" class="form-control form-control-sm prix-input decimal-only" value="@item.Prix.ToString("0.00")" />
