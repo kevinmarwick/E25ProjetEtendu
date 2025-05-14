@@ -15,7 +15,7 @@ namespace E25ProjetEtendu.Models
 
         [Required(ErrorMessage = "La quantité est obligatoire")]
         [Range(1, 10000, ErrorMessage = "La quantité doit être entre 1 et 10000")]
-        public int Qty { get; set; }
+        public int InventoryQuantity { get; set; }
 
         [Required(ErrorMessage = "Le prix est obligatoire")]
         [Range(0.01, 10000.00, ErrorMessage = "Le prix doit être supérieur à 0")]
@@ -32,6 +32,9 @@ namespace E25ProjetEtendu.Models
         [Required(ErrorMessage = "Les valeur nutritive son obligatoire")]
         [StringLength(500, ErrorMessage = "Les valeurs ne peut pas dépasser 500 caractères")]
         public string ValeurNutritive { get; set; }
+
+        //Navigation properties
+        public List<OrderItem> OrderItems { get; set; }
 
     }
 }

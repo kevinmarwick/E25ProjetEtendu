@@ -63,7 +63,7 @@ namespace E25ProjetEtendu.Services
                 "prix_desc" => query.OrderByDescending(p => p.Prix),
                 "note" => query.OrderBy(p => p.Note),
                 "note_desc" => query.OrderByDescending(p => p.Note),
-                "popularite" => query.OrderByDescending(p => p.Qty),
+                "popularite" => query.OrderByDescending(p => p.InventoryQuantity),
                 _ => query.OrderBy(p => p.Nom)
             };
 
@@ -108,7 +108,7 @@ namespace E25ProjetEtendu.Services
         {
             var produit = await _context.produits.FindAsync(productId);
 
-            if (produit == null || produit.Qty < quantity)
+            if (produit == null || produit.InventoryQuantity < quantity)
                 throw new Exception("Produit non disponible ou stock insuffisant.");
 
 

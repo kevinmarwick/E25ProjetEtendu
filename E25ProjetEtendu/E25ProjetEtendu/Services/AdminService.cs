@@ -33,7 +33,7 @@ namespace E25ProjetEtendu.Services
             if (produit == null)
                 throw new Exception("Produit non trouvé");
 
-            produit.Qty = qty;
+            produit.InventoryQuantity = qty;
             produit.Prix = prix;
 
             await _context.SaveChangesAsync();
@@ -67,7 +67,7 @@ namespace E25ProjetEtendu.Services
             var product = new Produit
             {
                 Nom = vm.Nom,
-                Qty = vm.Qty,
+                InventoryQuantity = vm.Qty,
                 Prix = vm.Prix,
                 ValeurNutritive = vm.ValeurNutritive,
                 EstActif = vm.EstActif,

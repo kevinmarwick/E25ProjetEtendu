@@ -68,12 +68,12 @@
     @foreach (var item in Model)
     {
         <div class="col">
-            <div class="card h-100 shadow-sm @(item.Qty == 0 ? "disabled-product" : "")" style="font-size: 0.85rem;">
+            <div class="card h-100 shadow-sm @(item.InventoryQuantity == 0 ? "disabled-product" : "")" style="font-size: 0.85rem;">
                 <img src="~/images/@item.Image" class="card-img-top" alt="@item.Nom" style="height: 140px; object-fit: cover;" />
                 <div class="card-body p-2">
                     <h6 class="card-title fw-bold">@item.Nom</h6>
                     <p class="mb-1"><strong>Prix :</strong> @item.Prix $</p>
-                    <p class="mb-1"><strong>Quantité :</strong> @item.Qty</p>
+                    <p class="mb-1"><strong>Quantité :</strong> @item.InventoryQuantity</p>
                     <td>
                         @for (int i = 1; i <= 5; i++)
                         {
@@ -99,7 +99,7 @@
                             data-productname="@item.Nom"
                             data-price="@item.Prix"
                             data-image="@item.Image"
-                    @(item.Qty == 0 ? "disabled" : "")>
+                    @(item.InventoryQuantity == 0 ? "disabled" : "")>
                         Ajouter
                     </button>
                 </div>
