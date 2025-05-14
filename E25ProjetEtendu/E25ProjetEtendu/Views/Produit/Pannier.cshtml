@@ -6,10 +6,12 @@
 
 <div class="text-end">
     
-    <button type="button" id="clear-cart-btn" class="btn btn-danger btn-lg mt-3">
-        Vider le panier
-    </button>
-    <a href="#" class="btn btn-primary btn-lg mt-3">Passer à la caisse</a>
+    <form id="checkout-form" method="post" asp-controller="Payment" asp-action="CreateCheckoutSession">
+        <input type="hidden" name="panierJson" id="panierJson" />
+        <button type="submit" class="btn btn-primary btn-lg mt-3">Passer à la caisse</button>
+    </form>
+
+
 </div>
 
 @section Scripts {
@@ -128,5 +130,11 @@
                 Pannier();
             });
         });
+        $('#checkout-form').on('submit', function (e) {
+            let storageKey = 'panier_' + userId;
+            let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
+            $('#panierJson').val(JSON.stringify(cart));
+        });
+
     </script>
 }
