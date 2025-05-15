@@ -1,4 +1,4 @@
-﻿<h2 class="mb-4">Votre panier</h2>
+<h2 class="mb-4">Votre panier</h2>
 
 <div id="panier-container">
     <!-- Le tableau sera généré par JS -->
@@ -7,12 +7,13 @@
 <div class="d-flex justify-content-end gap-3 mt-3">
     <form id="checkout-form" method="post" asp-controller="Payment" asp-action="CreateCheckoutSession" class="m-0">
         <input type="hidden" name="panierJson" id="panierJson" />
+       
         <div class="form-group mt-4">
             <label for="delivery-location" class="form-label">Lieu de livraison</label>
             <input type="text" id="delivery-location" class="form-control" placeholder="Ex: D-0007" />
         </div>
         <br />
-        <button type="submit" class="btn btn-primary btn-lg">Passer à la caisse</button>
+        <button type="submit" class="btn btn-primary btn-lg" id="checkout-btn" disabled>Passer à la caisse</button>
 
         <button type="button" id="clear-cart-btn" class="btn btn-danger btn-lg">
             Vider le panier
@@ -95,6 +96,12 @@
                                         </div>`;
 
                 $('#total').text(total.toFixed(2) + ' $');
+            }
+            // Activer ou désactiver le bouton de paiement
+            if (cart.length === 0) {
+                $('#checkout-btn').prop('disabled', true);
+            } else {
+                $('#checkout-btn').prop('disabled', false);
             }
 
             $('#panier-container').html(html);
