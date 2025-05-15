@@ -35,7 +35,8 @@ namespace E25ProjetEtendu.Services
 				BuyerId = userId,
 				TotalPrice = totalPrice,
 				DelivererId = null,
-				OrderItems = orderItems
+				OrderItems = orderItems,
+				Location = dto.Location,
 			};
 
 			_context.Orders.Add(order);

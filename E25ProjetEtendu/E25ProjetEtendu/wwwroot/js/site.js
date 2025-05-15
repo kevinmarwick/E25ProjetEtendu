@@ -19,6 +19,7 @@ $(function () {
     }
 });
 
+
 //    Enforce input format:
 // - .decimal-only → max 2 decimals, support comma input
 // - .int-only → digits only
@@ -49,18 +50,39 @@ document.addEventListener('input', function (e) {
     }
 });
 
+// Store and restore delivery location input
+document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("delivery-location");
+    if (!input) return; // not all pages have it
+
+    // Load saved location from localStorage
+    const saved = localStorage.getItem("deliveryLocation");
+    if (saved) {
+        input.value = saved;
+    }
+
+    // Save on input
+    input.addEventListener("input", function () {
+        localStorage.setItem("deliveryLocation", String(this.value));
+
+    });
+});
+
 //Send Order
-
-function envoyerCommande(location) {
-
-  
-
+function envoyerCommande() {
     const userId = document.body.dataset.userid;
     const storageKey = 'panier_' + userId;
     const cart = JSON.parse(localStorage.getItem(storageKey)) || [];
+    const location = localStorage.getItem("deliveryLocation") || "";
 
     console.log("storageKey:", storageKey);
     console.log("raw cart:", localStorage.getItem(storageKey));
+    console.log("deliveryLocation:", location);
+
+    if (!location.trim()) {
+        alert("Veuillez entrer un lieu de livraison.");
+        return Promise.reject("Lieu de livraison manquant");
+    }
 
     if (cart.length === 0) {
         alert("Votre panier est vide.");
@@ -86,4 +108,5 @@ function envoyerCommande(location) {
         return res.json();
     });
 }
+
 

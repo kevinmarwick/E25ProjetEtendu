@@ -20,6 +20,8 @@ namespace E25ProjetEtendu.Models
         public ApplicationUser? Deliverer { get; set; }
 
         public List<OrderItem> OrderItems { get; set; }
+
+        public string Location { get; set; }
         
     }
 }

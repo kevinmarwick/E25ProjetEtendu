@@ -7,11 +7,18 @@
 <div class="d-flex justify-content-end gap-3 mt-3">
     <form id="checkout-form" method="post" asp-controller="Payment" asp-action="CreateCheckoutSession" class="m-0">
         <input type="hidden" name="panierJson" id="panierJson" />
+        <div class="form-group mt-4">
+            <label for="delivery-location" class="form-label">Lieu de livraison</label>
+            <input type="text" id="delivery-location" class="form-control" placeholder="Ex: D-0007" />
+        </div>
+        <br />
         <button type="submit" class="btn btn-primary btn-lg">Passer à la caisse</button>
+
+        <button type="button" id="clear-cart-btn" class="btn btn-danger btn-lg">
+            Vider le panier
+        </button>
+
     </form>
-    <button type="button" id="clear-cart-btn" class="btn btn-danger btn-lg">
-        Vider le panier
-    </button>
 </div>
 
 @section Scripts {
@@ -40,17 +47,17 @@
                 $('#total').text('0 $');
             } else {
                 html += `<div class="table-responsive">
-                                    <table class="table align-middle">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>Produit</th>
-                                                <th>Prix unitaire</th>
-                                                <th>Quantité</th>
-                                                <th>Sous-total</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>`;
+                                            <table class="table align-middle">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Produit</th>
+                                                        <th>Prix unitaire</th>
+                                                        <th>Quantité</th>
+                                                        <th>Sous-total</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>`;
 
                 let subtotal = 0;
                 cart.forEach(item => {
@@ -58,20 +65,20 @@
                     subtotal += itemSubtotal;
 
                     html += `<tr>
-                                        <td>
-                                            <div class="d-flex align-items-center">
-                                                <img src="/images/${item.Image}" alt="${item.Nom}" style="width:80px; height:80px; object-fit:cover; margin-right:15px;" />
-                                                <span>${item.Nom}</span>
-                                            </div>
-                                        </td>
-                                        <td>${item.Prix.toFixed(2)} $</td>
-                                        <td>${item.Quantite}</td>
-                                        <td>${itemSubtotal.toFixed(2)} $</td>
-                                        <td>
-                                            <button class="btn btn-sm btn-success increase-btn" data-productid="${item.ProduitId}">+</button>
-                                            <button class="btn btn-sm btn-warning decrease-btn" data-productid="${item.ProduitId}">-</button>
-                                        </td>
-                                    </tr>`;
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="/images/${item.Image}" alt="${item.Nom}" style="width:80px; height:80px; object-fit:cover; margin-right:15px;" />
+                                                        <span>${item.Nom}</span>
+                                                    </div>
+                                                </td>
+                                                <td>${item.Prix.toFixed(2)} $</td>
+                                                <td>${item.Quantite}</td>
+                                                <td>${itemSubtotal.toFixed(2)} $</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-success increase-btn" data-productid="${item.ProduitId}">+</button>
+                                                    <button class="btn btn-sm btn-warning decrease-btn" data-productid="${item.ProduitId}">-</button>
+                                                </td>
+                                            </tr>`;
                 });
 
                 let tps = subtotal * TPS_RATE;
@@ -81,11 +88,11 @@
                 html += `</tbody></table></div>`;
 
                 html += `<div class="text-end mt-3">
-                                    <p><strong>Sous-total :</strong> ${subtotal.toFixed(2)} $</p>
-                                    <p><strong>TPS:</strong> ${tps.toFixed(2)} $</p>
-                                    <p><strong>TVQ :</strong> ${tvq.toFixed(2)} $</p>
-                                    <h4><strong>Total avec taxes :</strong> ${total.toFixed(2)} $</h4>
-                                </div>`;
+                                            <p><strong>Sous-total :</strong> ${subtotal.toFixed(2)} $</p>
+                                            <p><strong>TPS:</strong> ${tps.toFixed(2)} $</p>
+                                            <p><strong>TVQ :</strong> ${tvq.toFixed(2)} $</p>
+                                            <h4><strong>Total avec taxes :</strong> ${total.toFixed(2)} $</h4>
+                                        </div>`;
 
                 $('#total').text(total.toFixed(2) + ' $');
             }
@@ -140,6 +147,18 @@
                 let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
                 $('#panierJson').val(JSON.stringify(cart));
             });
+        });
+
+        document.getElementById("checkout-btn").addEventListener("click", function (e) {
+            const location = localStorage.getItem("deliveryLocation");
+
+            if (!location || location.trim() === "") {
+                alert("Veuillez entrer une adresse de livraison avant de procéder au paiement.");
+                return;
+            }
+
+            // If location is valid, proceed normally 
+            window.location.href = "/Payment"; 
         });
     </script>
 
