@@ -62,8 +62,8 @@
     </div>
 </form>
 
-<!-- 🧾 Cartes des produits -->
-<!-- 🧾 Cartes des produits -->
+<!--  Cartes des produits -->
+
 <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
     @foreach (var item in Model)
     {
@@ -109,7 +109,7 @@
 </div>
 
 
-<!-- 📄 Pagination -->
+<!--  Pagination -->
 <nav aria-label="Pagination">
     <ul class="pagination justify-content-center mt-4">
         @if (currentPage > 1)
@@ -153,8 +153,8 @@
     </ul>
 </nav>
 
-<!-- 📝 Script pour gérer le bouton Ajouter au panier -->
-<!-- ✅ Charge jQuery AVANT ton script -->
+<!--  Script pour gérer le bouton Ajouter au panier -->
+<!--  Charge jQuery AVANT ton script -->
 <!-- expose l’ID utilisateur -->
 <script>
     var isAuthenticated = @User.Identity.IsAuthenticated.ToString().ToLower();
