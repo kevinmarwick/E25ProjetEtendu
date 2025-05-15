@@ -6,6 +6,6 @@ namespace E25ProjetEtendu.Services.IServices
 {
 	public interface IOrderService
 	{
-		Task<Order> CreateOrderAsync(OrderRequestDTO dto, string userId, List<Produit> produits);
+		Task<Order> CreateOrder(OrderRequestDTO dto, string userId, List<Produit> produits);
 	}
 }

@@ -38,20 +38,24 @@ namespace E25ProjetEtendu.Controllers
 					}
 					return BadRequest(ModelState);
 				}
-
+				//Find User
 				var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+				//Empty Cart
 				if (dto.Items == null || !dto.Items.Any())
 					return BadRequest("Le panier est vide.");
 
+				//Fill Products List
 				var produits = await _context.produits
 					.Where(p => dto.Items.Select(i => i.ProductId).Contains(p.ProduitId))
 					.ToListAsync();
 
+				//Invalid Product
 				if (produits.Count != dto.Items.Count)
 					return BadRequest("Un ou plusieurs produits sont invalides.");
 
-				var order = await _orderService.CreateOrderAsync(dto, userId, produits);
+				//Create Order
+				var order = await _orderService.CreateOrder(dto, userId, produits);
 
 				return Ok(new { message = "Commande enregistrée", orderId = order.OrderId });
 			}

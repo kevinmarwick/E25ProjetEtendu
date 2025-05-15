@@ -14,7 +14,7 @@ namespace E25ProjetEtendu.Services
 			_context = context;
 		}
 
-		public async Task<Order> CreateOrderAsync(OrderRequestDTO dto, string userId, List<Produit> products)
+		public async Task<Order> CreateOrder(OrderRequestDTO dto, string userId, List<Produit> products)
 		{
 			var orderItems = dto.Items.Select(item =>
 			{
