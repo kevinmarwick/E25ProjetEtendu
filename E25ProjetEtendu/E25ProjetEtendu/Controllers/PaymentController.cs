@@ -50,7 +50,6 @@ namespace TonProjet.Controllers
             return Redirect(session.Url);
         }
 
-
         public IActionResult Success() => View();
         public IActionResult Cancel() => View();
     }

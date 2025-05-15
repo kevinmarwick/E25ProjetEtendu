@@ -1,4 +1,5 @@
 ﻿using E25ProjetEtendu.Data;
+using E25ProjetEtendu.Enums;
 using E25ProjetEtendu.Models.DTOs;
 using E25ProjetEtendu.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
@@ -9,9 +10,7 @@ using System.Security.Claims;
 namespace E25ProjetEtendu.Controllers
 {
 	[Authorize]
-	[ApiController]
-	[Route("api/[controller]")]
-	public class OrderController : ControllerBase
+    public class OrderController : Controller
 	{
 		private readonly ApplicationDbContext _context;
 		private readonly IOrderService _orderService;
@@ -22,8 +21,9 @@ namespace E25ProjetEtendu.Controllers
 			_orderService = orderService;
 		}
 
-		[HttpPost("create")]
-		public async Task<IActionResult> Create([FromBody] OrderRequestDTO dto)
+		[HttpPost]
+        [Route("Order/Create")]
+        public async Task<IActionResult> Create([FromBody] OrderRequestDTO dto)
 		{
 			try
 			{
@@ -65,5 +65,23 @@ namespace E25ProjetEtendu.Controllers
 				return StatusCode(500, $"Internal server error: {ex.Message}");
 			}
 		}
-	}
+
+        [Authorize]
+        public async Task<IActionResult> CurrentOrderStatus()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var activeOrder = await _context.Orders
+                .Where(o => o.BuyerId == userId && o.Status != OrderStatus.Delivered)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Product)
+                .OrderByDescending(o => o.OrderDate)
+                .FirstOrDefaultAsync();
+
+            if (activeOrder == null)
+                return RedirectToAction("Index", "Home"); // Or show a "No active order" view
+
+            return View(activeOrder);
+        }
+    }
 }

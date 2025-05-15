@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using E25ProjetEtendu.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace E25ProjetEtendu.Models
 {
@@ -22,6 +23,8 @@ namespace E25ProjetEtendu.Models
         public List<OrderItem> OrderItems { get; set; }
 
         public string Location { get; set; }
-        
+
+        public OrderStatus Status { get; set; } = OrderStatus.Pending;
+
     }
 }
