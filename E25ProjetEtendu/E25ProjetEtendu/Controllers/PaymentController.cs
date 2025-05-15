@@ -1,20 +1,42 @@
 ﻿using E25ProjetEtendu.DTO;
+using E25ProjetEtendu.Models.DTOs;
+using E25ProjetEtendu.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Stripe.Checkout;
+using System.Security.Claims;
+
 
 namespace TonProjet.Controllers
 {
     public class PaymentController : Controller
     {
+        public readonly IProduitService _produitService;
+        public PaymentController(IProduitService produitService)
+        {
+            _produitService = produitService;
+        }
+
         public IActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult CreateCheckoutSession(string panierJson)
+        public async Task<IActionResult> CreateCheckoutSession(string panierJson)
         {
+            var cartItems = JsonConvert.DeserializeObject<List<CartItemDTO>>(panierJson);
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            bool reserved = await _produitService.ReserveStock(cartItems, userId);
+            if (!reserved)
+            {
+                TempData["Error"] = "Certains produits ne sont plus disponibles en quantité suffisante.";
+                return RedirectToAction("Panier", "Produit");
+            }
+
+
             var panier = JsonConvert.DeserializeObject<List<ProduitPanier>>(panierJson);
             var lineItems = new List<SessionLineItemOptions>();
 
@@ -51,7 +73,22 @@ namespace TonProjet.Controllers
         }
 
 
-        public IActionResult Success() => View();
-        public IActionResult Cancel() => View();
+        public async Task<IActionResult> Success()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _produitService.FinalizeReservation(userId);
+
+            return View();
+        }
+
+        public async Task<IActionResult> Cancel()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            await _produitService.CancelReservation(userId);
+
+            TempData["Error"] = "Paiement annulé. Les articles ont été remis en stock.";
+            return RedirectToAction("Pannier", "Produit");
+        }
+
     }
 }
