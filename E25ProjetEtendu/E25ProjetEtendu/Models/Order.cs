@@ -16,8 +16,8 @@ namespace E25ProjetEtendu.Models
         public string BuyerId { get; set; }
         public ApplicationUser Buyer { get; set; }
 
-        public string DelivererId { get; set; }
-        public ApplicationUser Deliverer { get; set; }
+        public string? DelivererId { get; set; }
+        public ApplicationUser? Deliverer { get; set; }
 
         public List<OrderItem> OrderItems { get; set; }
         

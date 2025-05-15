@@ -22,6 +22,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         builder.Configuration.GetConnectionString("NomConnection")));
 builder.Services.AddScoped<IProduitService, ProduitService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
 
 
 builder.Services.AddHttpContextAccessor();
