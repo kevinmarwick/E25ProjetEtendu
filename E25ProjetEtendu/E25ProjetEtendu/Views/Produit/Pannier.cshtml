@@ -4,46 +4,53 @@
     <!-- Le tableau sera généré par JS -->
 </div>
 
-<div class="text-end">
-    
-    <form id="checkout-form" method="post" asp-controller="Payment" asp-action="CreateCheckoutSession">
+<div class="d-flex justify-content-end gap-3 mt-3">
+    <form id="checkout-form" method="post" asp-controller="Payment" asp-action="CreateCheckoutSession" class="m-0">
         <input type="hidden" name="panierJson" id="panierJson" />
-        <button type="submit" class="btn btn-primary btn-lg mt-3">Passer à la caisse</button>
+        <button type="submit" class="btn btn-primary btn-lg">Passer à la caisse</button>
     </form>
-
-
+    <button type="button" id="clear-cart-btn" class="btn btn-danger btn-lg">
+        Vider le panier
+    </button>
 </div>
 
 @section Scripts {
     <script>
         var userId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
 
-        function Pannier() {
-            console.log("Pannier() appelée.");
-            let storageKey = 'panier_' + userId;
+        function showToast(message, type = "success") {
+            const toastEl = document.getElementById("toastMessage");
+            toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
+            const toastBody = toastEl.querySelector(".toast-body");
+            toastBody.textContent = message;
+            const bsToast = new bootstrap.Toast(toastEl);
+            bsToast.show();
+        }
 
+        function Pannier() {
+            let storageKey = 'panier_' + userId;
             let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
             let html = '';
 
-            const TPS_RATE = 0.05;     // 5% TPS
-            const TVQ_RATE = 0.09975;  // 9.975% TVQ
+            const TPS_RATE = 0.05;
+            const TVQ_RATE = 0.09975;
 
             if (cart.length === 0) {
                 html = '<div class="alert alert-info">Votre panier est vide.</div>';
                 $('#total').text('0 $');
             } else {
                 html += `<div class="table-responsive">
-                            <table class="table align-middle">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Produit</th>
-                                        <th>Prix unitaire</th>
-                                        <th>Quantité</th>
-                                        <th>Sous-total</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>`;
+                                    <table class="table align-middle">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Produit</th>
+                                                <th>Prix unitaire</th>
+                                                <th>Quantité</th>
+                                                <th>Sous-total</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>`;
 
                 let subtotal = 0;
                 cart.forEach(item => {
@@ -51,20 +58,20 @@
                     subtotal += itemSubtotal;
 
                     html += `<tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img src="/images/${item.Image}" alt="${item.Nom}" style="width:80px; height:80px; object-fit:cover; margin-right:15px;" />
-                                        <span>${item.Nom}</span>
-                                    </div>
-                                </td>
-                                <td>${item.Prix.toFixed(2)} $</td>
-                                <td>${item.Quantite}</td>
-                                <td>${itemSubtotal.toFixed(2)} $</td>
-                                <td>
-                                    <button class="btn btn-sm btn-success increase-btn" data-productid="${item.ProduitId}">+</button>
-                                    <button class="btn btn-sm btn-warning decrease-btn" data-productid="${item.ProduitId}">-</button>
-                                </td>
-                            </tr>`;
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="/images/${item.Image}" alt="${item.Nom}" style="width:80px; height:80px; object-fit:cover; margin-right:15px;" />
+                                                <span>${item.Nom}</span>
+                                            </div>
+                                        </td>
+                                        <td>${item.Prix.toFixed(2)} $</td>
+                                        <td>${item.Quantite}</td>
+                                        <td>${itemSubtotal.toFixed(2)} $</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-success increase-btn" data-productid="${item.ProduitId}">+</button>
+                                            <button class="btn btn-sm btn-warning decrease-btn" data-productid="${item.ProduitId}">-</button>
+                                        </td>
+                                    </tr>`;
                 });
 
                 let tps = subtotal * TPS_RATE;
@@ -74,21 +81,17 @@
                 html += `</tbody></table></div>`;
 
                 html += `<div class="text-end mt-3">
-                            <p><strong>Sous-total :</strong> ${subtotal.toFixed(2)} $</p>
-                            <p><strong>TPS:</strong> ${tps.toFixed(2)} $</p>
-                            <p><strong>TVQ :</strong> ${tvq.toFixed(2)} $</p>
-                            <h4><strong>Total avec taxes :</strong> ${total.toFixed(2)} $</h4>
-                        </div>`;
+                                    <p><strong>Sous-total :</strong> ${subtotal.toFixed(2)} $</p>
+                                    <p><strong>TPS:</strong> ${tps.toFixed(2)} $</p>
+                                    <p><strong>TVQ :</strong> ${tvq.toFixed(2)} $</p>
+                                    <h4><strong>Total avec taxes :</strong> ${total.toFixed(2)} $</h4>
+                                </div>`;
 
-                // mettre aussi le total dans l'élément span#total
                 $('#total').text(total.toFixed(2) + ' $');
             }
 
             $('#panier-container').html(html);
         }
-
-        
-
 
         $(document).ready(function () {
             Pannier();
@@ -96,8 +99,6 @@
             $(document).on('click', '.increase-btn', function () {
                 let productId = parseInt($(this).data('productid'));
                 let storageKey = 'panier_' + userId;
-
-
                 let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
                 let item = cart.find(p => p.ProduitId === productId);
                 if (item) { item.Quantite += 1; }
@@ -108,14 +109,17 @@
             $(document).on('click', '.decrease-btn', function () {
                 let productId = parseInt($(this).data('productid'));
                 let storageKey = 'panier_' + userId;
-
-
                 let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
                 let item = cart.find(p => p.ProduitId === productId);
                 if (item) {
                     item.Quantite -= 1;
                     if (item.Quantite <= 0) {
-                        cart = cart.filter(p => p.ProduitId !== productId);
+                        if (confirm("Voulez-vous retirer ce produit du panier ?")) {
+                            cart = cart.filter(p => p.ProduitId !== productId);
+                            showToast("Produit retiré du panier.", "warning");
+                        } else {
+                            item.Quantite = 1; // Réinitialise si l'utilisateur annule
+                        }
                     }
                 }
                 localStorage.setItem(storageKey, JSON.stringify(cart));
@@ -123,18 +127,29 @@
             });
 
             $('#clear-cart-btn').click(function () {
+                if (confirm("Voulez-vous vraiment vider le panier ?")) {
+                    let storageKey = 'panier_' + userId;
+                    localStorage.removeItem(storageKey);
+                    Pannier();
+                    showToast("Panier vidé avec succès.");
+                }
+            });
+
+            $('#checkout-form').on('submit', function () {
                 let storageKey = 'panier_' + userId;
-
-
-                localStorage.removeItem(storageKey);
-                Pannier();
+                let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
+                $('#panierJson').val(JSON.stringify(cart));
             });
         });
-        $('#checkout-form').on('submit', function (e) {
-            let storageKey = 'panier_' + userId;
-            let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
-            $('#panierJson').val(JSON.stringify(cart));
-        });
-
     </script>
+
+    <!-- Zone pour les toasts -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100">
+        <div id="toastMessage" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
 }
