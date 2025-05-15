@@ -7,7 +7,7 @@
 <div class="d-flex justify-content-end gap-3 mt-3">
     <form id="checkout-form" method="post" asp-controller="Payment" asp-action="CreateCheckoutSession" class="m-0">
         <input type="hidden" name="panierJson" id="panierJson" />
-        <button type="submit" class="btn btn-primary btn-lg">Passer à la caisse</button>
+        <button type="submit" class="btn btn-primary btn-lg" id="checkout-btn" disabled>Passer à la caisse</button>
     </form>
     <button type="button" id="clear-cart-btn" class="btn btn-danger btn-lg">
         Vider le panier
@@ -88,6 +88,12 @@
                                 </div>`;
 
                 $('#total').text(total.toFixed(2) + ' $');
+            }
+            // Activer ou désactiver le bouton de paiement
+            if (cart.length === 0) {
+                $('#checkout-btn').prop('disabled', true);
+            } else {
+                $('#checkout-btn').prop('disabled', false);
             }
 
             $('#panier-container').html(html);

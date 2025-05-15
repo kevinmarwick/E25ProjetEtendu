@@ -20,7 +20,15 @@
         body {
           margin-bottom: 60px;
         }
-        /* ✅ Mini-panier rétractable */
+
+#checkout-btn:disabled {
+    background-color: #adb5bd !important; /* gris Bootstrap (gray-500 approx) */
+    border-color: #adb5bd !important;
+    color: white !important;
+    cursor: not-allowed;
+    opacity: 1 !important; /* Retire l'effet "bleu pâle" */
+}
+        /* Mini-panier rétractable */
         #cart-summary {
             position: fixed;
             top: 80px;
@@ -36,12 +44,12 @@
             border-radius: 0 0 0 8px;
         }
 
-            /* ✅ Quand on ajoute la classe .show → le panier se dévoile */
+            /*  Quand on ajoute la classe .show → le panier se dévoile */
             #cart-summary.show {
                 right: 0;
             }
 
-        /* ✅ Bouton flottant */
+        /*  Bouton flottant */
         #toggle-cart-btn {
             position: fixed;
             top: 120px;
