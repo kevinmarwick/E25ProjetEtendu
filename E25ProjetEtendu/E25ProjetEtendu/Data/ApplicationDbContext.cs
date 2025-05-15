@@ -66,7 +66,7 @@ namespace E25ProjetEtendu.Data
                     Email = "livreur@example.com",
                     NormalizedEmail = "LIVREUR@EXAMPLE.COM",
                     EmailConfirmed = true,
-                    PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(null, "Qwerty!"),
+                    PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(null, "Qwerty123!!"),
                     SecurityStamp = Guid.NewGuid().ToString()
                 }
             ); modelBuilder.Entity<IdentityUserRole<string>>().HasData(
