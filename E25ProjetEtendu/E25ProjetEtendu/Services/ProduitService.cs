@@ -232,35 +232,59 @@ namespace E25ProjetEtendu.Services
         public async Task<bool> ReserveStock(List<CartItemDTO> items, string userId)
         {
             var now = DateTime.Now;
+
+            Console.WriteLine("=== ReserveStock START ===");
+            Console.WriteLine($"UserId: {userId}");
+            foreach (var i in items)
+                Console.WriteLine($"Incoming Item → ProductId: {i.ProductId}, Quantity: {i.Quantity}");
+
             var productIds = items.Select(i => i.ProductId).ToList();
 
-            // Fetch current stock
+            // Fetch products
             var products = await _context.produits
                 .Where(p => productIds.Contains(p.ProduitId))
                 .ToListAsync();
 
-            // Get existing (non-expired) reservations
+            Console.WriteLine("=== DB Products Fetched ===");
+            foreach (var p in products)
+                Console.WriteLine($"DB → ProduitId: {p.ProduitId}, Inventory: {p.InventoryQuantity}");
+
+            // Fetch recent reservations
             var recentReservations = await _context.StockReservations
-                .Where(r => productIds.Contains(r.ProductId) && (now - r.ReservedAt).TotalMinutes < 15)
+                .Where(r => productIds.Contains(r.ProductId))
                 .ToListAsync();
 
-            // Calculate reserved quantity per product
-            var reservedMap = recentReservations
+            var validReservations = recentReservations
+                .Where(r => (now - r.ReservedAt).TotalMinutes < 15)
+                .ToList();
+
+            var reservedMap = validReservations
                 .GroupBy(r => r.ProductId)
                 .ToDictionary(g => g.Key, g => g.Sum(r => r.Quantity));
 
-            // Check if stock is sufficient
+            // Check stock availability
             foreach (var item in items)
             {
                 var product = products.FirstOrDefault(p => p.ProduitId == item.ProductId);
-                if (product == null) return false;
+                if (product == null)
+                {
+                    Console.WriteLine($"ProductId {item.ProductId} not found in DB.");
+                    return false;
+                }
 
                 var reserved = reservedMap.ContainsKey(item.ProductId) ? reservedMap[item.ProductId] : 0;
-                if (product.InventoryQuantity - reserved < item.Quantity)
+                var available = product.InventoryQuantity - reserved;
+
+                Console.WriteLine($"Checking ProductId {item.ProductId}: Need={item.Quantity}, Available={available}, Stock={product.InventoryQuantity}, Reserved={reserved}");
+
+                if (available < item.Quantity)
+                {
+                    Console.WriteLine($"Not enough stock for ProductId {item.ProductId}. Needed={item.Quantity}, Available={available}");
                     return false;
+                }
             }
 
-            // Create new reservations
+            // Make reservations
             foreach (var item in items)
             {
                 _context.StockReservations.Add(new StockReservation
@@ -270,11 +294,15 @@ namespace E25ProjetEtendu.Services
                     UserId = userId,
                     ReservedAt = now
                 });
+
+                Console.WriteLine($"Reserving ProductId {item.ProductId} → Qty {item.Quantity}");
             }
 
             await _context.SaveChangesAsync();
+            Console.WriteLine("=== Reservation completed successfully ===");
             return true;
         }
+
 
 
         public async Task<bool> FinalizeReservation(string userId)

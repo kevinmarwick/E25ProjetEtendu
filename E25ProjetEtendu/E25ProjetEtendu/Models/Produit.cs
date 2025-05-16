@@ -14,7 +14,7 @@ namespace E25ProjetEtendu.Models
         public string Nom { get; set; }
 
         [Required(ErrorMessage = "La quantité est obligatoire")]
-        [Range(1, 10000, ErrorMessage = "La quantité doit être entre 1 et 10000")]
+        [Range(0, 10000, ErrorMessage = "La quantité doit être entre 0 et 10000")]
         public int InventoryQuantity { get; set; }
 
         [Required(ErrorMessage = "Le prix est obligatoire")]
