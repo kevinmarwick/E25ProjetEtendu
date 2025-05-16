@@ -1,4 +1,4 @@
-﻿using E25ProjetEtendu.DTO;
+﻿using E25ProjetEtendu.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Stripe.Checkout;
