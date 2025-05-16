@@ -1,8 +1,8 @@
-﻿@model E25ProjetEtendu.Models.Order
+﻿@model E25ProjetEtendu.ViewModels.DeliveryVM
 
 <h2 class="mb-4">Prochaine commande à livrer</h2>
 
-@if (Model == null)
+@if (Model.NextOrder == null)
 {
     <div class="alert alert-info">Aucune commande disponible pour le moment.</div>
 }
@@ -17,26 +17,28 @@ else
     <div class="modal fade" id="commandeModal" tabindex="-1" aria-labelledby="commandeModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
+
                 <div class="modal-header">
-                    <h5 class="modal-title" id="commandeModalLabel">Détails de la commande #@Model.OrderId</h5>
+                    <h5 class="modal-title" id="commandeModalLabel">Détails de la commande #@Model.NextOrder.OrderId</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                 </div>
+
                 <div class="modal-body">
                     <div class="row">
                         <!-- Colonne gauche : détails de la commande -->
                         <div class="col-md-6">
-                            <p><strong>Client :</strong> @Model.Buyer?.UserName</p>
-                            <p><strong>Adresse de livraison :</strong> @Model.Location</p>
-                            <p><strong>Date :</strong> @Model.OrderDate.ToString("yyyy-MM-dd HH:mm")</p>
-                            <p><strong>Total :</strong> @Model.TotalPrice.ToString("C")</p>
+                            <p><strong>Client :</strong> @Model.NextOrder.Buyer?.UserName</p>
+                            <p><strong>Adresse de livraison :</strong> @Model.NextOrder.Location</p>
+                            <p><strong>Date :</strong> @Model.NextOrder.OrderDate.ToString("yyyy-MM-dd HH:mm")</p>
+                            <p><strong>Total :</strong> @Model.NextOrder.TotalPrice.ToString("C")</p>
                         </div>
 
                         <!-- Colonne droite : produits -->
                         <div class="col-md-6">
                             <h6>Produits :</h6>
                             <ul class="list-group">
-                                @foreach (var item in Model.OrderItems)
-                                {                                 
+                                @foreach (var item in Model.NextOrder.OrderItems)
+                                {
                                     <li class="list-group-item d-flex align-items-center">
                                         <img src="/images/@item.Product.Image" alt="@item.Product.Nom" style="width: 40px; height: 40px; object-fit: cover; margin-right: 10px;" />
                                         <div class="flex-grow-1">@item.Product.Nom</div>
@@ -49,12 +51,63 @@ else
                 </div>
 
                 <div class="modal-footer">
-                    <a class="btn btn-success" asp-action="ConfirmDelivery" asp-route-orderId="@Model.OrderId">
+                    <!-- Bouton pour ouvrir le 2e modal -->
+                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#loginConfirmModal">
                         Accepter cette commande
-                    </a>
+                    </button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Modal de confirmation (authentification) -->
+    <div class="modal fade" id="loginConfirmModal" tabindex="-1" aria-labelledby="loginConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="post" asp-controller="Delivery" asp-action="ConfirmDelivery">
+                    <input type="hidden" name="orderId" value="@Model.NextOrder.OrderId" />
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loginConfirmModalLabel">Confirmez votre identité</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="email">Courriel</label>
+                            <input type="email" name="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="password">Mot de passe</label>
+                            <input type="password" name="password" class="form-control" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Confirmer</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<hr class="my-5" />
+
+<h4 class="mt-5">Commandes acceptées récemment</h4>
+
+@if (!Model.AssignedOrders.Any())
+{
+    <p>Aucune commande acceptée pour le moment.</p>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var order in Model.AssignedOrders)
+        {
+            <li class="list-group-item d-flex justify-content-between">
+                <span>#@order.OrderId - @order.Buyer?.UserName</span>
+                <span class="text-muted small">@order.OrderDate.ToString("yyyy-MM-dd HH:mm")</span>
+            </li>
+        }
+    </ul>
 }
