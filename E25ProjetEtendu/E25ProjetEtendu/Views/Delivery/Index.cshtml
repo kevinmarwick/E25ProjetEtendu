@@ -105,7 +105,7 @@ else
         @foreach (var order in Model.AssignedOrders)
         {
             <li class="list-group-item d-flex justify-content-between">
-                <span>#@order.OrderId - @order.Buyer?.UserName</span>
+                <span>#@order.OrderId - @order.Buyer?.FirstName</span>
                 <span class="text-muted small">@order.OrderDate.ToString("yyyy-MM-dd HH:mm")</span>
             </li>
         }
