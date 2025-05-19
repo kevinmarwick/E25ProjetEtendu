@@ -1,4 +1,107 @@
 // Patch jQuery validation to support French decimal commas
+// 🔁 Toast réutilisable
+function showToast(message, type = "success") {
+    const toastEl = document.getElementById("toastMessage");
+    if (!toastEl) return;
+
+    toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
+    const toastBody = toastEl.querySelector(".toast-body");
+    if (toastBody) toastBody.textContent = message;
+
+    const bsToast = new bootstrap.Toast(toastEl);
+    bsToast.show();
+}
+
+// ✅ Ajout au panier
+$(document).on('click', '.add-to-cart', function () {
+    if (typeof isAuthenticated !== "undefined" && !isAuthenticated) {
+        window.location.href = '/Identity/Account/Login';
+        return;
+    }
+
+    const productId = parseInt($(this).data('productid'));
+    const productName = $(this).data('productname');
+    const price = parseFloat($(this).data('price'));
+    const image = $(this).data('image');
+
+    const storageKey = currentUserId ? 'panier_' + currentUserId : 'panier_guest';
+    let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+    let item = cart.find(p => p.ProduitId === productId);
+    if (item) {
+        item.Quantite += 1;
+    } else {
+        cart.push({
+            ProduitId: productId,
+            Nom: productName,
+            Prix: price,
+            Quantite: 1,
+            Image: image
+        });
+    }
+
+    localStorage.setItem(storageKey, JSON.stringify(cart));
+    showToast("Produit ajouté au panier");
+
+    updateCartBadge();
+    afficherMiniPanier();
+});
+
+// ✅ Met à jour le badge dans l'icône panier
+function updateCartBadge() {
+    if (!currentUserId) return;
+
+    const storageKey = 'panier_' + currentUserId;
+    const cart = JSON.parse(localStorage.getItem(storageKey)) || [];
+    const totalQuantity = cart.reduce((acc, item) => acc + item.Quantite, 0);
+
+    const badge = document.getElementById("cart-badge");
+    if (!badge) return;
+
+    badge.textContent = totalQuantity;
+    badge.style.display = totalQuantity === 0 ? 'none' : 'inline-block';
+}
+
+// ✅ Affiche les items dans le mini-panier
+function afficherMiniPanier() {
+    if (!currentUserId) return;
+
+    const storageKey = 'panier_' + currentUserId;
+    const cart = JSON.parse(localStorage.getItem(storageKey)) || [];
+
+    const container = $('#cart-summary-content');
+    let html = '';
+
+    if (cart.length === 0) {
+        html = '<p>Le panier est vide</p>';
+    } else {
+        html = '<ul class="list-unstyled">';
+        cart.forEach(item => {
+            html += `<li class="d-flex align-items-center mb-2">
+                <img src="/images/${item.Image}" alt="${item.Nom}" style="width:40px; height:40px; object-fit:cover; margin-right:10px;">
+                <div><strong>${item.Nom}</strong><br>Qté: ${item.Quantite}</div>
+            </li>`;
+        });
+
+        const total = cart.reduce((acc, item) => acc + item.Prix * item.Quantite, 0);
+        html += `</ul><p class="mt-2"><strong>Total: ${total.toFixed(2)} $</strong></p>`;
+    }
+
+    container.html(html);
+};
+
+// ✅ Initialisation automatique au chargement
+$(document).ready(function () {
+    updateCartBadge();
+    afficherMiniPanier();
+
+    $(document).on('click', '.increase-btn, .decrease-btn, #clear-cart-btn', function () {
+        setTimeout(() => {
+            updateCartBadge();
+            afficherMiniPanier();
+        }, 100);
+    });
+});
 
 $(function () {
     // Make sure jQuery + validation plugins are ready
@@ -108,6 +211,31 @@ function envoyerCommande() {
         return res.json();
     });
 }
+//  Bouton flottant pour ouvrir le mini-panier
+$(document).on('click', '#toggle-cart-btn', function () {
+    $('#cart-summary').toggleClass('show');
+});
+
+//  Auto-refresh panier et badge quand on interagit
+$(document).ready(function () {
+    updateCartBadge();
+    afficherMiniPanier();
+
+    $(document).on('click', '.add-to-cart', () => {
+        setTimeout(() => {
+            updateCartBadge();
+            afficherMiniPanier();
+        }, 100);
+    });
+
+    $(document).on('click', '.increase-btn, .decrease-btn, #clear-cart-btn', () => {
+        setTimeout(() => {
+            updateCartBadge();
+            afficherMiniPanier();
+        }, 100);
+    });
+});
+
 
 
 
