@@ -13,10 +13,12 @@ namespace TonProjet.Controllers
     public class PaymentController : Controller
     {
         public readonly ApplicationDbContext _context;
+        public readonly IOrderService _orderService;
         public readonly IProduitService _produitService;
-        public PaymentController(ApplicationDbContext context, IProduitService produitService)
+        public PaymentController(ApplicationDbContext context,IOrderService orderService, IProduitService produitService)
         {
             _context = context;
+            _orderService = orderService;
             _produitService = produitService;
         }
 
@@ -89,22 +91,18 @@ namespace TonProjet.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // Vérifier s'il y a encore des réservations valides
-            var reservations = await _context.StockReservations
-                .Where(r => r.UserId == userId && (DateTime.Now - r.ReservedAt).TotalMinutes < 15)
-                .ToListAsync();
+            bool created = await _orderService.TryCreateOrderFromReservation(userId);
 
-            if (!reservations.Any())
+            if (!created)
             {
-                TempData["Error"] = "Votre session de paiement a expiré. Aucun produit n’a été commandé.";
+                TempData["Error"] = "Votre session de paiement a expiré. Aucun produit n’a été commandé mais le paiement a peut-être été authorisé.  Veuillez contacter l'ADEPT.";
                 return RedirectToAction("Pannier", "Produit");
             }
 
-            // Finaliser la réservation seulement si elle est encore valide
             await _produitService.FinalizeReservation(userId);
-
             return View();
         }
+
 
 
         public async Task<IActionResult> Cancel()
