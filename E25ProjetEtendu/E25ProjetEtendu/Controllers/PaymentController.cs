@@ -1,4 +1,4 @@
-﻿using E25ProjetEtendu.Data;
+using E25ProjetEtendu.Data;
 using E25ProjetEtendu.Models.DTOs;
 using E25ProjetEtendu.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
@@ -102,8 +102,6 @@ namespace TonProjet.Controllers
             await _produitService.FinalizeReservation(userId);
             return View();
         }
-
-
 
         public async Task<IActionResult> Cancel()
         {
