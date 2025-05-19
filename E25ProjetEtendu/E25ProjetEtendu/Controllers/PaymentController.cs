@@ -1,6 +1,8 @@
-﻿using E25ProjetEtendu.Models.DTOs;
+﻿using E25ProjetEtendu.Data;
+using E25ProjetEtendu.Models.DTOs;
 using E25ProjetEtendu.Services.IServices;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Stripe.Checkout;
 using System.Security.Claims;
@@ -10,9 +12,11 @@ namespace TonProjet.Controllers
 {
     public class PaymentController : Controller
     {
+        public readonly ApplicationDbContext _context;
         public readonly IProduitService _produitService;
-        public PaymentController(IProduitService produitService)
+        public PaymentController(ApplicationDbContext context, IProduitService produitService)
         {
+            _context = context;
             _produitService = produitService;
         }
 
@@ -43,7 +47,7 @@ namespace TonProjet.Controllers
                 TempData["Error"] = "Certains produits ne sont plus disponibles en quantité suffisante.";
                 return RedirectToAction("Pannier", "Produit");
             }
-            
+
             var lineItems = new List<SessionLineItemOptions>();
 
             foreach (var item in panier)
@@ -84,10 +88,24 @@ namespace TonProjet.Controllers
         public async Task<IActionResult> Success()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            // Vérifier s'il y a encore des réservations valides
+            var reservations = await _context.StockReservations
+                .Where(r => r.UserId == userId && (DateTime.Now - r.ReservedAt).TotalMinutes < 15)
+                .ToListAsync();
+
+            if (!reservations.Any())
+            {
+                TempData["Error"] = "Votre session de paiement a expiré. Aucun produit n’a été commandé.";
+                return RedirectToAction("Pannier", "Produit");
+            }
+
+            // Finaliser la réservation seulement si elle est encore valide
             await _produitService.FinalizeReservation(userId);
 
             return View();
         }
+
 
         public async Task<IActionResult> Cancel()
         {
