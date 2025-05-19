@@ -94,14 +94,17 @@
                     </a>
 
                     <button type="button"
-                            class="btn btn-sm btn-primary w-100 add-to-cart"
+                            class="btn btn-sm btn-primary w-100 add-to-cart @(item.InventoryQuantity == 0 ? "disabled" : "")"
                             data-productid="@item.ProduitId"
                             data-productname="@item.Nom"
                             data-price="@item.Prix"
                             data-image="@item.Image"
+                            data-stock="@item.InventoryQuantity"
                     @(item.InventoryQuantity == 0 ? "disabled" : "")>
                         Ajouter
                     </button>
+
+
                 </div>
             </div>
         </div>

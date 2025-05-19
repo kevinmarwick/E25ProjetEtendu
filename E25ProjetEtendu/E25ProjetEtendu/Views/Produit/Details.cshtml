@@ -27,13 +27,18 @@
 
             <div class="mt-4">
                 <a class="btn btn-primary me-2" href="@Url.Action("Index", "Produit")">Retour à la liste</a>
-                <button class="btn btn-outline-success add-to-cart"
+                <button id="btn-add-details"
+                        class="btn btn-outline-success add-to-cart"
                         data-productid="@Model.ProduitId"
                         data-productname="@Model.Nom"
                         data-price="@Model.Prix"
-                        data-image="@Model.Image">
+                        data-image="@Model.Image"
+                        data-stock="@Model.InventoryQuantity"
+                @(Model.InventoryQuantity == 0 ? "disabled" : "")>
                     Ajouter au panier
                 </button>
+
+
             </div>
         </div>
     </div>
