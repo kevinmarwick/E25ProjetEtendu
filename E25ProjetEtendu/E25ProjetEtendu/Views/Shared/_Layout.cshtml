@@ -1,7 +1,79 @@
+@using E25ProjetEtendu.Enums
+@using E25ProjetEtendu.Services
+@using E25ProjetEtendu.Services.IServices
 @using Microsoft.AspNetCore.Identity
 @using System.Security.Claims
+@using E25ProjetEtendu.Extensions
+
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject IOrderService _orderService
+@{
+	var user = await UserManager.GetUserAsync(User);
+	Order? orderToDisplay = null;
+	string label = "";
+	string color = "";
+	string routeAction = "CurrentOrderStatus";
+
+	Order? activeOrder = null;
+	Order? lastOrder = null;
+
+	if (user != null)
+	{
+		activeOrder = await _orderService.GetActiveOrder(user.Id);
+		lastOrder = await _orderService.GetMostRecentOrder(user.Id);
+	}
+
+	if (activeOrder != null)
+	{
+		orderToDisplay = activeOrder;
+
+		switch (orderToDisplay.Status)
+		{
+			case OrderStatus.Pending:
+				label = "Commande en attente";
+				color = "text-warning";
+				break;
+			case OrderStatus.InProgress:
+				label = "Commande en cours";
+				color = "text-warning";
+				break;
+			case OrderStatus.Delivered:
+				label = "Commande terminée";
+				color = "text-success";
+				break;
+			case OrderStatus.Cancelled:
+				// same logic if active is somehow cancelled (fallback)
+				if (Context.Session.GetString("CancelledOrderSeen") != "true")
+				{
+					label = "Commande annulée";
+					color = "text-danger";
+				}
+				else
+				{
+					label = "Dernière commande";
+					color = "text-muted";
+				}
+				break;
+		}
+	}
+	else if (lastOrder != null)
+	{
+		orderToDisplay = lastOrder;
+
+		if (lastOrder.Status == OrderStatus.Cancelled &&
+			Context.Session.GetString("CancelledOrderSeen") != "true")
+		{
+			label = "Commande annulée";
+			color = "text-danger";
+		}
+		else
+		{
+			label = "Dernière commande";
+			color = "text-muted";
+		}
+	}
+}
 
 <!DOCTYPE html>
 <html lang="fr-CA">
@@ -40,6 +112,18 @@
 						<li class="nav-item">
 							<a class="nav-link text-dark" asp-area="" asp-controller="Produit" asp-action="Index">Liste de produit</a>
 						</li>
+						<!--Order Status-->
+						@if (user != null && orderToDisplay != null && !string.IsNullOrEmpty(label))
+						{
+							<li class="nav-item">
+								<a class="nav-link @color" asp-controller="Order" asp-action="CurrentOrderStatus">
+									@label
+								</a>
+							</li>
+						}
+
+
+
 					</ul>
 					<partial name="_LoginPartial" />
 					<ul class="navbar-nav">
@@ -98,10 +182,9 @@
 	<script src="~/js/site.js" asp-append-version="true"></script>
 	<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 	<script src="~/js/decimal-input-filter.js"></script>
-
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	@await RenderSectionAsync("Scripts", required: false)
 
+	@await RenderSectionAsync("Scripts", required: false)
 	<script>
 		$('#toggle-cart-btn').click(function () {
 			$('#cart-summary').toggleClass('show');
@@ -158,7 +241,7 @@
 		$(document).ready(function () {
 			afficherMiniPanier();
 			$(document).on('click', '.add-to-cart', function () {
-				setTimeout(afficherMiniPanier, 100);
+				setTimeout(afficherMiniPanier, 100);11111
 			});
 			$(document).on('click', '.increase-btn, .decrease-btn, #clear-cart-btn', function () {
 				setTimeout(afficherMiniPanier, 100);

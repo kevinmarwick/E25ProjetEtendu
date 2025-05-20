@@ -93,17 +93,21 @@ namespace TonProjet.Controllers
 
             bool created = await _orderService.TryCreateOrderFromReservation(userId);
 
-            if (!created)
+			if (!created)
             {
                 TempData["Error"] = "Votre session de paiement a expiré. Aucun produit n’a été commandé mais le paiement a peut-être été authorisé.  Veuillez contacter l'ADEPT.";
                 return RedirectToAction("Pannier", "Produit");
             }
+            else
+            {
+				HttpContext.Session.Remove("CancelledOrderSeen");
+				await _produitService.FinalizeReservation(userId);
+				return RedirectToAction("CurrentOrderStatus", "Order");
+			}          
 
-            await _produitService.FinalizeReservation(userId);
-            return View();
-        }
+		}
 
-        public async Task<IActionResult> Cancel()
+		public async Task<IActionResult> Cancel()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             await _produitService.CancelReservation(userId);

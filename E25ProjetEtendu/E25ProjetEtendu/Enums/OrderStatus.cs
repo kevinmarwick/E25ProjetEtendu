@@ -4,7 +4,7 @@ namespace E25ProjetEtendu.Enums
 {
     public enum OrderStatus
     {
-        [Display(Name = "En attente")]
+        [Display(Name = "En attente d'un livreur")]
         Pending,
 
         [Display(Name = "En cours")]

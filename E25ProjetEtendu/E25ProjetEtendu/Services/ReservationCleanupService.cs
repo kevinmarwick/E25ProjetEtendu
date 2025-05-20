@@ -7,7 +7,7 @@ namespace E25ProjetEtendu.Services
     public class ReservationCleanupService : BackgroundService
     {
         private readonly IServiceScopeFactory _scopeFactory;
-        private readonly TimeSpan _interval = TimeSpan.FromMinutes(1); // Runs every 1 minute
+        private readonly TimeSpan _interval = TimeSpan.FromMinutes(5); // Runs every 5 minutes
         private readonly ILogger<ReservationCleanupService> _logger;
 
         public ReservationCleanupService(IServiceScopeFactory scopeFactory, ILogger<ReservationCleanupService> logger)

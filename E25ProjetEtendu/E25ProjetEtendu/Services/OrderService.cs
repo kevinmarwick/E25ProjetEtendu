@@ -1,8 +1,9 @@
-﻿using E25ProjetEtendu.Data;
+using E25ProjetEtendu.Data;
 using E25ProjetEtendu.Models.DTOs;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services.IServices;
 using Microsoft.EntityFrameworkCore;
+using E25ProjetEtendu.Enums;
 
 namespace E25ProjetEtendu.Services
 {
@@ -57,8 +58,10 @@ namespace E25ProjetEtendu.Services
 
         public async Task<bool> TryCreateOrderFromReservation(string userId)
         {
+            var tenMinutesAgo = DateTime.Now.AddMinutes(-10);
+
             var reservations = await _context.StockReservations
-                .Where(r => r.UserId == userId && (DateTime.Now - r.ReservedAt).TotalMinutes < 10)
+                .Where(r => r.UserId == userId && r.ReservedAt >= tenMinutesAgo)
                 .ToListAsync();
 
             if (!reservations.Any())
@@ -81,5 +84,29 @@ namespace E25ProjetEtendu.Services
             await CreateOrder(dto, userId, produits);
             return true;
         }
+
+		public async Task<bool> HasActiveOrder(string userId)
+		{
+			return await _context.Orders
+				.AnyAsync(o => o.BuyerId == userId && o.Status != OrderStatus.Delivered);
+		}
+
+        public async Task<Order?> GetMostRecentOrder(string userId)
+        {
+            return await _context.Orders
+                .Where(o => o.BuyerId == userId)
+                .OrderByDescending(o => o.OrderDate)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Order?> GetActiveOrder(string userId)
+        {
+            return await _context.Orders
+                .Where(o => o.BuyerId == userId && o.Status != OrderStatus.Delivered && o.Status != OrderStatus.Cancelled)
+                .OrderByDescending(o => o.OrderDate)
+                .FirstOrDefaultAsync();
+        }
+
+
     }
 }

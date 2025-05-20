@@ -335,7 +335,7 @@ namespace E25ProjetEtendu.Services
 
         public async Task CleanupExpiredReservations()
         {
-            var expiration = DateTime.Now.AddMinutes(-10);
+            var expiration = DateTime.Now.AddMinutes(-11);
             var expired = await _context.StockReservations
                 .Where(r => r.ReservedAt < expiration)
                 .ToListAsync();
