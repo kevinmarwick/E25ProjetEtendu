@@ -49,12 +49,12 @@ namespace E25ProjetEtendu.Controllers
         public async Task<IActionResult> ConfirmDelivery(int orderId, string email, string password)
         {
             const int MaxAttempts = 3;
-            int attempts = HttpContext.Session.GetInt32("DeliveryLoginAttempts") ?? 0;
+            var emailKey = $"DeliveryLoginAttempts_{email.ToLower()}";
+            int attempts = HttpContext.Session.GetInt32(emailKey) ?? 0;
 
-            // Vérifier le blocage
             if (attempts >= MaxAttempts)
             {
-                TempData["Erreur"] = "Vous avez dépassé le nombre maximal de tentatives. Vous ne pouvez plus livrer cette commande.";
+                TempData["Erreur"] = "Vous avez dépassé le nombre maximal de tentatives pour cette adresse courriel.";
                 return RedirectToAction("Index");
             }
 
@@ -62,8 +62,7 @@ namespace E25ProjetEtendu.Controllers
             if (user == null)
             {
                 attempts++;
-                HttpContext.Session.SetInt32("DeliveryLoginAttempts", attempts);
-
+                HttpContext.Session.SetInt32(emailKey, attempts);
                 TempData["Erreur"] = $"Utilisateur non trouvé. Tentative {attempts} sur {MaxAttempts}.";
                 return RedirectToAction("Index");
             }
@@ -72,11 +71,11 @@ namespace E25ProjetEtendu.Controllers
             if (!result.Succeeded)
             {
                 attempts++;
-                HttpContext.Session.SetInt32("DeliveryLoginAttempts", attempts);
+                HttpContext.Session.SetInt32(emailKey, attempts);
 
                 if (attempts >= MaxAttempts)
                 {
-                    TempData["Erreur"] = "Trop de tentatives échouées. Livraison bloquée.";
+                    TempData["Erreur"] = "Trop de tentatives échouées pour cet utilisateur.";
                 }
                 else
                 {
@@ -86,8 +85,8 @@ namespace E25ProjetEtendu.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Réinitialiser les tentatives en cas de succès
-            HttpContext.Session.Remove("DeliveryLoginAttempts");
+            // Connexion réussie — on supprime les tentatives pour cet email
+            HttpContext.Session.Remove(emailKey);
 
             var assignationReussie = await _deliveryService.AssignerCommandeAuLivreur(orderId, user.Id);
             if (!assignationReussie)
@@ -99,6 +98,7 @@ namespace E25ProjetEtendu.Controllers
             TempData["Succès"] = "Commande acceptée avec succès.";
             return RedirectToAction("Index");
         }
+
 
 
 

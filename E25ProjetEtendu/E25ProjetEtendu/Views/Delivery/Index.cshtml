@@ -1,5 +1,11 @@
 ﻿@model E25ProjetEtendu.ViewModels.DeliveryVM
 
+@{
+    int maxAttempts = 3;
+    int? attempts = Context.Session.GetInt32("DeliveryLoginAttempts");
+    bool isLockedOut = attempts.HasValue && attempts.Value >= maxAttempts;
+}
+
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -8,6 +14,15 @@
             <i class="bi bi-clock-history me-1"></i> Historique des commandes
         </a>
     </div>
+
+    @if (TempData["Erreur"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Erreur"]</div>
+    }
+    @if (TempData["Succès"] != null)
+    {
+        <div class="alert alert-success">@TempData["Succès"]</div>
+    }
 
     @if (Model.NextOrder == null)
     {
@@ -37,7 +52,6 @@
                     </div>
                     <div class="modal-body">
                         <div class="row">
-                            <!-- Infos commande -->
                             <div class="col-md-6 border-end">
                                 <p><strong>Client :</strong> @Model.NextOrder.Buyer?.UserName</p>
                                 <p><strong>Adresse de livraison :</strong> @Model.NextOrder.Location</p>
@@ -45,7 +59,6 @@
                                 <p><strong>Total :</strong> @Model.NextOrder.TotalPrice.ToString("C")</p>
                             </div>
 
-                            <!-- Produits -->
                             <div class="col-md-6">
                                 <h6 class="mb-3">Produits :</h6>
                                 <ul class="list-group">
@@ -62,10 +75,19 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#loginConfirmModal">
-                            Accepter cette commande
-                        </button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        @if (!isLockedOut)
+                        {
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#loginConfirmModal">
+                                Accepter cette commande
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary" disabled>
+                                Tentatives épuisées
+                            </button>
+                        }
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
                     </div>
                 </div>
             </div>
