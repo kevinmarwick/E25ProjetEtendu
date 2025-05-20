@@ -1,0 +1,23 @@
+﻿@using E25ProjetEtendu.Enums
+@using E25ProjetEtendu.Models
+@foreach (var order in Model.AssignedOrders)
+{
+    <div class="list-group-item d-flex justify-content-between align-items-center">
+        <div>
+            <strong>#@order.OrderId</strong> - @order.Buyer?.FirstName
+            <br />
+            <small class="text-muted">@order.OrderDate.ToString("yyyy-MM-dd HH:mm")</small>
+        </div>
+
+        @if (order.Status == OrderStatus.Delivered)
+        {
+            <form method="post" asp-action="TerminerCommande" asp-route-orderId="@order.OrderId" class="ms-3">
+                <button class="btn btn-success btn-sm">Terminer</button>
+            </form>
+        }
+    </div>
+}
+
+
+
+

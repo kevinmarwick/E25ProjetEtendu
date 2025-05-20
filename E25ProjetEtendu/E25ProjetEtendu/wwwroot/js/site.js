@@ -266,41 +266,5 @@ $(document).on('click', '#toggle-cart-btn', function () {
 });
 
 
-//Send Order
 
-function envoyerCommande(location) {
-
-  
-
-    const userId = document.body.dataset.userid;
-    const storageKey = 'panier_' + userId;
-    const cart = JSON.parse(localStorage.getItem(storageKey)) || [];
-
-    console.log("storageKey:", storageKey);
-    console.log("raw cart:", localStorage.getItem(storageKey));
-
-    if (cart.length === 0) {
-        alert("Votre panier est vide.");
-        return Promise.reject("Panier vide");
-    }
-
-    const dto = {
-        items: cart.map(item => ({
-            productId: item.ProduitId,
-            quantity: item.Quantite
-        })),
-        location: location
-    };
-
-    return fetch('/api/order/create', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(dto)
-    }).then(res => {
-        if (!res.ok) throw new Error("Erreur serveur.");
-        return res.json();
-    });
-}
 

@@ -2,8 +2,10 @@ using E25ProjetEtendu.Data;
 using E25ProjetEtendu.Enums;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Models.DTOs;
+using E25ProjetEtendu.Services;
 using E25ProjetEtendu.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -16,6 +18,7 @@ namespace E25ProjetEtendu.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IOrderService _orderService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public OrderController(ApplicationDbContext context, IOrderService orderService)
         {
@@ -24,11 +27,25 @@ namespace E25ProjetEtendu.Controllers
         }
 
 
-		public async Task<IActionResult> EndOrder()
-		{
-            return Ok();
+        [HttpPost]        
+        public async Task<IActionResult> EndOrder(int orderId)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _orderService.EndCompleteOrder(orderId, userId);
+
+            if (!result)
+            {
+                TempData["Erreur"] = "Impossible de terminer la commande.";
+            }
+            else
+            {
+                TempData["Succès"] = "Commande marquée comme terminée.";
+            }
+
+            return RedirectToAction("Index");
         }
-		[HttpPost("create")]
+
+        [HttpPost("create")]
 		public async Task<IActionResult> Create([FromBody] OrderRequestDTO dto)
 		{
 			try
