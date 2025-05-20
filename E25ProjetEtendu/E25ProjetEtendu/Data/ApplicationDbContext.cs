@@ -11,6 +11,8 @@ namespace E25ProjetEtendu.Data
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<StockReservation> StockReservations { get; set; }
+
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -238,6 +240,16 @@ namespace E25ProjetEtendu.Data
                 new Produit { ProduitId = 30, Nom = "Muffin aux bleuets", InventoryQuantity = 60, Prix = 3, Image = "muffin.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 380, Lipides: 16g, Sucres: 28g" },
                 new Produit { ProduitId = 31, Nom = "BandAid", InventoryQuantity = 0, Prix = 3, Image = "Aid.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 0" }
             );
+            #endregion
+
+            #region DB Indexes
+
+            modelBuilder.Entity<StockReservation>()
+                .HasIndex(r => r.ProductId);
+
+            modelBuilder.Entity<StockReservation>()
+                .HasIndex(r => r.ReservedAt);
+
             #endregion
         }
     }
