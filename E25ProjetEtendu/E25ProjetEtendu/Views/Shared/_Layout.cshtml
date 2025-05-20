@@ -51,7 +51,7 @@
                     color = "text-muted";
                 }
                 break;
-            case OrderStatus.Cancelled:                
+            case OrderStatus.Cancelled:
                 if (Context.Session.GetString("CancelledOrderSeen") != "true")
                 {
                     label = "Commande annulée";
@@ -194,7 +194,7 @@
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    
+
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="~/js/decimal-input-filter.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -220,9 +220,9 @@
                 html = '<ul class="list-unstyled">';
                 cart.forEach(item => {
                     html += `<li class="d-flex align-items-center mb-2">
-                                                        <img src="/images/${item.Image}" alt="${item.Nom}" style="width:40px; height:40px; object-fit:cover; margin-right:10px;">
-                                                        <div><strong>${item.Nom}</strong><br>Qté: ${item.Quantite}</div>
-                                                     </li>`;
+                                                                <img src="/images/${item.Image}" alt="${item.Nom}" style="width:40px; height:40px; object-fit:cover; margin-right:10px;">
+                                                                <div><strong>${item.Nom}</strong><br>Qté: ${item.Quantite}</div>
+                                                             </li>`;
                 });
                 let total = cart.reduce((acc, item) => acc + item.Prix * item.Quantite, 0);
                 html += `</ul><p class="mt-2"><strong>Total: ${total.toFixed(2)} $</strong></p>`;
