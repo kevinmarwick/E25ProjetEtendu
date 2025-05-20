@@ -9,7 +9,7 @@ namespace E25ProjetEtendu.Models
         public DateTime OrderDate { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPrice { get; set; }
-
+        public OrderStatus status { get; set; }
 
 
         //Navigation properties
@@ -23,5 +23,13 @@ namespace E25ProjetEtendu.Models
 
         public string Location { get; set; }
         
+
+        public enum OrderStatus
+        {
+            EnAttente = 0,
+            EnCours = 1,
+            Terminee = 2,
+            Annulee = 3
+        }
     }
 }
