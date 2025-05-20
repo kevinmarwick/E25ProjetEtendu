@@ -4,6 +4,7 @@ using E25ProjetEtendu.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 
 namespace E25ProjetEtendu.Controllers
@@ -22,6 +23,11 @@ namespace E25ProjetEtendu.Controllers
 			_orderService = orderService;
 		}
 
+
+		public async Task<IActionResult> EndOrder()
+		{
+            return Ok();
+        }
 		[HttpPost("create")]
 		public async Task<IActionResult> Create([FromBody] OrderRequestDTO dto)
 		{
