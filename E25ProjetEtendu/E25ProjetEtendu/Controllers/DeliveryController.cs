@@ -48,19 +48,46 @@ namespace E25ProjetEtendu.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmDelivery(int orderId, string email, string password)
         {
+            const int MaxAttempts = 3;
+            int attempts = HttpContext.Session.GetInt32("DeliveryLoginAttempts") ?? 0;
+
+            // Vérifier le blocage
+            if (attempts >= MaxAttempts)
+            {
+                TempData["Erreur"] = "Vous avez dépassé le nombre maximal de tentatives. Vous ne pouvez plus livrer cette commande.";
+                return RedirectToAction("Index");
+            }
+
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
             {
-                ModelState.AddModelError("", "Utilisateur non trouvé.");
+                attempts++;
+                HttpContext.Session.SetInt32("DeliveryLoginAttempts", attempts);
+
+                TempData["Erreur"] = $"Utilisateur non trouvé. Tentative {attempts} sur {MaxAttempts}.";
                 return RedirectToAction("Index");
             }
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
             if (!result.Succeeded)
             {
-                ModelState.AddModelError("", "Mot de passe invalide.");
+                attempts++;
+                HttpContext.Session.SetInt32("DeliveryLoginAttempts", attempts);
+
+                if (attempts >= MaxAttempts)
+                {
+                    TempData["Erreur"] = "Trop de tentatives échouées. Livraison bloquée.";
+                }
+                else
+                {
+                    TempData["Erreur"] = $"Mot de passe invalide. Tentative {attempts} sur {MaxAttempts}.";
+                }
+
                 return RedirectToAction("Index");
             }
+
+            // Réinitialiser les tentatives en cas de succès
+            HttpContext.Session.Remove("DeliveryLoginAttempts");
 
             var assignationReussie = await _deliveryService.AssignerCommandeAuLivreur(orderId, user.Id);
             if (!assignationReussie)
@@ -70,8 +97,9 @@ namespace E25ProjetEtendu.Controllers
             }
 
             TempData["Succès"] = "Commande acceptée avec succès.";
-            return RedirectToAction("Index"); 
+            return RedirectToAction("Index");
         }
+
 
 
     }
