@@ -51,6 +51,34 @@ namespace E25ProjetEtendu.Data
             new IdentityUserRole<string> { UserId = "21111111-1111-1111-1111-111111111111", RoleId = "admin-role-id" }
             );
             #endregion
+            #region livreur
+            modelBuilder.Entity<IdentityRole>().HasData(
+           new IdentityRole { Id = "delivery-role-id", Name = "Delivery", NormalizedName = "DELIVERY" }
+           );
+            modelBuilder.Entity<ApplicationUser>().HasData(
+                new ApplicationUser
+                {
+                    Id = "42222222-2222-2222-2222-222222222222",
+                    UserName = "livreur@example.com",
+                    FirstName = "Livreur",
+                    LastName = "Livreur",
+                    NormalizedUserName = "LIVREUR@EXAMPLE.COM",
+                    Email = "livreur@example.com",
+                    NormalizedEmail = "LIVREUR@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(null, "Qwerty123!!"),
+                    SecurityStamp = Guid.NewGuid().ToString()
+                }
+            ); modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string>
+                {
+                    UserId = "42222222-2222-2222-2222-222222222222", // l'ID de ton livreur
+                    RoleId = "delivery-role-id"
+                }
+            );
+
+
+            #endregion
             #region Ajout Utilisateur Standard
 
             // Ajout du rôle "User"

@@ -1,0 +1,147 @@
+﻿@model E25ProjetEtendu.ViewModels.DeliveryVM
+
+@{
+    int maxAttempts = 3;
+    int? attempts = Context.Session.GetInt32("DeliveryLoginAttempts");
+    bool isLockedOut = attempts.HasValue && attempts.Value >= maxAttempts;
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Prochaine commande à livrer</h2>
+        <a class="btn btn-outline-dark" asp-controller="Delivery" asp-action="DeliveryHistories">
+            <i class="bi bi-clock-history me-1"></i> Historique des commandes
+        </a>
+    </div>
+
+    @if (TempData["Erreur"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Erreur"]</div>
+    }
+    @if (TempData["Succès"] != null)
+    {
+        <div class="alert alert-success">@TempData["Succès"]</div>
+    }
+
+    @if (Model.NextOrder == null)
+    {
+        <div class="alert alert-info">Aucune commande disponible pour le moment.</div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="card-title mb-1">Commande #@Model.NextOrder.OrderId</h5>
+                    <p class="mb-0 text-muted">Client : @Model.NextOrder.Buyer?.UserName</p>
+                </div>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#commandeModal">
+                    Voir la commande
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal Bootstrap -->
+        <div class="modal fade" id="commandeModal" tabindex="-1" aria-labelledby="commandeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content shadow">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="commandeModalLabel">Détails de la commande #@Model.NextOrder.OrderId</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6 border-end">
+                                <p><strong>Client :</strong> @Model.NextOrder.Buyer?.UserName</p>
+                                <p><strong>Adresse de livraison :</strong> @Model.NextOrder.Location</p>
+                                <p><strong>Date :</strong> @Model.NextOrder.OrderDate.ToString("yyyy-MM-dd HH:mm")</p>
+                                <p><strong>Total :</strong> @Model.NextOrder.TotalPrice.ToString("C")</p>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h6 class="mb-3">Produits :</h6>
+                                <ul class="list-group">
+                                    @foreach (var item in Model.NextOrder.OrderItems)
+                                    {
+                                        <li class="list-group-item d-flex align-items-center">
+                                            <img src="/images/@item.Product.Image" alt="@item.Product.Nom" class="me-3" style="width: 40px; height: 40px; object-fit: cover;" />
+                                            <div class="flex-grow-1">@item.Product.Nom</div>
+                                            <span class="badge bg-primary rounded-pill">@item.Quantity</span>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        @if (!isLockedOut)
+                        {
+                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#loginConfirmModal">
+                                Accepter cette commande
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary" disabled>
+                                Tentatives épuisées
+                            </button>
+                        }
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de confirmation -->
+        <div class="modal fade" id="loginConfirmModal" tabindex="-1" aria-labelledby="loginConfirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content shadow">
+                    <form method="post" asp-controller="Delivery" asp-action="ConfirmDelivery">
+                        <input type="hidden" name="orderId" value="@Model.NextOrder.OrderId" />
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="loginConfirmModalLabel">Confirmez votre identité</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Courriel</label>
+                                <input type="email" name="email" class="form-control" required />
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Mot de passe</label>
+                                <input type="password" name="password" class="form-control" required />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Confirmer</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+
+    <hr class="my-5" />
+
+    <h4 class="mb-3">Commandes acceptées récemment</h4>
+
+    @if (!Model.AssignedOrders.Any())
+    {
+        <div class="alert alert-warning">Aucune commande acceptée pour le moment.</div>
+    }
+    else
+    {
+        <div class="list-group">
+            @foreach (var order in Model.AssignedOrders)
+            {
+                <div class="list-group-item d-flex justify-content-between">
+                    <span><strong>#@order.OrderId</strong> - @order.Buyer?.FirstName</span>
+                    <span class="text-muted small">@order.OrderDate.ToString("yyyy-MM-dd HH:mm")</span>
+                </div>
+            }
+        </div>
+    }
+
+</div>
