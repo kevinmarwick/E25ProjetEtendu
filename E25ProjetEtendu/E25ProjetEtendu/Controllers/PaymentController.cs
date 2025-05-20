@@ -30,6 +30,15 @@ namespace TonProjet.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCheckoutSession(string panierJson)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var existingOrder = await _orderService.GetActiveOrder(userId);
+            if (existingOrder != null)
+            {
+                TempData["Error"] = "Vous avez déjà une commande en cours.";
+                return RedirectToAction("Pannier", "Produit");
+            }
+
             Console.WriteLine("Raw JSON:");
             Console.WriteLine(panierJson);
 
@@ -41,7 +50,7 @@ namespace TonProjet.Controllers
             }).ToList();
 
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
 
             bool reserved = await _produitService.ReserveStock(cartItems, userId);
             if (!reserved)
@@ -89,6 +98,10 @@ namespace TonProjet.Controllers
 
         public async Task<IActionResult> Success()
         {
+            //Temporaire, afin de montrer commande terminée
+            HttpContext.Session.SetString("DeliveredOrderSeen", "false");
+
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             bool created = await _orderService.TryCreateOrderFromReservation(userId);

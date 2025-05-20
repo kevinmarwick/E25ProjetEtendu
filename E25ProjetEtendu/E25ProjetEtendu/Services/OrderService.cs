@@ -85,11 +85,11 @@ namespace E25ProjetEtendu.Services
             return true;
         }
 
-		public async Task<bool> HasActiveOrder(string userId)
-		{
-			return await _context.Orders
-				.AnyAsync(o => o.BuyerId == userId && o.Status != OrderStatus.Delivered);
-		}
+        public async Task<bool> HasActiveOrder(string userId)
+        {
+            return await _context.Orders
+                .AnyAsync(o => o.BuyerId == userId && o.Status != OrderStatus.Delivered);
+        }
 
         public async Task<Order?> GetMostRecentOrder(string userId)
         {
@@ -102,10 +102,14 @@ namespace E25ProjetEtendu.Services
         public async Task<Order?> GetActiveOrder(string userId)
         {
             return await _context.Orders
-                .Where(o => o.BuyerId == userId && o.Status != OrderStatus.Delivered && o.Status != OrderStatus.Cancelled)
-                .OrderByDescending(o => o.OrderDate)
-                .FirstOrDefaultAsync();
+                 .Where(o => o.BuyerId == userId &&
+                             (o.Status == OrderStatus.Pending || o.Status == OrderStatus.InProgress))
+                 .OrderByDescending(o => o.OrderDate)
+                 .FirstOrDefaultAsync();
+
         }
+
+
 
 
     }
