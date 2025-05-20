@@ -1,7 +1,9 @@
 ﻿@model E25ProjetEtendu.ViewModels.DeliveryVM
 
 <h2 class="mb-4">Prochaine commande à livrer</h2>
-
+<button>
+    <a class="text-dark" asp-controller="Delivery" asp-action="DeliveryHistories">Historique des commandes </a>
+</button>
 @if (Model.NextOrder == null)
 {
     <div class="alert alert-info">Aucune commande disponible pour le moment.</div>

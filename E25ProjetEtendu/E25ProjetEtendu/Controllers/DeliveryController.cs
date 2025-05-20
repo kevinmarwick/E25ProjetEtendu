@@ -40,7 +40,10 @@ namespace E25ProjetEtendu.Controllers
             return View(vm);
         }
 
-
+        public async Task<IActionResult> DeliveryHistories()
+        {
+            return View();
+        }
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmDelivery(int orderId, string email, string password)
