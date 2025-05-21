@@ -16,9 +16,17 @@ namespace E25ProjetEtendu.Services
             _context = context;
         }
 
+		public async Task<Order?> GetOrderById(int orderId)
+		{
+			return await _context.Orders
+				.Include(o => o.OrderItems)
+				  .ThenInclude(oi => oi.Product)
+				.Include(o => o.Buyer)
+				.Include(o => o.Deliverer)
+				.FirstOrDefaultAsync(o => o.OrderId == orderId);
+		}
 
-
-        public async Task<bool> EndCompleteOrder(int orderId, string livreurId)
+		public async Task<bool> EndCompleteOrder(int orderId, string livreurId)
         {
             var commande = await _context.Orders
                 .FirstOrDefaultAsync(o => o.OrderId == orderId && o.DelivererId == livreurId);

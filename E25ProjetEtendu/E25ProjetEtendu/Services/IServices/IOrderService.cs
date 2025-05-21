@@ -12,7 +12,9 @@ namespace E25ProjetEtendu.Services.IServices
 		Task<Order?> GetMostRecentOrder(string userId);
 		Task<Order?> GetActiveOrder(string userId);
 		Task<bool> EndCompleteOrder(int orderId, string livreurId);
+		Task<Order?> GetOrderById(int orderId);
 
 
-    }
+
+	}
 }

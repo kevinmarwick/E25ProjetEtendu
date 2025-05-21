@@ -22,43 +22,46 @@ namespace E25ProjetEtendu.Controllers
         private readonly IDeliveryService _deliveryService;
         
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService, IDeliveryService deliveryService)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IDeliveryService deliveryService, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _orderService = orderService;
             _deliveryService = deliveryService;
+            _userManager = userManager;
         }
 
 
-        [HttpGet]    
-        
-        public async Task<IActionResult> EndOrder(int orderId)
-        {
-            var userId = _userManager.GetUserId(User);
-            var result = await _orderService.EndCompleteOrder(orderId, userId);
 
-            if (!result)
-            {
-                TempData["Erreur"] = "Impossible de terminer la commande.";
-            }
-            else
-            {
-                TempData["Succès"] = "Commande marquée comme terminée.";
-            }
 
-            return RedirectToAction("Index");
-        }
         [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> TerminateOrder(string userId)
+        public async Task<IActionResult> EndOrder(int orderId)
+
         {
-            var order = await _orderService.GetMostRecentOrder(userId);
-            if(order == null || order.Status != OrderStatus.Delivered)
+            Order? order = await _orderService.GetOrderById(orderId);
+            ApplicationUser? user = await _userManager.GetUserAsync(User); 
+            if(user.Id != order.DelivererId)
+            {
+                return Forbid();
+            }
+            if(order == null)
+            {
+                return NotFound();
+            }
+            return View(order);
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> TerminateOrder(int orderId)
+        {
+            var order = await _orderService.GetOrderById(orderId);
+            if(order == null)
             {
                 return NotFound();
             }
             order.Status = OrderStatus.Delivered;
-            return View();
+            await _context.SaveChangesAsync();
+            return RedirectToAction("EndOrder", new { orderId });
+
         }
 
         [HttpPost("create")]
