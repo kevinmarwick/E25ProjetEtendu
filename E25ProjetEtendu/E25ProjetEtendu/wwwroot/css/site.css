@@ -131,3 +131,34 @@
         pointer-events: none;
         font-size: 1rem;
     }
+
+
+    
+/*Order Status*/
+.order-status-badge .badge {
+    font-size: 1rem;
+    padding: 0.6em 1.2em;
+    border-radius: 1.2rem;
+    font-weight: 600;
+}
+
+.badge.status-pending {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge.status-inprogress {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.badge.status-delivered {
+    background-color: #198754;
+    color: white;
+}
+
+.badge.status-cancelled {
+    background-color: #dc3545;
+    color: white;
+}
+

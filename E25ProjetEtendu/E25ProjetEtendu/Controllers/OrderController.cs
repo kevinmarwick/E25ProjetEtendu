@@ -136,6 +136,11 @@ namespace E25ProjetEtendu.Controllers
 			{
 				HttpContext.Session.SetString("CancelledOrderSeen", "true");
 			}
+			if (order.Status == OrderStatus.Delivered)
+			{
+				HttpContext.Session.SetString("DeliveredOrderSeen", "true");
+			}
+
 
 			return View(order);
 		}

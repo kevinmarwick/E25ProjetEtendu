@@ -14,8 +14,6 @@ namespace E25ProjetEtendu.Controllers
 
         public async Task<IActionResult> Index()
         {
-
-
             var to = "kevin.marwick@hotmail.com"; // change this to your real test recipient
             var subject = "Test d'envoi SMTP";
             var message = "<h2> Email envoyé depuis l'application ASP.NET Core !</h2>";

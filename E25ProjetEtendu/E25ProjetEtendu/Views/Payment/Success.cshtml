@@ -8,23 +8,11 @@
 
 @section Scripts {
     <script>
+
         console.log("Scripts loaded on success page");
 
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log("DOM ready, attempting to call envoyerCommande");
-
-            envoyerCommande() 
-                .then(data => {
-                    console.log("Order created", data);
-                    localStorage.removeItem('panier_' + document.body.dataset.userid);
-                    document.getElementById("confirmation").textContent =
-                        "Commande enregistrée! ID: " + data.orderId;
-                })
-                .catch(err => {
-                    console.error("Error creating order:", err);
-                    document.getElementById("confirmation").textContent =
-                        "Une erreur est survenue lors de l'enregistrement de la commande. Veuillez contacter l'ADEPT";
-                });
-        });
+        localStorage.removeItem('panier_' + document.body.dataset.userid);
+              
+        
     </script>
 }
