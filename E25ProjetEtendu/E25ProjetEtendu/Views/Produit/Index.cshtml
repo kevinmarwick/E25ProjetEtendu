@@ -94,14 +94,17 @@
                     </a>
 
                     <button type="button"
-                            class="btn btn-sm btn-primary w-100 add-to-cart"
+                            class="btn btn-sm btn-primary w-100 add-to-cart @(item.InventoryQuantity == 0 ? "disabled" : "")"
                             data-productid="@item.ProduitId"
                             data-productname="@item.Nom"
                             data-price="@item.Prix"
                             data-image="@item.Image"
+                            data-stock="@item.InventoryQuantity"
                     @(item.InventoryQuantity == 0 ? "disabled" : "")>
                         Ajouter
                     </button>
+
+
                 </div>
             </div>
         </div>
@@ -158,45 +161,10 @@
 <!-- expose l’ID utilisateur -->
 <script>
     var isAuthenticated = @User.Identity.IsAuthenticated.ToString().ToLower();
-    var userId = "@(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value)";
+    var currentUserId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
 </script>
 
 
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script>
-    $(document).on('click', '.add-to-cart', function () {
-        if (!isAuthenticated) {
-            // Redirige vers la page de connexion
-            window.location.href = '/Identity/Account/Login';
-            return;
-        }
-
-        let productId = parseInt($(this).data('productid'));
-        let productName = $(this).data('productname');
-        let price = parseFloat($(this).data('price'));
-        let image = $(this).data('image');
-
-        let storageKey = userId ? 'panier_' + userId : 'panier_guest';
-
-
-        let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
-
-        let item = cart.find(p => p.ProduitId === productId);
-        if (item) {
-            item.Quantite += 1;
-        } else {
-            cart.push({
-                ProduitId: productId,
-                Nom: productName,
-                Prix: price,
-                Quantite: 1,
-                Image: image
-            });
-        }
-
-        localStorage.setItem(storageKey, JSON.stringify(cart));        
-    });   
-</script>
 

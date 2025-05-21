@@ -7,6 +7,8 @@ namespace E25ProjetEtendu.Services.IServices
         
         Task<List<Order>> GetOrders();
         Task<Order> GetUnassignedOrder();
+        Task<bool> AssignerCommandeAuLivreur(int orderId, string userId);
+        Task<List<Order>> GetAssignedOrders();
 
 
 

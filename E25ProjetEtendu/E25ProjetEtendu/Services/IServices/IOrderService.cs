@@ -11,6 +11,7 @@ namespace E25ProjetEtendu.Services.IServices
 		Task<bool> HasActiveOrder(string userId);
 		Task<Order?> GetMostRecentOrder(string userId);
 		Task<Order?> GetActiveOrder(string userId);
+		Task<bool> EndCompleteOrder(int orderId, string livreurId);
 
 
     }

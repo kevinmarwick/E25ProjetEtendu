@@ -43,6 +43,7 @@ namespace TonProjet.Controllers
             Console.WriteLine(panierJson);
 
             var panier = JsonConvert.DeserializeObject<List<ProduitPanier>>(panierJson);
+
             var cartItems = panier.Select(p => new CartItemDTO
             {
                 ProductId = p.ProduitId,
@@ -52,6 +53,7 @@ namespace TonProjet.Controllers
 
             
 
+            // Réserver les stocks
             bool reserved = await _produitService.ReserveStock(cartItems, userId);
             if (!reserved)
             {
@@ -59,25 +61,34 @@ namespace TonProjet.Controllers
                 return RedirectToAction("Pannier", "Produit");
             }
 
-            var lineItems = new List<SessionLineItemOptions>();
+            //  Calcul global
+            const decimal TPS = 0.05m;
+            const decimal TVQ = 0.09975m;
 
-            foreach (var item in panier)
+            decimal sousTotal = panier.Sum(p => p.Prix * p.Quantite);
+            decimal tps = sousTotal * TPS;
+            decimal tvq = sousTotal * TVQ;
+            decimal totalTTC = sousTotal + tps + tvq;
+
+            
+            var lineItems = new List<SessionLineItemOptions>
+    {
+        new SessionLineItemOptions
+        {
+            PriceData = new SessionLineItemPriceDataOptions
             {
-                lineItems.Add(new SessionLineItemOptions
+                UnitAmount = (long)(totalTTC * 100), // en cents
+                Currency = "cad",
+                ProductData = new SessionLineItemPriceDataProductDataOptions
                 {
-                    PriceData = new SessionLineItemPriceDataOptions
-                    {
-                        UnitAmount = (long)(item.Prix * 100),
-                        Currency = "cad",
-                        ProductData = new SessionLineItemPriceDataProductDataOptions
-                        {
-                            Name = item.Nom
-                        }
-                    },
-                    Quantity = item.Quantite
-                });
-            }
+                    Name = "Commande complète (taxes incluses)"
+                }
+            },
+            Quantity = 1
+        }
+    };
 
+            
             var options = new SessionCreateOptions
             {
                 PaymentMethodTypes = new List<string> { "card" },
@@ -85,15 +96,14 @@ namespace TonProjet.Controllers
                 Mode = "payment",
                 SuccessUrl = Url.Action("Success", "Payment", null, Request.Scheme),
                 CancelUrl = Url.Action("Cancel", "Payment", null, Request.Scheme)
-
             };
 
             var service = new SessionService();
-            Session session = await service.CreateAsync(options);
-
+            var session = await service.CreateAsync(options);
 
             return Redirect(session.Url);
         }
+
 
 
         public async Task<IActionResult> Success()

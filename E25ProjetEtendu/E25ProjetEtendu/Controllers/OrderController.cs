@@ -1,11 +1,14 @@
-﻿using E25ProjetEtendu.Data;
+using E25ProjetEtendu.Data;
 using E25ProjetEtendu.Enums;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Models.DTOs;
+using E25ProjetEtendu.Services;
 using E25ProjetEtendu.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
 
 namespace E25ProjetEtendu.Controllers
@@ -15,6 +18,7 @@ namespace E25ProjetEtendu.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IOrderService _orderService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         public OrderController(ApplicationDbContext context, IOrderService orderService)
         {
@@ -22,25 +26,43 @@ namespace E25ProjetEtendu.Controllers
             _orderService = orderService;
         }
 
-        [HttpPost]
-        [Route("Order/Create")]
-        public async Task<IActionResult> Create([FromBody] OrderRequestDTO dto)
+
+        [HttpPost]        
+        public async Task<IActionResult> EndOrder(int orderId)
         {
-            try
+            var userId = _userManager.GetUserId(User);
+            var result = await _orderService.EndCompleteOrder(orderId, userId);
+
+            if (!result)
             {
-                if (!ModelState.IsValid)
-                {
-                    foreach (var entry in ModelState)
-                    {
-                        foreach (var error in entry.Value.Errors)
-                        {
-                            Console.WriteLine($"Field: {entry.Key} - Error: {error.ErrorMessage}");
-                        }
-                    }
-                    return BadRequest(ModelState);
-                }
-                //Find User
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                TempData["Erreur"] = "Impossible de terminer la commande.";
+            }
+            else
+            {
+                TempData["Succès"] = "Commande marquée comme terminée.";
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost("create")]
+		public async Task<IActionResult> Create([FromBody] OrderRequestDTO dto)
+		{
+			try
+			{
+				if (!ModelState.IsValid)
+				{
+					foreach (var entry in ModelState)
+					{
+						foreach (var error in entry.Value.Errors)
+						{
+							Console.WriteLine($"Field: {entry.Key} - Error: {error.ErrorMessage}");
+						}
+					}
+					return BadRequest(ModelState);
+				}
+				//Find User
+				var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 //Empty Cart
                 if (dto.Items == null || !dto.Items.Any())

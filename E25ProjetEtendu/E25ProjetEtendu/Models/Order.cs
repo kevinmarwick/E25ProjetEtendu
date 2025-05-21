@@ -1,4 +1,4 @@
-﻿using E25ProjetEtendu.Enums;
+using E25ProjetEtendu.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace E25ProjetEtendu.Models
@@ -10,7 +10,7 @@ namespace E25ProjetEtendu.Models
         public DateTime OrderDate { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPrice { get; set; }
-
+        
 
 
         //Navigation properties
