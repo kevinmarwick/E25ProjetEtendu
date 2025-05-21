@@ -1,11 +1,13 @@
 ﻿using E25ProjetEtendu.Data;
 using E25ProjetEtendu.Models;
+using E25ProjetEtendu.Services;
 using E25ProjetEtendu.Services.IServices;
 using E25ProjetEtendu.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Stripe.Climate;
 
 namespace E25ProjetEtendu.Controllers
 {
@@ -15,14 +17,15 @@ namespace E25ProjetEtendu.Controllers
         private readonly IDeliveryService _deliveryService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly SmsService _smsService;
         
 
-        public DeliveryController(IDeliveryService deliveryService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext)
+        public DeliveryController(IDeliveryService deliveryService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext, SmsService smsService)
         {
             _deliveryService = deliveryService;
             _userManager = userManager;
             _signInManager = signInManager;
-            
+            _smsService = smsService;            
 
         }
 
@@ -96,6 +99,8 @@ namespace E25ProjetEtendu.Controllers
             }
 
             TempData["Succès"] = "Commande acceptée avec succès.";
+            await _smsService.EnvoyerLienConfirmationAuLivreur(user.PhoneNumber, orderId);
+
             return RedirectToAction("Index");
         }
 

@@ -19,15 +19,19 @@ namespace E25ProjetEtendu.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOrderService _orderService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IDeliveryService _deliveryService;
+        
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IDeliveryService deliveryService)
         {
             _context = context;
             _orderService = orderService;
+            _deliveryService = deliveryService;
         }
 
 
-        [HttpPost]        
+        [HttpGet]    
+        
         public async Task<IActionResult> EndOrder(int orderId)
         {
             var userId = _userManager.GetUserId(User);
@@ -43,6 +47,18 @@ namespace E25ProjetEtendu.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> TerminateOrder(string userId)
+        {
+            var order = await _orderService.GetMostRecentOrder(userId);
+            if(order == null || order.Status != OrderStatus.Delivered)
+            {
+                return NotFound();
+            }
+            order.Status = OrderStatus.Delivered;
+            return View();
         }
 
         [HttpPost("create")]

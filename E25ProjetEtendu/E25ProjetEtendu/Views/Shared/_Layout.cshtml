@@ -106,6 +106,12 @@
 						<li class="nav-item">
 							<a class="nav-link text-dark" asp-controller="Produit" asp-action="Index">Liste de produit</a>
 						</li>
+						@if (User.IsInRole("Delivery"))
+						{
+							<li class="nav-item">
+								<a class="nav-link text-dark" asp-controller="Delivery" asp-action="Index">Poste Livreur</a>
+							</li>
+						}
 						<!--Order Status-->
 						@if (user != null && orderToDisplay != null && !string.IsNullOrEmpty(label))
 						{

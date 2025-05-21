@@ -1,23 +1,22 @@
 ﻿@using E25ProjetEtendu.Enums
-@using E25ProjetEtendu.Models
-@foreach (var order in Model.AssignedOrders)
-{
-    <div class="list-group-item d-flex justify-content-between align-items-center">
-        <div>
-            <strong>#@order.OrderId</strong> - @order.Buyer?.FirstName
-            <br />
-            <small class="text-muted">@order.OrderDate.ToString("yyyy-MM-dd HH:mm")</small>
-        </div>
+@model E25ProjetEtendu.Models.Order
 
-        @if (order.Status == OrderStatus.Delivered)
-        {
-            <form method="post" asp-action="TerminerCommande" asp-route-orderId="@order.OrderId" class="ms-3">
-                <button class="btn btn-success btn-sm">Terminer</button>
-            </form>
-        }
-    </div>
+@{
+    ViewData["Title"] = "Terminer la commande";
 }
 
+<h2>Commande #@Model.OrderId</h2>
 
+<p>Client : @Model.Buyer?.FirstName</p>
+<p>Statut actuel : @Model.Status.ToString()</p>
 
-
+@if (Model.Status == OrderStatus.Delivered)
+{
+    <form method="post" asp-action="EndOrder" asp-route-orderId="@Model.OrderId">
+        <button class="btn btn-success">Confirmer la fin de la commande</button>
+    </form>
+}
+else
+{
+    <div class="alert alert-warning">La commande n'est pas encore livrée. Vous ne pouvez pas la terminer.</div>
+}
