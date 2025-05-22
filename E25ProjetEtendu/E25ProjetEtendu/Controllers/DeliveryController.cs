@@ -101,6 +101,7 @@ namespace E25ProjetEtendu.Controllers
             TempData["Succès"] = "Commande acceptée avec succès.";
             await _smsService.EnvoyerLienConfirmationAuLivreur(user.PhoneNumber, orderId);
 
+
             return RedirectToAction("Index");
         }
 
