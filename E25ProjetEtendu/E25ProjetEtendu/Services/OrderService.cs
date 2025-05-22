@@ -33,13 +33,10 @@ namespace E25ProjetEtendu.Services
 
 		public async Task<bool> EndCompleteOrder(int orderId, string livreurId)
         {
-			Models.Order? commande = await _context.Orders
+			Order? commande = await _context.Orders
                 .FirstOrDefaultAsync(o => o.OrderId == orderId && o.DelivererId == livreurId);
 
-            if (commande == null || commande.Status != OrderStatus.Delivered)
-            {
-                return false; // on ne termine que si déjà livrée
-            }
+            
                 
 
             commande.Status = OrderStatus.Delivered;

@@ -58,7 +58,7 @@ namespace E25ProjetEtendu.Controllers
             {
                 return NotFound();
             }
-            order.Status = OrderStatus.Delivered;
+            order.Status = OrderStatus.Delivered;            
             await _context.SaveChangesAsync();
             return RedirectToAction("EndOrder", new { orderId });
 

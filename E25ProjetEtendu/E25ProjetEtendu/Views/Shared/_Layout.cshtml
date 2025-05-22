@@ -136,6 +136,8 @@
 								</a>
 							</li>
 						}
+						
+
 					</ul>
 
 					<partial name="_LoginPartial" />
@@ -154,7 +156,7 @@
 								<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="/Produit/Pannier">
 									<i class="fa-solid fa-cart-shopping fa-xl"></i>
 								</a>
-							}
+							}						
 						</li>
 					</ul>
 				</div>
@@ -193,8 +195,7 @@
 		var currentUserId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
 	</script>
 
-	<script src="~/lib/jquery/dist/jquery.min.js"></script>
-	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>	
 	<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 	<script src="~/js/decimal-input-filter.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
@@ -208,13 +209,28 @@
 			.build();
 
 		connection.on("CommandeTerminee", function (orderId) {
-			alert("📦 Votre commande #" + orderId + " a été marquée comme terminée !");
+			const badge = document.getElementById("notif-badge");
+			const list = document.getElementById("notif-list");
+
+			// Retirer le "aucune notification"
+			const noNotif = list.querySelector(".text-muted");
+			if (noNotif) noNotif.remove();
+
+			// Créer l'élément notification
+			const li = document.createElement("li");
+			li.className = "dropdown-item text-success";
+			li.innerText = "📦 Commande #" + orderId + " terminée !";
+			list.prepend(li);
+
+			// Affiche la pastille
+			badge.classList.remove("d-none");
 		});
 
 		connection.start().catch(function (err) {
-			console.error("Erreur de connexion SignalR :", err.toString());
+			console.error("Erreur de SignalR :", err.toString());
 		});
 	</script>
+
 
 	@await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -1,8 +1,7 @@
-﻿
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-namespace E25ProjetEtendu.Services;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
+using Twilio.Types;
+
 public class SmsService
 {
     private readonly HttpClient _httpClient;
@@ -11,35 +10,29 @@ public class SmsService
 
     public SmsService()
     {
-        _httpClient = new HttpClient();
-        _baseUrl = "https://textbelt.com/text"; // ou URL d’un autre service SMS
-        _apiKey = "textbelt"; // Clé test gratuite (1 SMS/jour). Remplace par ta vraie clé pour production.
+        TwilioClient.Init(_accountSid, _authToken);
     }
 
     public async Task<bool> EnvoyerLienConfirmationAuLivreur(string phoneNumber, int orderId)
     {
-        var confirmationUrl = $"https://localhost:7135/Delivery/TerminerCommandeParLien?orderId={orderId}";
-        var message = $"Votre commande a été livrée. Cliquez ici pour la confirmer : {confirmationUrl}";
-
-        var payload = new Dictionary<string, string>
+        try
         {
-            { "phone", phoneNumber },
-            { "message", message },
-            { "key", _apiKey }
-        };
+            var confirmationUrl = $"https://localhost:7135/Order/EndOrder?orderId={orderId}";
+            var messageText = $"Votre commande a été livrée. Cliquez ici pour la confirmer : {confirmationUrl}";
 
-        var content = new FormUrlEncodedContent(payload);
+            var message = await MessageResource.CreateAsync(
+                to: new PhoneNumber(phoneNumber),
+                from: new PhoneNumber(_twilioNumber),
+                body: messageText
+            );
 
-        var response = await _httpClient.PostAsync(_baseUrl, content);
-        var responseString = await response.Content.ReadAsStringAsync();
-
-        var result = JsonSerializer.Deserialize<TextbeltResponse>(responseString);
-        return result?.Success ?? false;
-    }
-
-    private class TextbeltResponse
-    {
-        public bool Success { get; set; }
-        public string Message { get; set; }
+            Console.WriteLine($"SMS envoyé. SID : {message.Sid}");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($" Erreur d'envoi SMS : {ex.Message}");
+            return false;
+        }
     }
 }
