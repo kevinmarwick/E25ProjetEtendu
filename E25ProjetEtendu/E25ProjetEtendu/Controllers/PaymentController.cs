@@ -45,10 +45,6 @@ namespace TonProjet.Controllers
             // Store delivery location temporarily so it can be used in Success() post-payment
             TempData["LastDeliveryLocation"] = dto.Location;
 
-
-
-
-
             // Réserver les stocks
             bool reserved = await _produitService.ReserveStock(dto.Items, userId);
             if (!reserved)
@@ -137,7 +133,11 @@ namespace TonProjet.Controllers
             {
 				HttpContext.Session.Remove("CancelledOrderSeen");
 				await _produitService.FinalizeReservation(userId);
-				return RedirectToAction("CurrentOrderStatus", "Order");
+
+                //Utilisé dans CurrentOrderStatus afin de vider le panier au succès de la commande
+                TempData["ClearCart"] = "true";
+
+                return RedirectToAction("CurrentOrderStatus", "Order");
 			}          
 
 		}
