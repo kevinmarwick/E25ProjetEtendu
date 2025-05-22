@@ -37,6 +37,7 @@ namespace E25ProjetEtendu.Services
                 return false; // commande inexistante ou déjà prise
 
             order.DelivererId = userId;
+            order.Status = Enums.OrderStatus.InProgress;
 
             await _context.SaveChangesAsync();
             return true;

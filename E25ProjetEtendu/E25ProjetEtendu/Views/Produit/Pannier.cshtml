@@ -27,16 +27,19 @@
     </form>
 </div>
 
-@section Scripts {
+@section Scripts {    
+
     <script>
         var userId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
 
         function showToast(message, type = "success") {
             const toastEl = document.getElementById("toastMessage");
-            toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
             const toastBody = toastEl.querySelector(".toast-body");
+
+            toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
             toastBody.textContent = message;
-            const bsToast = new bootstrap.Toast(toastEl);
+
+            const bsToast = bootstrap.Toast.getOrCreateInstance(toastEl);
             bsToast.show();
         }
 
@@ -70,7 +73,8 @@
                     let itemSubtotal = item.Prix * item.Quantite;
                     subtotal += itemSubtotal;
 
-                    let disableIncrease = item.Quantite >= item.Stock ? 'disabled' : '';
+                    let isMax = item.Quantite >= item.Stock;
+                    let btnClass = isMax ? 'stock-max' : '';
 
                     html += `<tr>
                                 <td>
@@ -83,7 +87,7 @@
                                 <td>${item.Quantite}</td>
                                 <td>${itemSubtotal.toFixed(2)} $</td>
                                 <td>
-                                    <button class="btn btn-sm btn-success increase-btn" data-productid="${item.ProduitId}" ${disableIncrease}>+</button>
+                                    <button class="btn btn-sm btn-success increase-btn ${btnClass}" data-productid="${item.ProduitId}">+</button>
                                     <button class="btn btn-sm btn-warning decrease-btn" data-productid="${item.ProduitId}">-</button>
                                 </td>
                             </tr>`;
@@ -118,17 +122,33 @@
                 let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
                 let item = cart.find(p => p.ProduitId === productId);
 
-                if (item) {
-                    if (item.Quantite < item.Stock) {
-                        item.Quantite += 1;
-                    } else {
-                        showToast("Stock maximum atteint pour ce produit", "warning");
-                    }
+                if (item && item.Quantite < item.Stock) {
+                    item.Quantite += 1;
+                    localStorage.setItem(storageKey, JSON.stringify(cart));
+                    Pannier();
                 }
-
-                localStorage.setItem(storageKey, JSON.stringify(cart));
-                Pannier();
             });
+
+            $(document).on('mousedown', '.increase-btn.stock-max', function () {
+                const btn = $(this);
+                btn.addClass("btn-flash-red");
+
+                setTimeout(() => btn.removeClass("btn-flash-red"), 400);
+
+                const container = btn.closest('td');
+
+                // Vérifie s'il n'y a pas déjà un message
+                if (container.find('.stock-msg').length === 0) {
+                    const msg = $('<div class="text-danger stock-msg mb-1">Stock maximum atteint</div>');
+                    // Ajoute le message juste au-dessus du bloc boutons
+                    container.prepend(msg);
+
+                    // Supprime le message après 2 secondes
+                    setTimeout(() => msg.fadeOut(300, () => msg.remove()), 2000);
+                }
+            });
+
+
 
             $(document).on('click', '.decrease-btn', function () {
                 let productId = parseInt($(this).data('productid'));

@@ -24,6 +24,7 @@ builder.Services.AddScoped<IProduitService, ProduitService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
+builder.Services.AddScoped<SmsService>();
 
 builder.Services.AddHostedService<ReservationCleanupService>();
 
@@ -48,6 +49,9 @@ builder.Services.Configure<SmtpSettings>(
     builder.Configuration.GetSection("SmtpSettings"));
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddSignalR();
+
+
 
 var culture = new CultureInfo("fr-CA");
 
@@ -63,7 +67,7 @@ CultureInfo.DefaultThreadCurrentUICulture = culture;
 
 
 var app = builder.Build();
-
+app.MapHub<OrderHub>("/orderHub");
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

@@ -19,30 +19,49 @@ namespace E25ProjetEtendu.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IOrderService _orderService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IDeliveryService _deliveryService;
+        
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IDeliveryService deliveryService, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _orderService = orderService;
+            _deliveryService = deliveryService;
+            _userManager = userManager;
         }
 
 
-        [HttpPost]        
+
+
+        [HttpGet]
         public async Task<IActionResult> EndOrder(int orderId)
+
         {
-            var userId = _userManager.GetUserId(User);
-            var result = await _orderService.EndCompleteOrder(orderId, userId);
-
-            if (!result)
+            Order? order = await _orderService.GetOrderById(orderId);
+            ApplicationUser? user = await _userManager.GetUserAsync(User); 
+            if(user.Id != order.DelivererId)
             {
-                TempData["Erreur"] = "Impossible de terminer la commande.";
+                return Forbid();
             }
-            else
+            if(order == null)
             {
-                TempData["Succès"] = "Commande marquée comme terminée.";
+                return NotFound();
             }
+            return View(order);
+        }
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<IActionResult> TerminateOrder(int orderId)
+        {
+            var order = await _orderService.GetOrderById(orderId);
+            if(order == null)
+            {
+                return NotFound();
+            }
+            order.Status = OrderStatus.Delivered;            
+            await _context.SaveChangesAsync();
+            return RedirectToAction("EndOrder", new { orderId });
 
-            return RedirectToAction("Index");
         }
 
         [HttpPost("create")]

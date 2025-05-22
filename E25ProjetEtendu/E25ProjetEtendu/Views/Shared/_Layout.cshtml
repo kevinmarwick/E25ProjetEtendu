@@ -70,13 +70,13 @@
 		orderToDisplay = lastOrder;
 
 		if (lastOrder.Status == OrderStatus.Cancelled &&
-			Context.Session.GetString("CancelledOrderSeen") != "true")
+		Context.Session.GetString("CancelledOrderSeen") != "true")
 		{
 			label = "Commande annulée";
 			color = "text-danger";
 		}
 		else if (lastOrder.Status == OrderStatus.Delivered &&
-			Context.Session.GetString("DeliveredOrderSeen") != "true")
+		Context.Session.GetString("DeliveredOrderSeen") != "true")
 		{
 			label = "Commande terminée";
 			color = "text-success";
@@ -87,7 +87,6 @@
 			color = "text-muted";
 		}
 	}
-
 }
 
 <!DOCTYPE html>
@@ -123,6 +122,11 @@
 						<li class="nav-item">
 							<a class="nav-link text-dark" asp-area="" asp-controller="Produit" asp-action="Index">Liste de produit</a>
 						</li>
+						@if (User.IsInRole("Delivery"))
+						{
+							<li class="nav-item"><a class="nav-link text-dark" asp-controller="Delivery" asp-action="Index">Poste Livreur</a></li>
+						}
+
 						<!--Order Status-->
 						@if (user != null && orderToDisplay != null && !string.IsNullOrEmpty(label))
 						{
@@ -132,11 +136,12 @@
 								</a>
 							</li>
 						}
-
-
+						
 
 					</ul>
+
 					<partial name="_LoginPartial" />
+
 					<ul class="navbar-nav">
 						<li class="nav-item position-relative">
 							@if (SignInManager.IsSignedIn(User))
@@ -151,7 +156,7 @@
 								<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="/Produit/Pannier">
 									<i class="fa-solid fa-cart-shopping fa-xl"></i>
 								</a>
-							}
+							}						
 						</li>
 					</ul>
 				</div>
@@ -190,12 +195,42 @@
 		var currentUserId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
 	</script>
 
-	<script src="~/lib/jquery/dist/jquery.min.js"></script>
-	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>	
 	<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 	<script src="~/js/decimal-input-filter.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
+
+	<!-- ✅ SignalR client + écoute commande terminée -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+	<script>
+		const connection = new signalR.HubConnectionBuilder()
+			.withUrl("/orderHub")
+			.build();
+
+		connection.on("CommandeTerminee", function (orderId) {
+			const badge = document.getElementById("notif-badge");
+			const list = document.getElementById("notif-list");
+
+			// Retirer le "aucune notification"
+			const noNotif = list.querySelector(".text-muted");
+			if (noNotif) noNotif.remove();
+
+			// Créer l'élément notification
+			const li = document.createElement("li");
+			li.className = "dropdown-item text-success";
+			li.innerText = "📦 Commande #" + orderId + " terminée !";
+			list.prepend(li);
+
+			// Affiche la pastille
+			badge.classList.remove("d-none");
+		});
+
+		connection.start().catch(function (err) {
+			console.error("Erreur de SignalR :", err.toString());
+		});
+	</script>
+
 
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
