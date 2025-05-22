@@ -219,47 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Envoyer commande
-function envoyerCommande() {
-    const userId = document.body.dataset.userid;
-    const storageKey = 'panier_' + userId;
-    const cart = JSON.parse(localStorage.getItem(storageKey)) || [];
-    const location = localStorage.getItem("deliveryLocation") || "";
-
-    console.log("storageKey:", storageKey);
-    console.log("raw cart:", localStorage.getItem(storageKey));
-    console.log("deliveryLocation:", location);
-
-    if (!location.trim()) {
-        alert("Veuillez entrer un lieu de livraison.");
-        return Promise.reject("Lieu de livraison manquant");
-    }
-
-    if (cart.length === 0) {
-        alert("Votre panier est vide.");
-        return Promise.reject("Panier vide");
-    }
-
-    const dto = {
-        items: cart.map(item => ({
-            productId: item.ProduitId,
-            quantity: item.Quantite
-        })),
-        location: location
-    };
-
-    return fetch('/order/create', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(dto)
-    }).then(res => {
-        if (!res.ok) throw new Error("Erreur serveur.");
-        return res.json();
-    });
-}
-
 // Toggle mini-panier
 $(document).on('click', '#toggle-cart-btn', function () {
     $('#cart-summary').toggleClass('show');

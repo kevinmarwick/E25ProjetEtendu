@@ -1,6 +1,7 @@
 using E25ProjetEtendu.Data;
 using E25ProjetEtendu.Models.DTOs;
 using E25ProjetEtendu.Services.IServices;
+using E25ProjetEtendu.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -39,22 +40,17 @@ namespace TonProjet.Controllers
                 return RedirectToAction("Pannier", "Produit");
             }
 
-            Console.WriteLine("Raw JSON:");
-            Console.WriteLine(panierJson);
+            var dto = JsonConvert.DeserializeObject<OrderRequestDTO>(panierJson);
 
-            var panier = JsonConvert.DeserializeObject<List<ProduitPanier>>(panierJson);
-
-            var cartItems = panier.Select(p => new CartItemDTO
-            {
-                ProductId = p.ProduitId,
-                Quantity = p.Quantite
-            }).ToList();
+            // Store delivery location temporarily so it can be used in Success() post-payment
+            TempData["LastDeliveryLocation"] = dto.Location;
 
 
-            
+
+
 
             // Réserver les stocks
-            bool reserved = await _produitService.ReserveStock(cartItems, userId);
+            bool reserved = await _produitService.ReserveStock(dto.Items, userId);
             if (!reserved)
             {
                 TempData["Error"] = "Certains produits ne sont plus disponibles en quantité suffisante.";
@@ -65,28 +61,39 @@ namespace TonProjet.Controllers
             const decimal TPS = 0.05m;
             const decimal TVQ = 0.09975m;
 
-            decimal sousTotal = panier.Sum(p => p.Prix * p.Quantite);
+            // Get product prices
+            var produits = await _context.produits
+                .Where(p => dto.Items.Select(i => i.ProductId).Contains(p.ProduitId))
+                .ToListAsync();
+
+            // Subtotal calculation using matched prices
+            decimal sousTotal = dto.Items.Sum(item =>
+            {
+                var produit = produits.First(p => p.ProduitId == item.ProductId);
+                return produit.Prix * item.Quantity;
+            });
+
             decimal tps = sousTotal * TPS;
             decimal tvq = sousTotal * TVQ;
             decimal totalTTC = sousTotal + tps + tvq;
 
             
             var lineItems = new List<SessionLineItemOptions>
-    {
-        new SessionLineItemOptions
-        {
-            PriceData = new SessionLineItemPriceDataOptions
             {
-                UnitAmount = (long)(totalTTC * 100), // en cents
-                Currency = "cad",
-                ProductData = new SessionLineItemPriceDataProductDataOptions
+                new SessionLineItemOptions
                 {
-                    Name = "Commande complète (taxes incluses)"
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = (long)(totalTTC * 100), // en cents
+                        Currency = "cad",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = "Commande complète (taxes incluses)"
+                        }
+                    },
+                    Quantity = 1
                 }
-            },
-            Quantity = 1
-        }
-    };
+            };
 
             
             var options = new SessionCreateOptions
@@ -100,6 +107,8 @@ namespace TonProjet.Controllers
 
             var service = new SessionService();
             var session = await service.CreateAsync(options);
+           
+
 
             return Redirect(session.Url);
         }
@@ -114,9 +123,12 @@ namespace TonProjet.Controllers
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            bool created = await _orderService.TryCreateOrderFromReservation(userId);
+            var location = TempData["LastDeliveryLocation"]?.ToString() ?? "Non spécifiée";
 
-			if (!created)
+            bool created = await _orderService.TryCreateOrderFromReservation(userId, location);
+
+
+            if (!created)
             {
                 TempData["Error"] = "Votre session de paiement a expiré. Aucun produit n’a été commandé mais le paiement a peut-être été authorisé.  Veuillez contacter l'ADEPT.";
                 return RedirectToAction("Pannier", "Produit");

@@ -1,4 +1,4 @@
-﻿namespace E25ProjetEtendu.Models.DTOs
+﻿namespace E25ProjetEtendu.ViewModels
 {
     public class ProduitPanier
     {

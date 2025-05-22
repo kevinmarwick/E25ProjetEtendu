@@ -11,6 +11,8 @@
 <div class="d-flex justify-content-end gap-3 mt-3">
     <form id="checkout-form" method="post" asp-controller="Payment" asp-action="CreateCheckoutSession" class="m-0">
         <input type="hidden" name="panierJson" id="panierJson" />
+        <input type="hidden" name="location" id="hiddenLocation" />
+
 
         <div class="form-group mt-4">
             <label for="delivery-location" class="form-label">Lieu de livraison</label>
@@ -160,8 +162,20 @@
             $('#checkout-form').on('submit', function () {
                 let storageKey = 'panier_' + userId;
                 let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
-                $('#panierJson').val(JSON.stringify(cart));
+
+                const location = document.getElementById("delivery-location").value;
+
+                const dto = {
+                    items: cart.map(item => ({
+                        productId: item.ProduitId,
+                        quantity: item.Quantite
+                    })),
+                    location: location
+                };
+
+                $('#panierJson').val(JSON.stringify(dto));
             });
+
         });
 
         document.getElementById("checkout-btn").addEventListener("click", function (e) {
