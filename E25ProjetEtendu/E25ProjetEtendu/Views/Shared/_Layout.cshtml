@@ -87,7 +87,6 @@
 			color = "text-muted";
 		}
 	}
-
 }
 
 <!DOCTYPE html>
@@ -109,7 +108,7 @@
 			<div class="container-fluid">
 				<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">E25ProjetEtendu</a>
 				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-									aria-expanded="false" aria-label="Toggle navigation">
+						aria-expanded="false" aria-label="Toggle navigation">
 					<span class="navbar-toggler-icon"></span>
 				</button>
 				<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -137,11 +136,10 @@
 								</a>
 							</li>
 						}
-
-
-
 					</ul>
+
 					<partial name="_LoginPartial" />
+
 					<ul class="navbar-nav">
 						<li class="nav-item position-relative">
 							@if (SignInManager.IsSignedIn(User))
@@ -201,6 +199,22 @@
 	<script src="~/js/decimal-input-filter.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
+
+	<!-- ✅ SignalR client + écoute commande terminée -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+	<script>
+		const connection = new signalR.HubConnectionBuilder()
+			.withUrl("/orderHub")
+			.build();
+
+		connection.on("CommandeTerminee", function (orderId) {
+			alert("📦 Votre commande #" + orderId + " a été marquée comme terminée !");
+		});
+
+		connection.start().catch(function (err) {
+			console.error("Erreur de connexion SignalR :", err.toString());
+		});
+	</script>
 
 	@await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -13,6 +13,7 @@ namespace E25ProjetEtendu.Services.IServices
 		Task<Order?> GetActiveOrder(string userId);
 		Task<bool> EndCompleteOrder(int orderId, string livreurId);
 		Task<Order?> GetOrderById(int orderId);
+		Task NotifierClientCommandeTermineeAsync(Order order);
 
 
 

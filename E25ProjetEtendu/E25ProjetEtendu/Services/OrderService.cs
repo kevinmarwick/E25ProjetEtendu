@@ -4,16 +4,21 @@ using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services.IServices;
 using Microsoft.EntityFrameworkCore;
 using E25ProjetEtendu.Enums;
+using Microsoft.AspNetCore.SignalR;
+
+
 
 namespace E25ProjetEtendu.Services
 {
     public class OrderService : IOrderService
     {
         private readonly ApplicationDbContext _context;
+		private readonly IHubContext<OrderHub> _hubContext;
 
-        public OrderService(ApplicationDbContext context)
+		public OrderService(ApplicationDbContext context, IHubContext<OrderHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
 		public async Task<Order?> GetOrderById(int orderId)
@@ -28,7 +33,7 @@ namespace E25ProjetEtendu.Services
 
 		public async Task<bool> EndCompleteOrder(int orderId, string livreurId)
         {
-            var commande = await _context.Orders
+			Models.Order? commande = await _context.Orders
                 .FirstOrDefaultAsync(o => o.OrderId == orderId && o.DelivererId == livreurId);
 
             if (commande == null || commande.Status != OrderStatus.Delivered)
@@ -39,11 +44,21 @@ namespace E25ProjetEtendu.Services
 
             commande.Status = OrderStatus.Delivered;
             await _context.SaveChangesAsync();
+			await NotifierClientCommandeTermineeAsync(commande);
 
-            return true;
+			return true;
         }
+		public async Task NotifierClientCommandeTermineeAsync(Order order)
+		{
+			if (order?.BuyerId != null)
+			{
+				await _hubContext.Clients
+					.User(order.BuyerId)
+					.SendAsync("CommandeTerminee", order.OrderId);
+			}
+		}
 
-        public async Task<Order> CreateOrder(OrderRequestDTO dto, string userId, List<Produit> products)
+		public async Task<Order> CreateOrder(OrderRequestDTO dto, string userId, List<Produit> products)
         {
             var orderItems = dto.Items.Select(item =>
             {
