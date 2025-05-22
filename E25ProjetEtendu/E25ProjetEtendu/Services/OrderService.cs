@@ -75,7 +75,8 @@ namespace E25ProjetEtendu.Services
             return order;
         }
 
-        public async Task<bool> TryCreateOrderFromReservation(string userId)
+        public async Task<bool> TryCreateOrderFromReservation(string userId, string location)
+
         {
             var tenMinutesAgo = DateTime.Now.AddMinutes(-10);
 
@@ -93,7 +94,8 @@ namespace E25ProjetEtendu.Services
                     ProductId = r.ProductId,
                     Quantity = r.Quantity
                 }).ToList(),
-                Location = "Non spécifiée"
+                Location = location ?? "Non spécifiée"
+
             };
 
             var produits = await _context.produits
