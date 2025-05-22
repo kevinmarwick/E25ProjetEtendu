@@ -71,3 +71,12 @@
     </div>
 </div>
 
+
+<!--Vide le panier si redirigé depuis Success()-->
+@if (TempData["ClearCart"]?.ToString() == "true")
+{
+    <script>
+        localStorage.removeItem('panier_' + document.body.dataset.userid);
+        localStorage.removeItem('deliveryLocation');
+    </script>
+}
