@@ -1,6 +1,7 @@
 using E25ProjetEtendu.Data;
 using E25ProjetEtendu.Extensions;
 using E25ProjetEtendu.Models;
+using E25ProjetEtendu.Models.DTOs;
 using E25ProjetEtendu.Services.IServices;
 using E25ProjetEtendu.ViewModels;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +19,7 @@ namespace E25ProjetEtendu.Services
             _context = context;
             _httpContextAccessor = httpContextAccessor;
         }
+
         #region Methode de recherche & liste de produit
         /// <summary>
         /// Permet d'Afficher toute les produits actif a l'utilisateur
@@ -87,6 +89,7 @@ namespace E25ProjetEtendu.Services
         }
 
         #endregion
+
         #region Methode de gestion de cart 
         /// <summary>
         /// permet de récuperer les produits du cart
@@ -195,6 +198,158 @@ namespace E25ProjetEtendu.Services
         {
             _httpContextAccessor.HttpContext.Response.Cookies.Delete("panier");
         }
+
+
+        #endregion
+
+        #region Methode de validation et de réservation d'inventaire
+
+        public async Task<bool> HasSufficientStock(List<CartItemDTO> items)
+        {
+            var productIds = items.Select(i => i.ProductId).ToList();
+
+            var products = await _context.produits
+                .Where(p => productIds.Contains(p.ProduitId))
+                .ToListAsync();
+
+            var recentReservations = await _context.StockReservations
+                .Where(r => productIds.Contains(r.ProductId) && (DateTime.Now - r.ReservedAt).TotalMinutes < 15)
+                .ToListAsync();
+
+            var reservedMap = recentReservations
+                .GroupBy(r => r.ProductId)
+                .ToDictionary(g => g.Key, g => g.Sum(r => r.Quantity));
+
+            return items.All(item =>
+            {
+                var product = products.FirstOrDefault(p => p.ProduitId == item.ProductId);
+                if (product == null) return false;
+                var reservedQty = reservedMap.ContainsKey(item.ProductId) ? reservedMap[item.ProductId] : 0;
+                return product.InventoryQuantity - reservedQty >= item.Quantity;
+            });
+        }
+
+        public async Task<bool> ReserveStock(List<CartItemDTO> items, string userId)
+        {
+            var now = DateTime.Now;
+
+            Console.WriteLine("=== ReserveStock START ===");
+            Console.WriteLine($"UserId: {userId}");
+            foreach (var i in items)
+                Console.WriteLine($"Incoming Item → ProductId: {i.ProductId}, Quantity: {i.Quantity}");
+
+            var productIds = items.Select(i => i.ProductId).ToList();
+
+            // Fetch products
+            var products = await _context.produits
+                .Where(p => productIds.Contains(p.ProduitId))
+                .ToListAsync();
+
+            Console.WriteLine("=== DB Products Fetched ===");
+            foreach (var p in products)
+                Console.WriteLine($"DB → ProduitId: {p.ProduitId}, Inventory: {p.InventoryQuantity}");
+
+            // Fetch recent reservations
+            var recentReservations = await _context.StockReservations
+                .Where(r => productIds.Contains(r.ProductId))
+                .ToListAsync();
+
+            var validReservations = recentReservations
+                .Where(r => (now - r.ReservedAt).TotalMinutes < 15)
+                .ToList();
+
+            var reservedMap = validReservations
+                .GroupBy(r => r.ProductId)
+                .ToDictionary(g => g.Key, g => g.Sum(r => r.Quantity));
+
+            // Check stock availability
+            foreach (var item in items)
+            {
+                var product = products.FirstOrDefault(p => p.ProduitId == item.ProductId);
+                if (product == null)
+                {
+                    Console.WriteLine($"ProductId {item.ProductId} not found in DB.");
+                    return false;
+                }
+
+                var reserved = reservedMap.ContainsKey(item.ProductId) ? reservedMap[item.ProductId] : 0;
+                var available = product.InventoryQuantity - reserved;
+
+                Console.WriteLine($"Checking ProductId {item.ProductId}: Need={item.Quantity}, Available={available}, Stock={product.InventoryQuantity}, Reserved={reserved}");
+
+                if (available < item.Quantity)
+                {
+                    Console.WriteLine($"Not enough stock for ProductId {item.ProductId}. Needed={item.Quantity}, Available={available}");
+                    return false;
+                }
+            }
+
+            // Make reservations
+            foreach (var item in items)
+            {
+                _context.StockReservations.Add(new StockReservation
+                {
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    UserId = userId,
+                    ReservedAt = now
+                });
+
+                Console.WriteLine($"Reserving ProductId {item.ProductId} → Qty {item.Quantity}");
+            }
+
+            await _context.SaveChangesAsync();
+            Console.WriteLine("=== Reservation completed successfully ===");
+            return true;
+        }
+
+
+
+        public async Task<bool> FinalizeReservation(string userId)
+        {
+            var reservations = await _context.StockReservations
+                .Where(r => r.UserId == userId)
+                .ToListAsync();
+
+            foreach (var res in reservations)
+            {
+                var produit = await _context.produits.FindAsync(res.ProductId);
+                if (produit != null)
+                    produit.InventoryQuantity -= res.Quantity;
+            }
+
+            _context.StockReservations.RemoveRange(reservations);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task CancelReservation(string userId)
+        {
+            var reservations = await _context.StockReservations
+                .Where(r => r.UserId == userId)
+                .ToListAsync();
+
+            _context.StockReservations.RemoveRange(reservations);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task CleanupExpiredReservations()
+        {
+            var expiration = DateTime.Now.AddMinutes(-11);
+            var expired = await _context.StockReservations
+                .Where(r => r.ReservedAt < expiration)
+                .ToListAsync();
+
+            if (expired.Any())
+            {
+                _context.StockReservations.RemoveRange(expired);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+
+
+
         #endregion
     }
 }

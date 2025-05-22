@@ -248,7 +248,7 @@ function envoyerCommande() {
         location: location
     };
 
-    return fetch('/api/order/create', {
+    return fetch('/order/create', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -264,3 +264,7 @@ function envoyerCommande() {
 $(document).on('click', '#toggle-cart-btn', function () {
     $('#cart-summary').toggleClass('show');
 });
+
+
+
+

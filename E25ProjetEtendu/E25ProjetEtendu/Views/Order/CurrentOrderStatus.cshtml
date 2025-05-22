@@ -1,0 +1,73 @@
+﻿@using E25ProjetEtendu.Extensions
+@model E25ProjetEtendu.Models.Order
+
+@{
+    ViewData["Title"] = "Current Order Status";
+    var subtotal = Model.OrderItems.Sum(i => i.Quantity * i.UnitPrice);
+    var tps = subtotal * 0.05m;
+    var tvq = subtotal * 0.09975m;
+    var total = subtotal + tps + tvq;
+}
+
+<h1 class="text-center my-4">Statut de votre commande</h1>
+
+<div class="card mb-4 shadow-sm">
+    <div class="card-body row">
+        <div class="col-md-6">
+            <p><strong>ID de la commande :</strong> @Model.OrderId</p>
+            <p><strong>Date :</strong> @Model.OrderDate.ToString("f")</p>
+            <p><strong>Prix total :</strong> @Model.TotalPrice.ToString("C")</p>
+            <p><strong>Lieu de livraison :</strong> @(string.IsNullOrEmpty(Model.Location) ? "Non spécifiée" : Model.Location)</p>
+        </div>
+        <div class="col-md-6 d-flex align-items-center justify-content-md-end">
+            <p class="mb-0 me-2"><strong>Statut :</strong></p>
+            <div class="order-status-badge">
+                <span class="badge status-@Model.Status.ToString().ToLower()">
+                    @Model.Status.GetDisplayName()
+                </span>
+            </div>
+
+        </div>
+        @if (Model.Deliverer != null)
+        {
+            <p><strong>Livreur :</strong> @Model.Deliverer.FirstName</p>
+        }
+
+       
+    </div>
+</div>
+
+
+<h4 class="mt-5">Articles commandés</h4>
+<table class="table table-bordered table-hover">
+    <thead class="table-light">
+        <tr>
+            <th>Produit</th>
+            <th class="text-center">Quantité</th>
+            <th class="text-end">Prix unitaire</th>
+            <th class="text-end">Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderItems)
+        {
+            <tr>
+                <td>@item.Product.Nom</td>
+                <td class="text-center">@item.Quantity</td>
+                <td class="text-end">@item.UnitPrice.ToString("C")</td>
+                <td class="text-end">@((item.Quantity * item.UnitPrice).ToString("C"))</td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="card mt-4">
+    <div class="card-body text-end">
+        <p><strong>Sous-total :</strong> @subtotal.ToString("C")</p>
+        <p class="text-muted mb-1"><strong>TPS (5%) :</strong> @tps.ToString("C")</p>
+        <p class="text-muted mb-3"><strong>TVQ (9.975%) :</strong> @tvq.ToString("C")</p>
+        <h4 class="fw-bold"><strong>Total :</strong> @total.ToString("C")</h4>
+    </div>
+</div>
+

@@ -1,0 +1,31 @@
+﻿@model E25ProjetEtendu.Models.Order
+
+@{
+    ViewData["Title"] = "Terminer la commande";
+}
+
+<h1>Détails de la commande #@Model.OrderId</h1>
+
+<p><strong>Date:</strong> @Model.OrderDate.ToString("g")</p>
+<p><strong>Client:</strong> @Model.Buyer?.UserName</p>
+<p><strong>Lieu de livraison:</strong> @Model.Location</p>
+<p><strong>Montant total:</strong> @Model.TotalPrice.ToString("C")</p>
+<p><strong>Statut actuel:</strong> @Model.Status.ToString()</p>
+
+<hr />
+
+@if (Model.Status != E25ProjetEtendu.Enums.OrderStatus.Delivered)
+{
+    <form asp-action="TerminateOrder" asp-controller="Order" method="post">
+        <input type="hidden" name="orderId" value="@Model.OrderId" />
+        <button type="submit" class="btn btn-danger">
+            Terminer la commande
+        </button>
+    </form>
+}
+else
+{
+    <div class="alert alert-success">
+        La commande est déjà <strong>terminée</strong>.
+    </div>
+}

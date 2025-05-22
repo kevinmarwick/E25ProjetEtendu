@@ -24,7 +24,9 @@ builder.Services.AddScoped<IProduitService, ProduitService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
+builder.Services.AddScoped<SmsService>();
 
+builder.Services.AddHostedService<ReservationCleanupService>();
 
 
 builder.Services.AddHttpContextAccessor();
