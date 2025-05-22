@@ -5,12 +5,11 @@ using Twilio.Types;
 public class SmsService
 {
     private readonly HttpClient _httpClient;
-    private readonly string _baseUrl;
-    private readonly string _apiKey;
+   
 
     public SmsService()
     {
-        TwilioClient.Init(_accountSid, _authToken);
+        //TwilioClient.Init(_accountSid, _authToken);
     }
 
     public async Task<bool> EnvoyerLienConfirmationAuLivreur(string phoneNumber, int orderId)
@@ -22,7 +21,7 @@ public class SmsService
 
             var message = await MessageResource.CreateAsync(
                 to: new PhoneNumber(phoneNumber),
-                from: new PhoneNumber(_twilioNumber),
+               // from: new PhoneNumber(_twilioNumber),
                 body: messageText
             );
 
