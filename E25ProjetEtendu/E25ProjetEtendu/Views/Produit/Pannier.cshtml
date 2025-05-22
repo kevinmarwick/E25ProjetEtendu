@@ -159,11 +159,17 @@
                 }
             });
 
-            $('#checkout-form').on('submit', function () {
+            $('#checkout-form').on('submit', function (e) {
                 let storageKey = 'panier_' + userId;
                 let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
 
                 const location = document.getElementById("delivery-location").value;
+
+                if (!location || location.trim() === "") {
+                    alert("Veuillez entrer une adresse de livraison avant de procéder au paiement.");
+                    e.preventDefault();
+                    return;
+                }
 
                 const dto = {
                     items: cart.map(item => ({
@@ -176,18 +182,27 @@
                 $('#panierJson').val(JSON.stringify(dto));
             });
 
-        });
-
-        document.getElementById("checkout-btn").addEventListener("click", function (e) {
-            const location = localStorage.getItem("deliveryLocation");
-
-            if (!location || location.trim() === "") {
-                alert("Veuillez entrer une adresse de livraison avant de procéder au paiement.");
-                return;
+            const savedLocation = localStorage.getItem("deliveryLocation");
+            if (savedLocation) {
+                $('#delivery-location').val(savedLocation);
             }
 
-            window.location.href = "/Payment";
+
         });
+
+        // Code désuet, à supprimer?
+
+        // document.getElementById("checkout-btn").addEventListener("click", function (e) {
+        //     const location = localStorage.getItem("deliveryLocation");
+
+        //     if (!location || location.trim() === "") {
+        //         alert("Veuillez entrer une adresse de livraison avant de procéder au paiement.");
+        //         return;
+        //     }
+
+        //     window.location.href = "/Payment";
+        // });
+
     </script>
 
     <!-- Zone pour les toasts -->
