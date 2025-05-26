@@ -13,11 +13,13 @@ namespace E25ProjetEtendu.Controllers
     {
         private readonly IAdminService _adminService;
         private readonly IProduitService _produitService;
+        private readonly IUserService _userService;
 
-        public AdminController(IAdminService adminService, IProduitService produitService)
+        public AdminController(IAdminService adminService, IProduitService produitService, IUserService userService)
         {
             _adminService = adminService;
             _produitService = produitService;
+            _userService = userService;
         }
 
         [Authorize(Roles ="Admin")]
@@ -89,6 +91,12 @@ namespace E25ProjetEtendu.Controllers
 
             TempData["SuccessMessage"] = "Produit créé avec succès.";
             return RedirectToAction("AddProduct");
+        }
+
+        public async Task<IActionResult> IndexUsers()
+        {
+            List<ApplicationUser>  users = await _userService.GetAllUsers();
+            return View(users);
         }
     }
 }
