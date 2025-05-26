@@ -11,7 +11,7 @@ using Stripe.Climate;
 
 namespace E25ProjetEtendu.Controllers
 {
-    [Authorize(Roles = "Delivery")]
+    [Authorize(Roles = "DeliveryStation")]
     public class DeliveryController : Controller
     {
         private readonly IDeliveryService _deliveryService;

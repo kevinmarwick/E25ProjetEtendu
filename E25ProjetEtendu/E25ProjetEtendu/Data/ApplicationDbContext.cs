@@ -58,7 +58,7 @@ namespace E25ProjetEtendu.Data
             #region Delivery Station User Seed Data
 
             modelBuilder.Entity<IdentityRole>().HasData(
-           new IdentityRole { Id = "delivery-role-id", Name = "Delivery", NormalizedName = "DELIVERY" }
+           new IdentityRole { Id = "deliverystation-role-id", Name = "DeliveryStation", NormalizedName = "DELIVERYSTATION" }
            );
             modelBuilder.Entity<ApplicationUser>().HasData(
                 new ApplicationUser
@@ -78,7 +78,7 @@ namespace E25ProjetEtendu.Data
                 new IdentityUserRole<string>
                 {
                     UserId = "42222222-2222-2222-2222-222222222222", 
-                    RoleId = "delivery-role-id"
+                    RoleId = "deliverystation-role-id"
                 }
             );
 
