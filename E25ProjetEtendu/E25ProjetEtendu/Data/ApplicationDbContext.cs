@@ -88,7 +88,7 @@ namespace E25ProjetEtendu.Data
                 new IdentityRole { Id = "user-role-id", Name = "User", NormalizedName = "USER" }
             );
 
-            var userPassword = hasher.HashPassword(null, "Test123!!"); // mot de passe pour la démo
+            var userPassword = hasher.HashPassword(null, "Qwerty123!!"); // mot de passe pour la démo
 
             // Ajout d’un utilisateur standard
             modelBuilder.Entity<ApplicationUser>().HasData(
@@ -104,16 +104,54 @@ namespace E25ProjetEtendu.Data
                     EmailConfirmed = true,
                     PasswordHash = userPassword,
                     SecurityStamp = Guid.NewGuid().ToString()
+                },
+                 new ApplicationUser
+                 {
+                     Id = "43333333-3333-3333-3333-333333333333",
+                     UserName = "jacob@example.com",
+                     FirstName = "Jacob",
+                     LastName = "Utilisateur",
+                     NormalizedUserName = "JACOB@EXAMPLE.COM",
+                     Email = "jacob@example.com",
+                     NormalizedEmail = "JACOB@EXAMPLE.COM",
+                     EmailConfirmed = true,
+                     PasswordHash = userPassword,
+                     SecurityStamp = Guid.NewGuid().ToString()
+                 },
+                new ApplicationUser
+                {
+                    Id = "54444444-4444-4444-4444-444444444444",
+                    UserName = "maxime@example.com",
+                    FirstName = "Maxime",
+                    LastName = "Utilisateur",
+                    NormalizedUserName = "MAXIME@EXAMPLE.COM",
+                    Email = "maxime@example.com",
+                    NormalizedEmail = "MAXIME@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    PasswordHash = userPassword,
+                    SecurityStamp = Guid.NewGuid().ToString()
+                },
+                new ApplicationUser
+                {
+                    Id = "65555555-5555-5555-5555-555555555555",
+                    UserName = "nicolas@example.com",
+                    FirstName = "Nicolas",
+                    LastName = "Utilisateur",
+                    NormalizedUserName = "NICOLAS@EXAMPLE.COM",
+                    Email = "nicolas@example.com",
+                    NormalizedEmail = "NICOLAS@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    PasswordHash = userPassword,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 }
             );
 
             // Associer le rôle "User"
             modelBuilder.Entity<IdentityUserRole<string>>().HasData(
-                new IdentityUserRole<string>
-                {
-                    UserId = "32222222-2222-2222-2222-222222222222",
-                    RoleId = "user-role-id"
-                }
+                new IdentityUserRole<string> { UserId = "32222222-2222-2222-2222-222222222222", RoleId = "user-role-id" },
+                new IdentityUserRole<string> { UserId = "43333333-3333-3333-3333-333333333333", RoleId = "user-role-id" },
+                new IdentityUserRole<string> { UserId = "54444444-4444-4444-4444-444444444444", RoleId = "user-role-id" },
+                new IdentityUserRole<string> { UserId = "65555555-5555-5555-5555-555555555555", RoleId = "user-role-id" }
             );
 
             #endregion
