@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E25ProjetEtendu.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250514154922_MODELS_ORDER_ORDERITEMS")]
-    partial class MODELS_ORDER_ORDERITEMS
+    [Migration("20250526132849_ADD_USERS_SEED_DATA")]
+    partial class ADD_USERS_SEED_DATA
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -108,7 +108,7 @@ namespace E25ProjetEtendu.Migrations
                             Id = "21111111-1111-1111-1111-111111111111",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "6baed043-e8be-4209-beda-43d0be93dc6b",
+                            ConcurrencyStamp = "48d4fe69-9eba-4195-afde-46c7ce8fa62a",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -116,11 +116,106 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKuA5xTPxeop0Yu5XX9Kq6lCxM95Jvv0KkxOeY4J5s1C3B/KPos6iwCmNcnoSDa46Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKQ5DdH++nvyEgUUJd8mRcwwIRdHcYJNQ8hOhANZw3Ip/RqaJnqfjgTGIqbC+ACOtw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c28edb86-1142-4f75-8046-d080dceafec6",
+                            SecurityStamp = "75b38016-ce8e-47ca-a566-139494105d29",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
+                        },
+                        new
+                        {
+                            Id = "42222222-2222-2222-2222-222222222222",
+                            AccessFailedCount = 0,
+                            Balance = 0m,
+                            ConcurrencyStamp = "106dae60-030c-4f41-9d00-c48c38c321c7",
+                            Email = "livreur@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Livreur",
+                            LastName = "Livreur",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "LIVREUR@EXAMPLE.COM",
+                            NormalizedUserName = "LIVREUR@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKQnVR5lv17pKExf2LcafXYCI0weIGZPG1ylVzODFAvNHiR/8sL9XCKUYDSL7l6jeg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "6c5b7717-f360-4784-8529-bc1c405918b1",
+                            TwoFactorEnabled = false,
+                            UserName = "livreur@example.com"
+                        },
+                        new
+                        {
+                            Id = "32222222-2222-2222-2222-222222222222",
+                            AccessFailedCount = 0,
+                            Balance = 0m,
+                            ConcurrencyStamp = "878ada56-d32c-4925-9143-fcca4a843a02",
+                            Email = "user@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Jean",
+                            LastName = "Utilisateur",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "USER@EXAMPLE.COM",
+                            NormalizedUserName = "USER@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJARQAdI9iigAXOsSJoUxjpwxCMQnnJA+uTOiX+aQJwL/5B9JSQPLQrPUVzzw68Ibg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "fdb0652b-c6f9-43d1-8622-4445c4ed0a52",
+                            TwoFactorEnabled = false,
+                            UserName = "user@example.com"
+                        },
+                        new
+                        {
+                            Id = "43333333-3333-3333-3333-333333333333",
+                            AccessFailedCount = 0,
+                            Balance = 0m,
+                            ConcurrencyStamp = "de80f09a-9233-444e-b27f-2b20fad30c0b",
+                            Email = "jacob@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Jacob",
+                            LastName = "Utilisateur",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "JACOB@EXAMPLE.COM",
+                            NormalizedUserName = "JACOB@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJARQAdI9iigAXOsSJoUxjpwxCMQnnJA+uTOiX+aQJwL/5B9JSQPLQrPUVzzw68Ibg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "4dce34d4-dac3-40ca-a3d3-ae9f94b75e45",
+                            TwoFactorEnabled = false,
+                            UserName = "jacob@example.com"
+                        },
+                        new
+                        {
+                            Id = "54444444-4444-4444-4444-444444444444",
+                            AccessFailedCount = 0,
+                            Balance = 0m,
+                            ConcurrencyStamp = "050492cf-fe9c-4996-b57d-10ee08ea7b04",
+                            Email = "maxime@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Maxime",
+                            LastName = "Utilisateur",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MAXIME@EXAMPLE.COM",
+                            NormalizedUserName = "MAXIME@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJARQAdI9iigAXOsSJoUxjpwxCMQnnJA+uTOiX+aQJwL/5B9JSQPLQrPUVzzw68Ibg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "18552445-3f60-4986-9e04-3ea37db6c1cc",
+                            TwoFactorEnabled = false,
+                            UserName = "maxime@example.com"
+                        },
+                        new
+                        {
+                            Id = "65555555-5555-5555-5555-555555555555",
+                            AccessFailedCount = 0,
+                            Balance = 0m,
+                            ConcurrencyStamp = "cd4b76b8-a89d-4b04-82e8-c21de378b363",
+                            Email = "nicolas@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Nicolas",
+                            LastName = "Utilisateur",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "NICOLAS@EXAMPLE.COM",
+                            NormalizedUserName = "NICOLAS@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEJARQAdI9iigAXOsSJoUxjpwxCMQnnJA+uTOiX+aQJwL/5B9JSQPLQrPUVzzw68Ibg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "90f63bf2-dbf3-48d2-8d0f-3c48d28e042f",
+                            TwoFactorEnabled = false,
+                            UserName = "nicolas@example.com"
                         });
                 });
 
@@ -137,11 +232,17 @@ namespace E25ProjetEtendu.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DelivererId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
@@ -153,6 +254,95 @@ namespace E25ProjetEtendu.Migrations
                     b.HasIndex("DelivererId");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderId = 2001,
+                            BuyerId = "32222222-2222-2222-2222-222222222222",
+                            DelivererId = "43333333-3333-3333-3333-333333333333",
+                            Location = "D-0001",
+                            OrderDate = new DateTime(2024, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TotalPrice = 6.00m
+                        },
+                        new
+                        {
+                            OrderId = 2002,
+                            BuyerId = "32222222-2222-2222-2222-222222222222",
+                            DelivererId = "43333333-3333-3333-3333-333333333333",
+                            Location = "D-0002",
+                            OrderDate = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TotalPrice = 4.00m
+                        },
+                        new
+                        {
+                            OrderId = 2003,
+                            BuyerId = "54444444-4444-4444-4444-444444444444",
+                            DelivererId = "43333333-3333-3333-3333-333333333333",
+                            Location = "D-0003",
+                            OrderDate = new DateTime(2024, 5, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TotalPrice = 5.00m
+                        },
+                        new
+                        {
+                            OrderId = 2004,
+                            BuyerId = "54444444-4444-4444-4444-444444444444",
+                            DelivererId = "43333333-3333-3333-3333-333333333333",
+                            Location = "D-0004",
+                            OrderDate = new DateTime(2024, 5, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TotalPrice = 2.00m
+                        },
+                        new
+                        {
+                            OrderId = 2005,
+                            BuyerId = "65555555-5555-5555-5555-555555555555",
+                            DelivererId = "43333333-3333-3333-3333-333333333333",
+                            Location = "D-0005",
+                            OrderDate = new DateTime(2024, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TotalPrice = 2.00m
+                        },
+                        new
+                        {
+                            OrderId = 2006,
+                            BuyerId = "65555555-5555-5555-5555-555555555555",
+                            DelivererId = "43333333-3333-3333-3333-333333333333",
+                            Location = "D-0006",
+                            OrderDate = new DateTime(2024, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TotalPrice = 3.00m
+                        },
+                        new
+                        {
+                            OrderId = 2007,
+                            BuyerId = "32222222-2222-2222-2222-222222222222",
+                            Location = "D-0007",
+                            OrderDate = new DateTime(2024, 5, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 0,
+                            TotalPrice = 3.00m
+                        },
+                        new
+                        {
+                            OrderId = 2008,
+                            BuyerId = "54444444-4444-4444-4444-444444444444",
+                            Location = "D-0008",
+                            OrderDate = new DateTime(2024, 5, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 0,
+                            TotalPrice = 4.00m
+                        },
+                        new
+                        {
+                            OrderId = 2009,
+                            BuyerId = "65555555-5555-5555-5555-555555555555",
+                            Location = "D-0009",
+                            OrderDate = new DateTime(2024, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 0,
+                            TotalPrice = 2.00m
+                        });
                 });
 
             modelBuilder.Entity("E25ProjetEtendu.Models.OrderItem", b =>
@@ -182,6 +372,80 @@ namespace E25ProjetEtendu.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderItemId = 1,
+                            OrderId = 2001,
+                            ProductId = 1,
+                            Quantity = 2,
+                            UnitPrice = 3.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 2,
+                            OrderId = 2002,
+                            ProductId = 2,
+                            Quantity = 2,
+                            UnitPrice = 2.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 3,
+                            OrderId = 2003,
+                            ProductId = 5,
+                            Quantity = 1,
+                            UnitPrice = 5.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 4,
+                            OrderId = 2004,
+                            ProductId = 8,
+                            Quantity = 1,
+                            UnitPrice = 2.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 5,
+                            OrderId = 2005,
+                            ProductId = 9,
+                            Quantity = 1,
+                            UnitPrice = 2.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 6,
+                            OrderId = 2006,
+                            ProductId = 6,
+                            Quantity = 1,
+                            UnitPrice = 3.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 7,
+                            OrderId = 2007,
+                            ProductId = 9,
+                            Quantity = 1,
+                            UnitPrice = 3.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 8,
+                            OrderId = 2008,
+                            ProductId = 5,
+                            Quantity = 1,
+                            UnitPrice = 4.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 9,
+                            OrderId = 2009,
+                            ProductId = 2,
+                            Quantity = 1,
+                            UnitPrice = 2.00m
+                        });
                 });
 
             modelBuilder.Entity("E25ProjetEtendu.Models.Produit", b =>
@@ -567,6 +831,36 @@ namespace E25ProjetEtendu.Migrations
                         });
                 });
 
+            modelBuilder.Entity("E25ProjetEtendu.Models.StockReservation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReservedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ReservedAt");
+
+                    b.ToTable("StockReservations");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -599,6 +893,18 @@ namespace E25ProjetEtendu.Migrations
                             Id = "admin-role-id",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "delivery-role-id",
+                            Name = "Delivery",
+                            NormalizedName = "DELIVERY"
+                        },
+                        new
+                        {
+                            Id = "user-role-id",
+                            Name = "User",
+                            NormalizedName = "USER"
                         });
                 });
 
@@ -693,6 +999,31 @@ namespace E25ProjetEtendu.Migrations
                         {
                             UserId = "21111111-1111-1111-1111-111111111111",
                             RoleId = "admin-role-id"
+                        },
+                        new
+                        {
+                            UserId = "42222222-2222-2222-2222-222222222222",
+                            RoleId = "delivery-role-id"
+                        },
+                        new
+                        {
+                            UserId = "32222222-2222-2222-2222-222222222222",
+                            RoleId = "user-role-id"
+                        },
+                        new
+                        {
+                            UserId = "43333333-3333-3333-3333-333333333333",
+                            RoleId = "user-role-id"
+                        },
+                        new
+                        {
+                            UserId = "54444444-4444-4444-4444-444444444444",
+                            RoleId = "user-role-id"
+                        },
+                        new
+                        {
+                            UserId = "65555555-5555-5555-5555-555555555555",
+                            RoleId = "user-role-id"
                         });
                 });
 
@@ -726,8 +1057,7 @@ namespace E25ProjetEtendu.Migrations
                     b.HasOne("E25ProjetEtendu.Models.ApplicationUser", "Deliverer")
                         .WithMany("DeliveredOrders")
                         .HasForeignKey("DelivererId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Buyer");
 
@@ -749,6 +1079,17 @@ namespace E25ProjetEtendu.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("E25ProjetEtendu.Models.StockReservation", b =>
+                {
+                    b.HasOne("E25ProjetEtendu.Models.Produit", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
                 });

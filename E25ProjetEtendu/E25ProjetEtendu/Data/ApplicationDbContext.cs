@@ -2,6 +2,7 @@ using E25ProjetEtendu.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using E25ProjetEtendu.Enums;
 
 namespace E25ProjetEtendu.Data
 {
@@ -24,7 +25,7 @@ namespace E25ProjetEtendu.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            #region Ajout Admin
+            #region Admin User Seed Data
 
             modelBuilder.Entity<IdentityRole>().HasData(
             new IdentityRole { Id = "admin-role-id", Name = "Admin", NormalizedName = "ADMIN" }
@@ -53,7 +54,9 @@ namespace E25ProjetEtendu.Data
             new IdentityUserRole<string> { UserId = "21111111-1111-1111-1111-111111111111", RoleId = "admin-role-id" }
             );
             #endregion
-            #region livreur
+
+            #region Delivery Station User Seed Data
+
             modelBuilder.Entity<IdentityRole>().HasData(
            new IdentityRole { Id = "delivery-role-id", Name = "Delivery", NormalizedName = "DELIVERY" }
            );
@@ -74,14 +77,15 @@ namespace E25ProjetEtendu.Data
             ); modelBuilder.Entity<IdentityUserRole<string>>().HasData(
                 new IdentityUserRole<string>
                 {
-                    UserId = "42222222-2222-2222-2222-222222222222", // l'ID de ton livreur
+                    UserId = "42222222-2222-2222-2222-222222222222", 
                     RoleId = "delivery-role-id"
                 }
             );
 
 
             #endregion
-            #region Ajout Utilisateur Standard
+
+            #region Standard Users Seed Data
 
             // Ajout du rôle "User"
             modelBuilder.Entity<IdentityRole>().HasData(
@@ -156,23 +160,7 @@ namespace E25ProjetEtendu.Data
 
             #endregion
 
-            #region EF Relations Fluent API
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Buyer)
-                .WithMany(u => u.BoughtOrders)
-                .HasForeignKey(o => o.BuyerId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.Deliverer)
-                .WithMany(u => u.DeliveredOrders)
-                .HasForeignKey(o => o.DelivererId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            #endregion
-
-            #region Products seed
+            #region Products Seed Data
             modelBuilder.Entity<Produit>().HasData(
                 new Produit
                 {
@@ -306,6 +294,61 @@ namespace E25ProjetEtendu.Data
                 new Produit { ProduitId = 30, Nom = "Muffin aux bleuets", InventoryQuantity = 60, Prix = 3, Image = "muffin.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 380, Lipides: 16g, Sucres: 28g" },
                 new Produit { ProduitId = 31, Nom = "BandAid", InventoryQuantity = 0, Prix = 3, Image = "Aid.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 0" }
             );
+            #endregion
+            
+            #region Sample Orders Seed Data
+
+            // Delivered Orders
+            modelBuilder.Entity<Order>().HasData(
+                new Order { OrderId = 2001, BuyerId = "32222222-2222-2222-2222-222222222222", DelivererId = "43333333-3333-3333-3333-333333333333", OrderDate = new DateTime(2024, 5, 1), TotalPrice = 6.00m, Location = "D-0001", Status = OrderStatus.Delivered },
+                new Order { OrderId = 2002, BuyerId = "32222222-2222-2222-2222-222222222222", DelivererId = "43333333-3333-3333-3333-333333333333", OrderDate = new DateTime(2024, 5, 2), TotalPrice = 4.00m, Location = "D-0002", Status = OrderStatus.Delivered },
+
+                new Order { OrderId = 2003, BuyerId = "54444444-4444-4444-4444-444444444444", DelivererId = "43333333-3333-3333-3333-333333333333", OrderDate = new DateTime(2024, 5, 3), TotalPrice = 5.00m, Location = "D-0003", Status = OrderStatus.Delivered },
+                new Order { OrderId = 2004, BuyerId = "54444444-4444-4444-4444-444444444444", DelivererId = "43333333-3333-3333-3333-333333333333", OrderDate = new DateTime(2024, 5, 4), TotalPrice = 2.00m, Location = "D-0004", Status = OrderStatus.Delivered },
+
+                new Order { OrderId = 2005, BuyerId = "65555555-5555-5555-5555-555555555555", DelivererId = "43333333-3333-3333-3333-333333333333", OrderDate = new DateTime(2024, 5, 5), TotalPrice = 2.00m, Location = "D-0005", Status = OrderStatus.Delivered },
+                new Order { OrderId = 2006, BuyerId = "65555555-5555-5555-5555-555555555555", DelivererId = "43333333-3333-3333-3333-333333333333", OrderDate = new DateTime(2024, 5, 6), TotalPrice = 3.00m, Location = "D-0006", Status = OrderStatus.Delivered }
+            );
+
+            // Pending Orders (no DelivererId, Status = Pending)
+            modelBuilder.Entity<Order>().HasData(
+                new Order { OrderId = 2007, BuyerId = "32222222-2222-2222-2222-222222222222", DelivererId = null, OrderDate = new DateTime(2024, 5, 7), TotalPrice = 3.00m, Location = "D-0007", Status = OrderStatus.Pending },
+                new Order { OrderId = 2008, BuyerId = "54444444-4444-4444-4444-444444444444", DelivererId = null, OrderDate = new DateTime(2024, 5, 8), TotalPrice = 4.00m, Location = "D-0008", Status = OrderStatus.Pending },
+                new Order { OrderId = 2009, BuyerId = "65555555-5555-5555-5555-555555555555", DelivererId = null, OrderDate = new DateTime(2024, 5, 9), TotalPrice = 2.00m, Location = "D-0009", Status = OrderStatus.Pending }
+            );
+
+            // Order Items
+            modelBuilder.Entity<OrderItem>().HasData(
+                // Delivered
+                new OrderItem { OrderItemId = 1, OrderId = 2001, ProductId = 1, Quantity = 2, UnitPrice = 3.00m },
+                new OrderItem { OrderItemId = 2, OrderId = 2002, ProductId = 2, Quantity = 2, UnitPrice = 2.00m },
+                new OrderItem { OrderItemId = 3, OrderId = 2003, ProductId = 5, Quantity = 1, UnitPrice = 5.00m },
+                new OrderItem { OrderItemId = 4, OrderId = 2004, ProductId = 8, Quantity = 1, UnitPrice = 2.00m },
+                new OrderItem { OrderItemId = 5, OrderId = 2005, ProductId = 9, Quantity = 1, UnitPrice = 2.00m },
+                new OrderItem { OrderItemId = 6, OrderId = 2006, ProductId = 6, Quantity = 1, UnitPrice = 3.00m },
+
+                // Pending
+                new OrderItem { OrderItemId = 7, OrderId = 2007, ProductId = 9, Quantity = 1, UnitPrice = 3.00m },
+                new OrderItem { OrderItemId = 8, OrderId = 2008, ProductId = 5, Quantity = 1, UnitPrice = 4.00m },
+                new OrderItem { OrderItemId = 9, OrderId = 2009, ProductId = 2, Quantity = 1, UnitPrice = 2.00m }
+            );
+
+            #endregion
+
+            #region EF Relations Fluent API
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Buyer)
+                .WithMany(u => u.BoughtOrders)
+                .HasForeignKey(o => o.BuyerId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.Deliverer)
+                .WithMany(u => u.DeliveredOrders)
+                .HasForeignKey(o => o.DelivererId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             #endregion
 
             #region DB Indexes

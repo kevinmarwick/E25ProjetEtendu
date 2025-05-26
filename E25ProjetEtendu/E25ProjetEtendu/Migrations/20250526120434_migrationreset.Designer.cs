@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E25ProjetEtendu.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250515191523_ORDER_STATUS")]
-    partial class ORDER_STATUS
+    [Migration("20250526120434_migrationreset")]
+    partial class migrationreset
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -108,7 +108,7 @@ namespace E25ProjetEtendu.Migrations
                             Id = "21111111-1111-1111-1111-111111111111",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "f9df00bb-867f-438c-82c7-30f0907a75fa",
+                            ConcurrencyStamp = "636774c9-e1b6-4a22-a92b-fcc476dda047",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -116,18 +116,37 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDIiggfuxJEEDPQdYljCQkHLJjqmpOlNL7pveaaC07ghV9xeySPEw9CSDqMMGfRn2g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBTXXTihDHwIYpDAurpMC+aHeWXubQ6iLlPv/dJhXj9YndUorT653YYu/uXIgHCbcw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5b9cccec-160e-47ce-a35c-6f1a21f49772",
+                            SecurityStamp = "46555518-b2a8-45a6-8ddc-9dacb67f9b65",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
+                        },
+                        new
+                        {
+                            Id = "42222222-2222-2222-2222-222222222222",
+                            AccessFailedCount = 0,
+                            Balance = 0m,
+                            ConcurrencyStamp = "a36bc3b2-a12a-4809-a1ad-519f4708327c",
+                            Email = "livreur@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Livreur",
+                            LastName = "Livreur",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "LIVREUR@EXAMPLE.COM",
+                            NormalizedUserName = "LIVREUR@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHsdQ1pPvKzQT0uXy3fiq6icqpoh0FStzRjuc8k1cpve1RG7leeahjPeo3UkxIGX2Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "eef6c348-b0c2-4ce2-9e96-4434f0b709fb",
+                            TwoFactorEnabled = false,
+                            UserName = "livreur@example.com"
                         },
                         new
                         {
                             Id = "32222222-2222-2222-2222-222222222222",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "5523e415-0458-433a-b51d-a259b32ebd0c",
+                            ConcurrencyStamp = "93702ea9-7ecd-4150-be92-70fb02bb0b23",
                             Email = "user@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -135,11 +154,68 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@EXAMPLE.COM",
                             NormalizedUserName = "USER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBVolwg78V6w6pRw82/JU15zllFk5nXwSkiJfXoTLg3Y+jU//HwJCx3h6XV8W97LlQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEF1/k05ekORzAsC9x29sZMKQNQ2VVQuqTMpOVR+hkSz0rWrbVFefYsYmU96FcnNSRQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "670bfd08-c9ed-47ab-a374-a593c32f39d8",
+                            SecurityStamp = "f866dfc1-8687-42d7-b442-401058df7feb",
                             TwoFactorEnabled = false,
                             UserName = "user@example.com"
+                        },
+                        new
+                        {
+                            Id = "43333333-3333-3333-3333-333333333333",
+                            AccessFailedCount = 0,
+                            Balance = 0m,
+                            ConcurrencyStamp = "060cf558-f6a9-47ab-9a25-d4f5002c5552",
+                            Email = "jacob@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Jacob",
+                            LastName = "Utilisateur",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "JACOB@EXAMPLE.COM",
+                            NormalizedUserName = "JACOB@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEF1/k05ekORzAsC9x29sZMKQNQ2VVQuqTMpOVR+hkSz0rWrbVFefYsYmU96FcnNSRQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "8daf4f3d-456c-4a29-bdff-e9a4b993851b",
+                            TwoFactorEnabled = false,
+                            UserName = "jacob@example.com"
+                        },
+                        new
+                        {
+                            Id = "54444444-4444-4444-4444-444444444444",
+                            AccessFailedCount = 0,
+                            Balance = 0m,
+                            ConcurrencyStamp = "85a2bdde-ee50-4165-ad5c-8f69e1d41f98",
+                            Email = "maxime@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Maxime",
+                            LastName = "Utilisateur",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MAXIME@EXAMPLE.COM",
+                            NormalizedUserName = "MAXIME@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEF1/k05ekORzAsC9x29sZMKQNQ2VVQuqTMpOVR+hkSz0rWrbVFefYsYmU96FcnNSRQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "46392c2a-49f2-48be-829f-ca6a85b2eb5e",
+                            TwoFactorEnabled = false,
+                            UserName = "maxime@example.com"
+                        },
+                        new
+                        {
+                            Id = "65555555-5555-5555-5555-555555555555",
+                            AccessFailedCount = 0,
+                            Balance = 0m,
+                            ConcurrencyStamp = "6ac0145a-00b4-4998-abd3-2be40d300824",
+                            Email = "nicolas@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Nicolas",
+                            LastName = "Utilisateur",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "NICOLAS@EXAMPLE.COM",
+                            NormalizedUserName = "NICOLAS@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEF1/k05ekORzAsC9x29sZMKQNQ2VVQuqTMpOVR+hkSz0rWrbVFefYsYmU96FcnNSRQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "a15acea6-872c-4640-843f-013648f4a9b5",
+                            TwoFactorEnabled = false,
+                            UserName = "nicolas@example.com"
                         });
                 });
 
@@ -178,6 +254,95 @@ namespace E25ProjetEtendu.Migrations
                     b.HasIndex("DelivererId");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderId = 2001,
+                            BuyerId = "32222222-2222-2222-2222-222222222222",
+                            DelivererId = "43333333-3333-3333-3333-333333333333",
+                            Location = "D-0001",
+                            OrderDate = new DateTime(2024, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TotalPrice = 6.00m
+                        },
+                        new
+                        {
+                            OrderId = 2002,
+                            BuyerId = "32222222-2222-2222-2222-222222222222",
+                            DelivererId = "43333333-3333-3333-3333-333333333333",
+                            Location = "D-0002",
+                            OrderDate = new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TotalPrice = 4.00m
+                        },
+                        new
+                        {
+                            OrderId = 2003,
+                            BuyerId = "54444444-4444-4444-4444-444444444444",
+                            DelivererId = "43333333-3333-3333-3333-333333333333",
+                            Location = "D-0003",
+                            OrderDate = new DateTime(2024, 5, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TotalPrice = 5.00m
+                        },
+                        new
+                        {
+                            OrderId = 2004,
+                            BuyerId = "54444444-4444-4444-4444-444444444444",
+                            DelivererId = "43333333-3333-3333-3333-333333333333",
+                            Location = "D-0004",
+                            OrderDate = new DateTime(2024, 5, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TotalPrice = 2.00m
+                        },
+                        new
+                        {
+                            OrderId = 2005,
+                            BuyerId = "65555555-5555-5555-5555-555555555555",
+                            DelivererId = "43333333-3333-3333-3333-333333333333",
+                            Location = "D-0005",
+                            OrderDate = new DateTime(2024, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TotalPrice = 2.00m
+                        },
+                        new
+                        {
+                            OrderId = 2006,
+                            BuyerId = "65555555-5555-5555-5555-555555555555",
+                            DelivererId = "43333333-3333-3333-3333-333333333333",
+                            Location = "D-0006",
+                            OrderDate = new DateTime(2024, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 2,
+                            TotalPrice = 3.00m
+                        },
+                        new
+                        {
+                            OrderId = 2007,
+                            BuyerId = "32222222-2222-2222-2222-222222222222",
+                            Location = "D-0007",
+                            OrderDate = new DateTime(2024, 5, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 0,
+                            TotalPrice = 3.00m
+                        },
+                        new
+                        {
+                            OrderId = 2008,
+                            BuyerId = "54444444-4444-4444-4444-444444444444",
+                            Location = "D-0008",
+                            OrderDate = new DateTime(2024, 5, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 0,
+                            TotalPrice = 4.00m
+                        },
+                        new
+                        {
+                            OrderId = 2009,
+                            BuyerId = "65555555-5555-5555-5555-555555555555",
+                            Location = "D-0009",
+                            OrderDate = new DateTime(2024, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Status = 0,
+                            TotalPrice = 2.00m
+                        });
                 });
 
             modelBuilder.Entity("E25ProjetEtendu.Models.OrderItem", b =>
@@ -207,6 +372,80 @@ namespace E25ProjetEtendu.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderItems");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderItemId = 1,
+                            OrderId = 2001,
+                            ProductId = 1,
+                            Quantity = 2,
+                            UnitPrice = 3.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 2,
+                            OrderId = 2002,
+                            ProductId = 2,
+                            Quantity = 2,
+                            UnitPrice = 2.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 3,
+                            OrderId = 2003,
+                            ProductId = 5,
+                            Quantity = 1,
+                            UnitPrice = 5.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 4,
+                            OrderId = 2004,
+                            ProductId = 8,
+                            Quantity = 1,
+                            UnitPrice = 2.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 5,
+                            OrderId = 2005,
+                            ProductId = 9,
+                            Quantity = 1,
+                            UnitPrice = 2.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 6,
+                            OrderId = 2006,
+                            ProductId = 6,
+                            Quantity = 1,
+                            UnitPrice = 3.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 7,
+                            OrderId = 2007,
+                            ProductId = 9,
+                            Quantity = 1,
+                            UnitPrice = 3.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 8,
+                            OrderId = 2008,
+                            ProductId = 5,
+                            Quantity = 1,
+                            UnitPrice = 4.00m
+                        },
+                        new
+                        {
+                            OrderItemId = 9,
+                            OrderId = 2009,
+                            ProductId = 2,
+                            Quantity = 1,
+                            UnitPrice = 2.00m
+                        });
                 });
 
             modelBuilder.Entity("E25ProjetEtendu.Models.Produit", b =>
@@ -592,6 +831,36 @@ namespace E25ProjetEtendu.Migrations
                         });
                 });
 
+            modelBuilder.Entity("E25ProjetEtendu.Models.StockReservation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReservedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ReservedAt");
+
+                    b.ToTable("StockReservations");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -624,6 +893,12 @@ namespace E25ProjetEtendu.Migrations
                             Id = "admin-role-id",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "delivery-role-id",
+                            Name = "Delivery",
+                            NormalizedName = "DELIVERY"
                         },
                         new
                         {
@@ -727,7 +1002,27 @@ namespace E25ProjetEtendu.Migrations
                         },
                         new
                         {
+                            UserId = "42222222-2222-2222-2222-222222222222",
+                            RoleId = "delivery-role-id"
+                        },
+                        new
+                        {
                             UserId = "32222222-2222-2222-2222-222222222222",
+                            RoleId = "user-role-id"
+                        },
+                        new
+                        {
+                            UserId = "43333333-3333-3333-3333-333333333333",
+                            RoleId = "user-role-id"
+                        },
+                        new
+                        {
+                            UserId = "54444444-4444-4444-4444-444444444444",
+                            RoleId = "user-role-id"
+                        },
+                        new
+                        {
+                            UserId = "65555555-5555-5555-5555-555555555555",
                             RoleId = "user-role-id"
                         });
                 });
@@ -784,6 +1079,17 @@ namespace E25ProjetEtendu.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("E25ProjetEtendu.Models.StockReservation", b =>
+                {
+                    b.HasOne("E25ProjetEtendu.Models.Produit", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
                 });
