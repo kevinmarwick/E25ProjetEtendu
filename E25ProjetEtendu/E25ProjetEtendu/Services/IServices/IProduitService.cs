@@ -20,6 +20,8 @@ namespace E25ProjetEtendu.Services.IServices
         Task<bool> FinalizeReservation(string userId);
         Task CleanupExpiredReservations();
         Task CancelReservation(string userId);
+        Task<List<Produit>> GetProduitsPopulaires(int note = 5);
+        
 
     }
 }

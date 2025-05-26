@@ -1,9 +1,28 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<section class="text-center p-5 bg-light">
+    <h1 class="display-4 fw-bold">Livraison rapide et délicieuse</h1>
+    <p class="lead">Commandez en quelques clics</p>
+    <a href="/Produit/Index" class="btn btn-primary btn-lg">Commander maintenant</a>
+    @model List<Produit>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    @foreach (var groupe in Model.Chunk(3))
+    {
+        <div class="carousel-item @(Model.IndexOf(groupe.First()) == 0 ? "active" : "")">
+            <div class="row justify-content-center">
+                @foreach (var produit in groupe)
+                {
+                    <div class="col-md-3">
+                        <div class="card h-100 text-center">
+                            <img src="@produit.Image" class="card-img-top" alt="@produit.Nom" />
+                            <div class="card-body">
+                                <h5 class="card-title">@produit.Nom</h5>
+                                <p class="card-text text-primary fw-bold">@produit.Prix.ToString("C")</p>                                
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
 
+
+</section>

@@ -21,6 +21,12 @@ namespace E25ProjetEtendu.Services
         }
 
         #region Methode de recherche & liste de produit
+
+        public async Task<List<Produit>> GetProduitsPopulaires(int note = 5)
+        {
+            return await _context.produits.Where(c => c.Note == note).ToListAsync();
+        }
+
         /// <summary>
         /// Permet d'Afficher toute les produits actif a l'utilisateur
         /// </summary>
