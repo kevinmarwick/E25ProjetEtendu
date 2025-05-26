@@ -184,3 +184,40 @@
 .btn-flash-red {
     animation: flash-red 0.4s ease;
 }
+/* Navbar styling */
+.navbar {
+    background: linear-gradient(to right, #fff0f0 0%, #ffffff 100%);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.navbar-brand span:first-child {
+    font-weight: bold;
+}
+
+.nav-link {
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+}
+
+    .nav-link:hover {
+        color: #dc3545 !important; /* rouge Bootstrap */
+    }
+
+#nav-cart-icon {
+    position: relative;
+}
+
+#cart-badge {
+    font-size: 0.75rem;
+    padding: 0.25em 0.5em;
+}
+
+/* Optional: container spacing */
+.container-fluid {
+    max-width: 1280px;
+}
+
+/* Optional: reduce space between items */
+.navbar-nav {
+    align-items: center;
+}
