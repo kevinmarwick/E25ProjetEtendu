@@ -1,6 +1,7 @@
 ﻿using E25ProjetEtendu.Data;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services.IServices;
+using E25ProjetEtendu.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,17 +17,26 @@ namespace E25ProjetEtendu.Services
             _userManager = userManager;
         }
 
-        public async Task<List<ApplicationUser>> GetAllUsers()
+        public async Task<List<UserViewModel>> GetNonPrivilegedUsers()
         {
-            var allUsers = await _context.Users.ToListAsync();
-            var result = new List<ApplicationUser>();
+            List<ApplicationUser> users = await _userManager.Users.ToListAsync();
 
-            foreach (var user in allUsers)
+            List<UserViewModel> result = new List<UserViewModel>();
+
+            foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
+
                 if (!roles.Contains("Admin") && !roles.Contains("DeliveryStation"))
                 {
-                    result.Add(user);
+                    result.Add(new UserViewModel
+                    {
+                        Id = user.Id,
+                        Email = user.Email,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Roles = roles.ToList()
+                    });
                 }
             }
 

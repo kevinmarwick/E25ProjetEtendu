@@ -95,7 +95,7 @@ namespace E25ProjetEtendu.Controllers
 
         public async Task<IActionResult> IndexUsers()
         {
-            List<ApplicationUser>  users = await _userService.GetAllUsers();
+            List<UserViewModel>  users = await _userService.GetNonPrivilegedUsers();
             return View(users);
         }
     }
