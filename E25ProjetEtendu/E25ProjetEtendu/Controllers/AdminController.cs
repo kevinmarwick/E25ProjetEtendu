@@ -46,10 +46,18 @@ namespace E25ProjetEtendu.Controllers
         {
             if (!ModelState.IsValid)
                 return View(vm);
-
-            await _adminService.EditProductFromVM(vm);
-            TempData["SuccessMessage"] = "Produit mis à jour avec succès.";
-            return RedirectToAction("IndexProduits");
+            try
+            {
+                await _adminService.EditProductFromVM(vm);
+                TempData["SuccessMessage"] = "Produit mis à jour avec succès.";
+                return RedirectToAction("IndexProduits");
+            }
+            catch(InvalidOperationException ex)
+            {
+                ModelState.AddModelError("SKU", ex.Message);
+                return View(vm);
+            }
+           
         }
 
 
@@ -86,11 +94,20 @@ namespace E25ProjetEtendu.Controllers
         {
             if (!ModelState.IsValid)
                 return View(vm);
+            try
+            {
+                await _adminService.AddProductFromVM(vm);
+                TempData["SuccessMessage"] = "Produit créé avec succès.";
+                return RedirectToAction("AddProduct");
+            }
+            catch(InvalidOperationException ex)
+            {
+                ModelState.AddModelError("SKU", ex.Message);
+                return View(vm);
+            }
+            
 
-            await _adminService.AddProductFromVM(vm);
-
-            TempData["SuccessMessage"] = "Produit créé avec succès.";
-            return RedirectToAction("AddProduct");
+            
         }
 
         public async Task<IActionResult> IndexUsers()

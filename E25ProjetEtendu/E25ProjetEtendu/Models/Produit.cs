@@ -32,6 +32,9 @@ namespace E25ProjetEtendu.Models
         [Required(ErrorMessage = "Les valeur nutritive son obligatoire")]
         [StringLength(500, ErrorMessage = "Les valeurs ne peut pas dépasser 500 caractères")]
         public string ValeurNutritive { get; set; }
+        [Required(ErrorMessage = "Le SKU est obligatoire")]
+		[StringLength(20, MinimumLength = 6)]
+		public string SKU {get;set;}
 
         //Navigation properties
         public List<OrderItem> OrderItems { get; set; }
