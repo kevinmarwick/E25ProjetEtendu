@@ -122,7 +122,7 @@
 						<li class="nav-item">
 							<a class="nav-link text-dark" asp-area="" asp-controller="Produit" asp-action="Index">Liste de produit</a>
 						</li>
-						@if (User.IsInRole("Delivery"))
+						@if (User.IsInRole("DeliveryStation"))
 						{
 							<li class="nav-item"><a class="nav-link text-dark" asp-controller="Delivery" asp-action="Index">Poste Livreur</a></li>
 						}

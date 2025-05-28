@@ -5,6 +5,7 @@ using E25ProjetEtendu.Services.IServices;
 using Microsoft.EntityFrameworkCore;
 using E25ProjetEtendu.Enums;
 using Microsoft.AspNetCore.SignalR;
+using E25ProjetEtendu.Hubs;
 
 
 

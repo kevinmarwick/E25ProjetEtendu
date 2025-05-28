@@ -13,11 +13,13 @@ namespace E25ProjetEtendu.Controllers
     {
         private readonly IAdminService _adminService;
         private readonly IProduitService _produitService;
+        private readonly IUserService _userService;
 
-        public AdminController(IAdminService adminService, IProduitService produitService)
+        public AdminController(IAdminService adminService, IProduitService produitService, IUserService userService)
         {
             _adminService = adminService;
             _produitService = produitService;
+            _userService = userService;
         }
 
         [Authorize(Roles ="Admin")]
@@ -106,6 +108,46 @@ namespace E25ProjetEtendu.Controllers
             
 
             
+        }
+
+        public async Task<IActionResult> IndexUsers()
+        {
+            List<UserViewModel>  users = await _userService.GetNonPrivilegedUsers();
+            return View(users);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GiveDelivererRole(string userId)
+        {
+            var success = await _userService.GiveDelivererRights(userId);
+            if (!success)
+            {
+                TempData["Error"] = "Échec lors de l'ajout du rôle 'Livreur'.";
+            }
+            else
+            {
+                TempData["Success"] = "Rôle 'Livreur' attribué avec succès.";
+            }
+
+            return RedirectToAction("IndexUsers");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveDelivererRole(string userId)
+        {
+            var success = await _userService.RemoveDelivererRights(userId);
+            if (!success)
+            {
+                TempData["Error"] = "Échec lors du retrait du rôle 'Livreur'.";
+            }
+            else
+            {
+                TempData["Success"] = "Rôle 'Livreur' retiré avec succès.";
+            }
+
+            return RedirectToAction("IndexUsers");
         }
     }
 }

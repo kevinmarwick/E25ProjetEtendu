@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using E25ProjetEtendu.Binders;
+using E25ProjetEtendu.Configuration;
+using E25ProjetEtendu.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +26,7 @@ builder.Services.AddScoped<IProduitService, ProduitService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IDeliveryService, DeliveryService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<SmsService>();
 
 builder.Services.AddHostedService<ReservationCleanupService>();
@@ -47,6 +50,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
 //SMTP Server config (Connexion in appsettings.json)
 builder.Services.Configure<SmtpSettings>(
     builder.Configuration.GetSection("SmtpSettings"));
+
+builder.Services.Configure<AdminSettings>(builder.Configuration.GetSection("Admin"));
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddSignalR();
