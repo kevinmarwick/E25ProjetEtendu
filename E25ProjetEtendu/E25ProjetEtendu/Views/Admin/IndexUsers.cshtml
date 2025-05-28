@@ -11,7 +11,8 @@
         <tr>
             <th>Nom</th>
             <th>Email</th>
-            <th>Rôles</th>
+            <th>Est livreur?</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -20,7 +21,19 @@
             <tr>
                 <td>@user.FullName</td>
                 <td>@user.Email</td>
-                <td>@string.Join(", ", user.Roles)</td>
+                <td>@(user.Roles.Contains("Deliverer") ? "oui" : "non")</td>
+                <td>
+                    <form asp-action="@(user.Roles.Contains("Deliverer") ? "RemoveDelivererRole" : "GiveDelivererRole")"
+                          asp-controller="Admin"
+                          method="post"
+                          class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <button type="submit" class="btn @(user.Roles.Contains("Deliverer") ? "btn-danger" : "btn-success") btn-sm">
+                            @(user.Roles.Contains("Deliverer") ? "Retirer Livreur" : "Donner rôle Livreur")
+                        </button>
+                    </form>
+                </td>
             </tr>
         }
     </tbody>

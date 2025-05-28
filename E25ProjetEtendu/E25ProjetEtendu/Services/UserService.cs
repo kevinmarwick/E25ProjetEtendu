@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace E25ProjetEtendu.Services
 {
-    public class UserService :IUserService
+    public class UserService : IUserService
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -43,5 +43,33 @@ namespace E25ProjetEtendu.Services
             return result;
         }
 
+        public async Task<bool> GiveDelivererRights(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return false;
+
+            if (!await _userManager.IsInRoleAsync(user, "Deliverer"))
+            {
+                var result = await _userManager.AddToRoleAsync(user, "Deliverer");
+                return result.Succeeded;
+            }
+            return true;
+        }
+
+        public async Task<bool> RemoveDelivererRights(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return false;
+
+            if (await _userManager.IsInRoleAsync(user, "Deliverer"))
+            {
+                var result = await _userManager.RemoveFromRoleAsync(user, "Deliverer");
+                return result.Succeeded;
+            }
+
+            return true;
+        }
     }
 }
