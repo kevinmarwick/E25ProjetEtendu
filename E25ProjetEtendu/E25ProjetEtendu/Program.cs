@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using E25ProjetEtendu.Binders;
+using E25ProjetEtendu.Configuration;
+using E25ProjetEtendu.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
