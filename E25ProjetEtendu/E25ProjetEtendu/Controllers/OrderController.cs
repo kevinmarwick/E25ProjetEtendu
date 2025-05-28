@@ -20,7 +20,7 @@ namespace E25ProjetEtendu.Controllers
         private readonly IOrderService _orderService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IDeliveryService _deliveryService;
-        
+
 
         public OrderController(ApplicationDbContext context, IOrderService orderService, IDeliveryService deliveryService, UserManager<ApplicationUser> userManager)
         {
@@ -34,6 +34,7 @@ namespace E25ProjetEtendu.Controllers
 
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> EndOrder(int orderId)
 
         {
