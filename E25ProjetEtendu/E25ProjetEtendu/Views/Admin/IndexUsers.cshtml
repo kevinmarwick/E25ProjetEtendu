@@ -13,6 +13,8 @@
             <th>Email</th>
             <th>Est livreur?</th>
             <th></th>
+            <th>Balance</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -32,6 +34,16 @@
                         <button type="submit" class="btn @(user.Roles.Contains("Deliverer") ? "btn-danger" : "btn-success") btn-sm">
                             @(user.Roles.Contains("Deliverer") ? "Retirer Livreur" : "Donner rôle Livreur")
                         </button>
+                    </form>
+                </td>
+                <td>
+                    @user.Balance $
+                </td>
+                <td>
+                    <form asp-action="AddBalance" method="post">
+                        <input type="hidden" name="userId" value="@user.Id" />
+                        <input type="number" name="Balance" class="form-control" min="0" />
+                        <button type="submit" class="btn btn-success">Ajouter Balance</button>
                     </form>
                 </td>
             </tr>
