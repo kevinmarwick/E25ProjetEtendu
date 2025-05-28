@@ -59,11 +59,15 @@ namespace E25ProjetEtendu.Services
             return fileName;
         }
 
-      
+
         public async Task<Produit> AddProductFromVM(AddProductVM vm)
         {
             var fileName = await SaveImage(vm.ImageFile);
-
+            bool SKUexists = await _context.produits.AnyAsync(p => p.SKU == vm.SKU);
+            if (SKUexists)
+            {
+                throw new InvalidOperationException("ce SKU existe déja");
+            }
             var product = new Produit
             {
                 Nom = vm.Nom,
@@ -71,7 +75,8 @@ namespace E25ProjetEtendu.Services
                 Prix = vm.Prix,
                 ValeurNutritive = vm.ValeurNutritive,
                 EstActif = vm.EstActif,
-                Image = fileName
+                Image = fileName,
+                SKU = vm.SKU
             };
 
             _context.produits.Add(product);
@@ -89,7 +94,8 @@ namespace E25ProjetEtendu.Services
                 ProduitId = produit.ProduitId,
                 Nom = produit.Nom,
                 ValeurNutritive = produit.ValeurNutritive,
-                CurrentImage = produit.Image
+                CurrentImage = produit.Image,
+                SKU = produit.SKU
             };
         }
 
@@ -97,10 +103,21 @@ namespace E25ProjetEtendu.Services
         {
             var product = await _produitService.GetProduitById(vm.ProduitId);
             if (product == null)
+            {
                 throw new Exception("Produit non trouvé");
+            }
+
+            // Vérifie si le SKU existe déjà pour un autre produit
+            bool SKUexists = await _context.produits
+                .AnyAsync(p => p.SKU == vm.SKU);
+            if (SKUexists)
+            {
+                throw new InvalidOperationException("Ce SKU existe déjà");
+            }
 
             product.Nom = vm.Nom;
             product.ValeurNutritive = vm.ValeurNutritive;
+            product.SKU = vm.SKU;
 
             if (vm.NewImageFile != null && vm.NewImageFile.Length > 0)
             {
@@ -111,6 +128,7 @@ namespace E25ProjetEtendu.Services
             await _context.SaveChangesAsync();
             return product;
         }
+
 
     }
 }

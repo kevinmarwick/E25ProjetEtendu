@@ -29,11 +29,11 @@
             <th>
                 @Html.DisplayNameFor(model => model.Prix)
             </th>           
-            <th></th>
+            <th></th>           
             <th>
-                @Html.DisplayNameFor(model => model.Note)
+                @Html.DisplayNameFor(model => model.SKU)
             </th>
-            <th></th>
+            <th></th>            
         </tr>
     </thead>
     <tbody>
@@ -55,20 +55,9 @@
                     <td>
                         <button class="btn btn-sm btn-success save-btn d-none">Save</button>
                         <button class="btn btn-sm btn-secondary cancel-btn d-none">Cancel</button>
-                    </td>
-                    <!--Note-->
+                    </td>                   
                     <td>
-                        @for (int i = 1; i <= 5; i++)
-                        {
-                            if (i <= item.Note)
-                            {
-                                <span class="text-warning">&#9733;</span> <!-- solid star -->
-                            }
-                            else
-                            {
-                                <span class="text-muted">&#9734;</span> <!-- empty star -->
-                            }
-                        }
+                        @item.SKU
                     </td>
                     <td>
                         <a asp-action="EditProduct" asp-route-id="@item.ProduitId">Modifier produit</a> |

@@ -24,6 +24,9 @@ namespace E25ProjetEtendu.ViewModels
         public string ValeurNutritive { get; set; }
 
         public bool EstActif { get; set; } = true;
+        [Required(ErrorMessage = "Le SKU est requises")]
+        [StringLength(20, MinimumLength = 6)]
+        public string SKU { get; set; }
     }
 
 
