@@ -1,4 +1,4 @@
-﻿namespace E25ProjetEtendu.Models
+﻿namespace E25ProjetEtendu.Configuration
 {
     public class SmtpSettings
     {

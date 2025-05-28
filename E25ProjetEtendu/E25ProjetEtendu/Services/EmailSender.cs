@@ -1,4 +1,4 @@
-﻿using E25ProjetEtendu.Models;
+﻿using E25ProjetEtendu.Configuration;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Options;
 using System.Net;

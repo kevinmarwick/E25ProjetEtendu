@@ -58,7 +58,7 @@ namespace E25ProjetEtendu.Data
             #region Delivery Station User Seed Data
 
             modelBuilder.Entity<IdentityRole>().HasData(
-           new IdentityRole { Id = "delivery-role-id", Name = "Delivery", NormalizedName = "DELIVERY" }
+           new IdentityRole { Id = "deliverystation-role-id", Name = "DeliveryStation", NormalizedName = "DELIVERYSTATION" }
            );
             modelBuilder.Entity<ApplicationUser>().HasData(
                 new ApplicationUser
@@ -77,8 +77,8 @@ namespace E25ProjetEtendu.Data
             ); modelBuilder.Entity<IdentityUserRole<string>>().HasData(
                 new IdentityUserRole<string>
                 {
-                    UserId = "42222222-2222-2222-2222-222222222222", 
-                    RoleId = "delivery-role-id"
+                    UserId = "42222222-2222-2222-2222-222222222222",
+                    RoleId = "deliverystation-role-id"
                 }
             );
 
@@ -99,7 +99,7 @@ namespace E25ProjetEtendu.Data
                 new ApplicationUser
                 {
                     Id = "32222222-2222-2222-2222-222222222222",
-                    UserName = "user@example.com",
+                    UserName = "jean@example.com",
                     FirstName = "Jean",
                     LastName = "Utilisateur",
                     NormalizedUserName = "USER@EXAMPLE.COM",
@@ -109,19 +109,6 @@ namespace E25ProjetEtendu.Data
                     PasswordHash = userPassword,
                     SecurityStamp = Guid.NewGuid().ToString()
                 },
-                 new ApplicationUser
-                 {
-                     Id = "43333333-3333-3333-3333-333333333333",
-                     UserName = "jacob@example.com",
-                     FirstName = "Jacob",
-                     LastName = "Utilisateur",
-                     NormalizedUserName = "JACOB@EXAMPLE.COM",
-                     Email = "jacob@example.com",
-                     NormalizedEmail = "JACOB@EXAMPLE.COM",
-                     EmailConfirmed = true,
-                     PasswordHash = userPassword,
-                     SecurityStamp = Guid.NewGuid().ToString()
-                 },
                 new ApplicationUser
                 {
                     Id = "54444444-4444-4444-4444-444444444444",
@@ -157,6 +144,39 @@ namespace E25ProjetEtendu.Data
                 new IdentityUserRole<string> { UserId = "54444444-4444-4444-4444-444444444444", RoleId = "user-role-id" },
                 new IdentityUserRole<string> { UserId = "65555555-5555-5555-5555-555555555555", RoleId = "user-role-id" }
             );
+
+            #endregion
+
+            #region Deliverer Role + User Seed Data
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole { Id = "deliverer-role-id", Name = "Deliverer", NormalizedName = "DELIVERER" }
+            );
+
+            modelBuilder.Entity<ApplicationUser>().HasData(
+                new ApplicationUser
+                {
+                    Id = "43333333-3333-3333-3333-333333333333",
+                    UserName = "jacob@example.com",
+                    FirstName = "Jacob",
+                    LastName = "Utilisateur",
+                    NormalizedUserName = "JACOB@EXAMPLE.COM",
+                    Email = "jacob@example.com",
+                    NormalizedEmail = "JACOB@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    PasswordHash = userPassword,
+                    SecurityStamp = Guid.NewGuid().ToString()
+                }
+            );
+
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string>
+                {
+                    UserId = "43333333-3333-3333-3333-333333333333", // Jacob
+                    RoleId = "deliverer-role-id"
+                }
+            );
+
+
 
             #endregion
 

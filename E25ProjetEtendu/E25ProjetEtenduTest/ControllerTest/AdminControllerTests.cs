@@ -12,13 +12,15 @@ public class AdminControllerTests
 {
     private readonly Mock<IAdminService> _adminServiceMock;
     private readonly Mock<IProduitService> _produitServiceMock;
+    private readonly Mock<IUserService> _userServiceMock;
     private readonly AdminController _controller;
 
     public AdminControllerTests()
     {
         _adminServiceMock = new Mock<IAdminService>();
         _produitServiceMock = new Mock<IProduitService>();
-        _controller = new AdminController(_adminServiceMock.Object, _produitServiceMock.Object);
+        _userServiceMock = new Mock<IUserService>();
+        _controller = new AdminController(_adminServiceMock.Object, _produitServiceMock.Object, _userServiceMock.Object);
     }
 
     [Fact]
