@@ -27,7 +27,7 @@ namespace E25ProjetEtendu.Controllers
                 {
                     return RedirectToAction("Dashboard", "Admin");
                 }
-                else if (roles.Contains("Delivery"))
+                else if (roles.Contains("DeliveryStation"))
                 {
                     return RedirectToAction("Index", "Delivery");
                 }

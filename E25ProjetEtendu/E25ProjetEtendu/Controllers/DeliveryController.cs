@@ -25,14 +25,14 @@ namespace E25ProjetEtendu.Controllers
         private readonly IOptions<AdminSettings> _adminSettings;
 
 
-        public DeliveryController(IDeliveryService deliveryService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext, SmsService smsService, IEmailSender emailSender)
+        public DeliveryController(IDeliveryService deliveryService, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext dbContext, SmsService smsService, IEmailSender emailSender, IOptions<AdminSettings> adminSettings)
         {
             _deliveryService = deliveryService;
             _userManager = userManager;
             _signInManager = signInManager;
             _smsService = smsService;
             _emailSender = emailSender;
-
+            _adminSettings = adminSettings;
         }
 
         public async Task<IActionResult> Index()
@@ -53,62 +53,65 @@ namespace E25ProjetEtendu.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> ConfirmDelivery(int orderId, string email, string password)
-        {
-            //const int MaxAttempts = 3;
-            //var emailKey = $"DeliveryLoginAttempts_{email.ToLower()}";
-            //int attempts = HttpContext.Session.GetInt32(emailKey) ?? 0;
-
-            //if (attempts >= MaxAttempts)
-            //{
-            //    TempData["Erreur"] = "Vous avez dépassé le nombre maximal de tentatives pour cette adresse courriel.";
-            //    return RedirectToAction("Index");
-            //}
-
+        {            
             var user = await _userManager.FindByEmailAsync(email);
+            var timestamp = DateTime.Now.ToString("f");
+
+            //User null
             if (user == null)
             {
-                //attempts++;
-                //HttpContext.Session.SetInt32(emailKey, attempts);
-                TempData["Erreur"] = "Utilisateur non trouvé";
+                TempData["Erreur"] = "Utilisateur non trouvé ou mot de passe invalide.";
                 await _emailSender.SendEmailAsync(
                     _adminSettings.Value.Email,
-                    $"Tentative de connexion non autorisée par {email}",
-                    $"<p>L'utilisateur <strong>{email}</strong> ({user.FullName} ID:{user.Id}) s'est connecté avec succès mais <strong>n'a pas le rôle 'Livreur'</strong>. Tentative d'assignation de commande #{orderId} bloquée.</p>"
+                    $"Tentative de connexion avec utilisateur inconnu : {email}",
+                    $@"
+                        <p>Une tentative de connexion a échoué. Aucun utilisateur trouvé pour l'adresse : <strong>{email}</strong>.</p>
+                        <p><strong>Commande :</strong> #{orderId}</p>
+                        <p style='margin-top:15px; color:gray;'>Tentative enregistrée le {timestamp}</p>"
                 );
 
                 return RedirectToAction("Index");
             }
 
+            //Check Credentials
             var result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
             if (!result.Succeeded)
             {
-                //attempts++;
-                //HttpContext.Session.SetInt32(emailKey, attempts);
-
-                //if (attempts >= MaxAttempts)
-                //{
-                //    TempData["Erreur"] = "Trop de tentatives échouées pour cet utilisateur.";
-                //}
-                //else
-                //{
-                //    TempData["Erreur"] = $"Mot de passe invalide. Tentative {attempts} sur {MaxAttempts}.";
-                //}
-
-                TempData["Erreur"] = "Mot de passe invalide.";
+                TempData["Erreur"] = "Utilisateur non trouvé ou mot de passe invalide.";
                 await _emailSender.SendEmailAsync(
                     _adminSettings.Value.Email,
                     $"Échec d'authentification: {email}",
-                    $"Échec d'authentification pour {email} ({user.FullName} ID:{user.Id}) — mot de passe invalide."
+                    $@"
+                        <p>Échec d'authentification pour <strong>{email}</strong> ({user.FullName}, ID : {user.Id}) — mot de passe invalide.</p>
+                        <p><strong>Commande :</strong> #{orderId}</p>
+                        <p style='margin-top:15px; color:gray;'>Tentative enregistrée le {timestamp}</p>"
+                );
+
+
+                return RedirectToAction("Index");
+            }
+
+            //Check if user is deliverer
+            var isDeliverer = await _userManager.IsInRoleAsync(user, "Deliverer");
+            if (!isDeliverer)
+            {
+                TempData["Erreur"] = "Vous n'avez pas les permissions pour accepter des livraisons.";
+                await _emailSender.SendEmailAsync(
+                    _adminSettings.Value.Email,
+                    $"Tentative de livraison non autorisée par {email}",
+                    $@"
+                        <p>L'utilisateur <strong>{email}</strong> ({user.FullName}, ID : {user.Id}) a été authentifié avec succès, mais <strong>n'a pas le rôle 'Livreur'</strong>.</p>
+                        <p><strong>Commande :</strong> #{orderId}</p>
+                        <p style='margin-top:15px; color:gray;'>Tentative enregistrée le {timestamp}</p>"
                 );
 
                 return RedirectToAction("Index");
             }
 
-            //// Connexion réussie — on supprime les tentatives pour cet email
-            //HttpContext.Session.Remove(emailKey);
-
+            //Assign Order
             var assignationReussie = await _deliveryService.AssignerCommandeAuLivreur(orderId, user.Id);
             if (!assignationReussie)
             {
@@ -116,16 +119,10 @@ namespace E25ProjetEtendu.Controllers
                 return RedirectToAction("Index");
             }
 
+            //Order Assigned successfully
             TempData["Succès"] = "Commande acceptée avec succès.";
             await _smsService.EnvoyerLienConfirmationAuLivreur(user.PhoneNumber, orderId);
-
-
             return RedirectToAction("Index");
         }
-
-
-
-
     }
-
 }

@@ -51,6 +51,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
 builder.Services.Configure<SmtpSettings>(
     builder.Configuration.GetSection("SmtpSettings"));
 
+builder.Services.Configure<AdminSettings>(builder.Configuration.GetSection("Admin"));
+
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddSignalR();
 
