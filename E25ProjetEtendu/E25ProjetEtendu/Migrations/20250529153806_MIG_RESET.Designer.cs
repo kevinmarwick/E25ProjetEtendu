@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E25ProjetEtendu.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250526120434_migrationreset")]
-    partial class migrationreset
+    [Migration("20250529153806_MIG_RESET")]
+    partial class MIG_RESET
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -108,7 +108,7 @@ namespace E25ProjetEtendu.Migrations
                             Id = "21111111-1111-1111-1111-111111111111",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "636774c9-e1b6-4a22-a92b-fcc476dda047",
+                            ConcurrencyStamp = "c10d0088-c7f3-4fd6-b3c7-f7f709cffcf2",
                             Email = "admin@example.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -116,9 +116,9 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@EXAMPLE.COM",
                             NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBTXXTihDHwIYpDAurpMC+aHeWXubQ6iLlPv/dJhXj9YndUorT653YYu/uXIgHCbcw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOIdkYxq+1XB2VFMqMyyKjudbkBCSULAdVkf/e6DHGrYieFD0EOd9uk43zHId35VrQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "46555518-b2a8-45a6-8ddc-9dacb67f9b65",
+                            SecurityStamp = "9b108876-a962-4c77-bef2-87a3fd5818d9",
                             TwoFactorEnabled = false,
                             UserName = "admin@example.com"
                         },
@@ -127,7 +127,7 @@ namespace E25ProjetEtendu.Migrations
                             Id = "42222222-2222-2222-2222-222222222222",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "a36bc3b2-a12a-4809-a1ad-519f4708327c",
+                            ConcurrencyStamp = "457d3ca4-4781-47c0-bcdf-fd847f752b71",
                             Email = "livreur@example.com",
                             EmailConfirmed = true,
                             FirstName = "Livreur",
@@ -135,9 +135,9 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "LIVREUR@EXAMPLE.COM",
                             NormalizedUserName = "LIVREUR@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHsdQ1pPvKzQT0uXy3fiq6icqpoh0FStzRjuc8k1cpve1RG7leeahjPeo3UkxIGX2Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEL6eT59Yc/Lxqo4O6f/6vsDsIt8TU38t+KFFxcJtIHXrZHwzJCYaRGE9+AxIeWP/VA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "eef6c348-b0c2-4ce2-9e96-4434f0b709fb",
+                            SecurityStamp = "c0b072a8-b781-4fcc-8fd8-054a4b53a820",
                             TwoFactorEnabled = false,
                             UserName = "livreur@example.com"
                         },
@@ -146,7 +146,7 @@ namespace E25ProjetEtendu.Migrations
                             Id = "32222222-2222-2222-2222-222222222222",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "93702ea9-7ecd-4150-be92-70fb02bb0b23",
+                            ConcurrencyStamp = "5b8d1b86-c210-4b12-a64b-36c16104c9f4",
                             Email = "user@example.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -154,37 +154,18 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@EXAMPLE.COM",
                             NormalizedUserName = "USER@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEF1/k05ekORzAsC9x29sZMKQNQ2VVQuqTMpOVR+hkSz0rWrbVFefYsYmU96FcnNSRQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAUOhYozFE9yvlCTyCV8vzWacV4la1j6+K05POn+6rg3LLpw8a//U8JgajNr/VoCpA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f866dfc1-8687-42d7-b442-401058df7feb",
+                            SecurityStamp = "c6f61dda-d64f-4ebb-81b1-6da97ed91aa6",
                             TwoFactorEnabled = false,
-                            UserName = "user@example.com"
-                        },
-                        new
-                        {
-                            Id = "43333333-3333-3333-3333-333333333333",
-                            AccessFailedCount = 0,
-                            Balance = 0m,
-                            ConcurrencyStamp = "060cf558-f6a9-47ab-9a25-d4f5002c5552",
-                            Email = "jacob@example.com",
-                            EmailConfirmed = true,
-                            FirstName = "Jacob",
-                            LastName = "Utilisateur",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "JACOB@EXAMPLE.COM",
-                            NormalizedUserName = "JACOB@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEF1/k05ekORzAsC9x29sZMKQNQ2VVQuqTMpOVR+hkSz0rWrbVFefYsYmU96FcnNSRQ==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "8daf4f3d-456c-4a29-bdff-e9a4b993851b",
-                            TwoFactorEnabled = false,
-                            UserName = "jacob@example.com"
+                            UserName = "jean@example.com"
                         },
                         new
                         {
                             Id = "54444444-4444-4444-4444-444444444444",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "85a2bdde-ee50-4165-ad5c-8f69e1d41f98",
+                            ConcurrencyStamp = "fdf9479c-da23-4c2a-856c-e248226f693f",
                             Email = "maxime@example.com",
                             EmailConfirmed = true,
                             FirstName = "Maxime",
@@ -192,9 +173,9 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "MAXIME@EXAMPLE.COM",
                             NormalizedUserName = "MAXIME@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEF1/k05ekORzAsC9x29sZMKQNQ2VVQuqTMpOVR+hkSz0rWrbVFefYsYmU96FcnNSRQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAUOhYozFE9yvlCTyCV8vzWacV4la1j6+K05POn+6rg3LLpw8a//U8JgajNr/VoCpA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "46392c2a-49f2-48be-829f-ca6a85b2eb5e",
+                            SecurityStamp = "49c5985e-050f-4298-8043-3f33738dda96",
                             TwoFactorEnabled = false,
                             UserName = "maxime@example.com"
                         },
@@ -203,7 +184,7 @@ namespace E25ProjetEtendu.Migrations
                             Id = "65555555-5555-5555-5555-555555555555",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "6ac0145a-00b4-4998-abd3-2be40d300824",
+                            ConcurrencyStamp = "2720d98e-83cd-453c-bf05-df164328856a",
                             Email = "nicolas@example.com",
                             EmailConfirmed = true,
                             FirstName = "Nicolas",
@@ -211,11 +192,30 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "NICOLAS@EXAMPLE.COM",
                             NormalizedUserName = "NICOLAS@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEF1/k05ekORzAsC9x29sZMKQNQ2VVQuqTMpOVR+hkSz0rWrbVFefYsYmU96FcnNSRQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAUOhYozFE9yvlCTyCV8vzWacV4la1j6+K05POn+6rg3LLpw8a//U8JgajNr/VoCpA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a15acea6-872c-4640-843f-013648f4a9b5",
+                            SecurityStamp = "d327e4ca-be80-433e-b44b-564fb13d7c31",
                             TwoFactorEnabled = false,
                             UserName = "nicolas@example.com"
+                        },
+                        new
+                        {
+                            Id = "43333333-3333-3333-3333-333333333333",
+                            AccessFailedCount = 0,
+                            Balance = 0m,
+                            ConcurrencyStamp = "cbb0cd42-3660-4437-add6-56da75eb6e5e",
+                            Email = "jacob@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Jacob",
+                            LastName = "Utilisateur",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "JACOB@EXAMPLE.COM",
+                            NormalizedUserName = "JACOB@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAUOhYozFE9yvlCTyCV8vzWacV4la1j6+K05POn+6rg3LLpw8a//U8JgajNr/VoCpA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "9b01a83f-fed9-4d6d-9982-aefb6fbdeb56",
+                            TwoFactorEnabled = false,
+                            UserName = "jacob@example.com"
                         });
                 });
 
@@ -478,6 +478,11 @@ namespace E25ProjetEtendu.Migrations
                     b.Property<decimal>("Prix")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("SKU")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("ValeurNutritive")
                         .IsRequired()
                         .HasMaxLength(500)
@@ -497,6 +502,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Red Bull",
                             Note = 4,
                             Prix = 3m,
+                            SKU = "100001",
                             ValeurNutritive = "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g"
                         },
                         new
@@ -508,6 +514,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Pogo",
                             Note = 3,
                             Prix = 2m,
+                            SKU = "100002",
                             ValeurNutritive = "Calories: 190, Lipides: 9g, Glucides: 20g, Protéines: 6g, Sodium: 500mg"
                         },
                         new
@@ -519,6 +526,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Bouteille d'eau",
                             Note = 5,
                             Prix = 1m,
+                            SKU = "100003",
                             ValeurNutritive = "Calories: 0, Lipides: 0g, Sucres: 0g, Sodium: 0mg"
                         },
                         new
@@ -530,6 +538,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Chips Lay’s",
                             Note = 4,
                             Prix = 2m,
+                            SKU = "100004",
                             ValeurNutritive = "Calories: 160, Lipides: 10g, Glucides: 15g, Sucres: 1g, Sodium: 170mg"
                         },
                         new
@@ -541,6 +550,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Nutella",
                             Note = 5,
                             Prix = 5m,
+                            SKU = "100005",
                             ValeurNutritive = "Calories: 200, Lipides: 11g, Glucides: 22g, Sucres: 21g, Protéines: 2g"
                         },
                         new
@@ -552,6 +562,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Yogourt Activia",
                             Note = 4,
                             Prix = 3m,
+                            SKU = "100006",
                             ValeurNutritive = "Calories: 100, Lipides: 2g, Glucides: 15g, Sucres: 12g, Protéines: 5g"
                         },
                         new
@@ -563,6 +574,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Pizza congelée",
                             Note = 4,
                             Prix = 6m,
+                            SKU = "100007",
                             ValeurNutritive = "Calories: 350, Lipides: 15g, Glucides: 40g, Sucres: 5g, Protéines: 12g"
                         },
                         new
@@ -574,6 +586,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Barre de granola",
                             Note = 4,
                             Prix = 2m,
+                            SKU = "100008",
                             ValeurNutritive = "Calories: 190, Lipides: 7g, Glucides: 29g, Sucres: 11g, Protéines: 4g"
                         },
                         new
@@ -585,6 +598,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Coca-Cola",
                             Note = 3,
                             Prix = 2m,
+                            SKU = "100009",
                             ValeurNutritive = "Calories: 140, Sucres: 39g, Glucides: 39g, Sodium: 45mg"
                         },
                         new
@@ -596,6 +610,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Sandwich jambon-fromage",
                             Note = 4,
                             Prix = 4m,
+                            SKU = "100010",
                             ValeurNutritive = "Calories: 320, Lipides: 12g, Glucides: 30g, Protéines: 18g, Sodium: 780mg"
                         },
                         new
@@ -607,6 +622,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Café Starbucks",
                             Note = 4,
                             Prix = 4m,
+                            SKU = "100011",
                             ValeurNutritive = "Calories: 150, Sucres: 20g, Caféine: 95mg"
                         },
                         new
@@ -618,6 +634,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Déodorant Axe",
                             Note = 5,
                             Prix = 6m,
+                            SKU = "100012",
                             ValeurNutritive = "Sans calories"
                         },
                         new
@@ -629,6 +646,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Shampooing Head & Shoulders",
                             Note = 4,
                             Prix = 7m,
+                            SKU = "100013",
                             ValeurNutritive = "Sans calories"
                         },
                         new
@@ -640,6 +658,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Crème glacée Ben & Jerry's",
                             Note = 5,
                             Prix = 8m,
+                            SKU = "100014",
                             ValeurNutritive = "Calories: 270, Lipides: 14g, Sucres: 26g"
                         },
                         new
@@ -651,6 +670,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Pain tranché",
                             Note = 3,
                             Prix = 3m,
+                            SKU = "100015",
                             ValeurNutritive = "Calories: 80, Glucides: 15g, Protéines: 3g"
                         },
                         new
@@ -662,6 +682,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Fromage cheddar",
                             Note = 4,
                             Prix = 5m,
+                            SKU = "100016",
                             ValeurNutritive = "Calories: 110, Lipides: 9g, Protéines: 7g"
                         },
                         new
@@ -673,6 +694,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Yaourt grec",
                             Note = 4,
                             Prix = 4m,
+                            SKU = "100017",
                             ValeurNutritive = "Calories: 120, Protéines: 10g, Sucres: 8g"
                         },
                         new
@@ -684,6 +706,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Crackers Ritz",
                             Note = 3,
                             Prix = 3m,
+                            SKU = "100018",
                             ValeurNutritive = "Calories: 160, Lipides: 8g, Glucides: 20g"
                         },
                         new
@@ -695,6 +718,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Soupe Campbell",
                             Note = 4,
                             Prix = 2m,
+                            SKU = "100019",
                             ValeurNutritive = "Calories: 90, Sodium: 480mg"
                         },
                         new
@@ -706,6 +730,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Jus d'orange Tropicana",
                             Note = 4,
                             Prix = 3m,
+                            SKU = "100020",
                             ValeurNutritive = "Calories: 110, Sucres: 23g"
                         },
                         new
@@ -717,6 +742,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Brosse à dents Colgate",
                             Note = 4,
                             Prix = 2m,
+                            SKU = "100021",
                             ValeurNutritive = "Sans calories"
                         },
                         new
@@ -728,6 +754,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Dentifrice Sensodyne",
                             Note = 5,
                             Prix = 5m,
+                            SKU = "100022",
                             ValeurNutritive = "Sans calories"
                         },
                         new
@@ -739,6 +766,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Savon Dove",
                             Note = 4,
                             Prix = 2m,
+                            SKU = "100023",
                             ValeurNutritive = "Sans calories"
                         },
                         new
@@ -750,6 +778,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Boisson Gatorade",
                             Note = 4,
                             Prix = 3m,
+                            SKU = "100024",
                             ValeurNutritive = "Calories: 80, Sucres: 21g"
                         },
                         new
@@ -761,6 +790,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Chocolat Kinder",
                             Note = 5,
                             Prix = 2m,
+                            SKU = "100025",
                             ValeurNutritive = "Calories: 120, Sucres: 12g"
                         },
                         new
@@ -772,6 +802,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Céréales Cheerios",
                             Note = 4,
                             Prix = 4m,
+                            SKU = "100026",
                             ValeurNutritive = "Calories: 110, Glucides: 20g, Protéines: 3g"
                         },
                         new
@@ -783,6 +814,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Biscuit Oreo",
                             Note = 4,
                             Prix = 3m,
+                            SKU = "100027",
                             ValeurNutritive = "Calories: 160, Sucres: 14g"
                         },
                         new
@@ -794,6 +826,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Beurre d'arachide",
                             Note = 4,
                             Prix = 5m,
+                            SKU = "100028",
                             ValeurNutritive = "Calories: 190, Lipides: 16g, Protéines: 7g"
                         },
                         new
@@ -805,6 +838,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Eau gazeuse Perrier",
                             Note = 4,
                             Prix = 2m,
+                            SKU = "100029",
                             ValeurNutritive = "Calories: 0"
                         },
                         new
@@ -816,6 +850,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "Muffin aux bleuets",
                             Note = 5,
                             Prix = 3m,
+                            SKU = "100030",
                             ValeurNutritive = "Calories: 380, Lipides: 16g, Sucres: 28g"
                         },
                         new
@@ -827,6 +862,7 @@ namespace E25ProjetEtendu.Migrations
                             Nom = "BandAid",
                             Note = 5,
                             Prix = 3m,
+                            SKU = "100031",
                             ValeurNutritive = "Calories: 0"
                         });
                 });
@@ -896,15 +932,21 @@ namespace E25ProjetEtendu.Migrations
                         },
                         new
                         {
-                            Id = "delivery-role-id",
-                            Name = "Delivery",
-                            NormalizedName = "DELIVERY"
+                            Id = "deliverystation-role-id",
+                            Name = "DeliveryStation",
+                            NormalizedName = "DELIVERYSTATION"
                         },
                         new
                         {
                             Id = "user-role-id",
                             Name = "User",
                             NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "livreur-role-id",
+                            Name = "Livreur",
+                            NormalizedName = "LIVREUR"
                         });
                 });
 
@@ -1003,7 +1045,7 @@ namespace E25ProjetEtendu.Migrations
                         new
                         {
                             UserId = "42222222-2222-2222-2222-222222222222",
-                            RoleId = "delivery-role-id"
+                            RoleId = "deliverystation-role-id"
                         },
                         new
                         {
@@ -1024,6 +1066,11 @@ namespace E25ProjetEtendu.Migrations
                         {
                             UserId = "65555555-5555-5555-5555-555555555555",
                             RoleId = "user-role-id"
+                        },
+                        new
+                        {
+                            UserId = "43333333-3333-3333-3333-333333333333",
+                            RoleId = "livreur-role-id"
                         });
                 });
 

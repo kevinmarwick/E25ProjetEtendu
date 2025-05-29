@@ -145,10 +145,43 @@ namespace E25ProjetEtendu.Data
                 new IdentityUserRole<string> { UserId = "65555555-5555-5555-5555-555555555555", RoleId = "user-role-id" }
             );
 
-			#endregion
+            #endregion
 
-			#region Products Seed Data
-			modelBuilder.Entity<Produit>().HasData(
+            #region Deliverer Role + User Seed Data
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole { Id = "livreur-role-id", Name = "Livreur", NormalizedName = "LIVREUR" }
+            );
+
+            modelBuilder.Entity<ApplicationUser>().HasData(
+                new ApplicationUser
+                {
+                    Id = "43333333-3333-3333-3333-333333333333",
+                    UserName = "jacob@example.com",
+                    FirstName = "Jacob",
+                    LastName = "Utilisateur",
+                    NormalizedUserName = "JACOB@EXAMPLE.COM",
+                    Email = "jacob@example.com",
+                    NormalizedEmail = "JACOB@EXAMPLE.COM",
+                    EmailConfirmed = true,
+                    PasswordHash = userPassword,
+                    SecurityStamp = Guid.NewGuid().ToString()
+                }
+            );
+
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string>
+                {
+                    UserId = "43333333-3333-3333-3333-333333333333", // Jacob
+                    RoleId = "livreur-role-id"
+                }
+            );
+
+
+
+            #endregion
+
+            #region Products Seed Data
+            modelBuilder.Entity<Produit>().HasData(
 				new Produit { ProduitId = 1, SKU = "100001", Nom = "Red Bull", InventoryQuantity = 120, Prix = 3, Image = "redbull.png", EstActif = true, Note = 4, ValeurNutritive = "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g" },
 				new Produit { ProduitId = 2, SKU = "100002", Nom = "Pogo", InventoryQuantity = 200, Prix = 2, Image = "pogo.jpg", EstActif = true, Note = 3, ValeurNutritive = "Calories: 190, Lipides: 9g, Glucides: 20g, Protéines: 6g, Sodium: 500mg" },
 				new Produit { ProduitId = 3, SKU = "100003", Nom = "Bouteille d'eau", InventoryQuantity = 300, Prix = 1, Image = "eau.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 0, Lipides: 0g, Sucres: 0g, Sodium: 0mg" },
