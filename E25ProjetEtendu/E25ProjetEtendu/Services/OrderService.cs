@@ -52,9 +52,6 @@ namespace E25ProjetEtendu.Services
             Order? commande = await _context.Orders
                 .FirstOrDefaultAsync(o => o.OrderId == orderId && o.DelivererId == livreurId);
 
-
-
-
             commande.Status = OrderStatus.Delivered;
             await _context.SaveChangesAsync();
             await NotifierClientCommandeTermineeAsync(commande);
@@ -172,6 +169,14 @@ namespace E25ProjetEtendu.Services
 
         #region Order Cancellation
 
+        /// <summary>
+        /// Cancels an order based on the actor type (Buyer, Deliverer, or Delivery Station).
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="actorId"></param>
+        /// <param name="actorType"></param>
+        /// <param name="returnInventory"></param>
+        /// <returns></returns>
         public async Task<string?> CancelOrder(int orderId, string actorId, CancellationActor actorType, bool returnInventory = true)
         {
             // Check if order exists and get user details
@@ -179,7 +184,7 @@ namespace E25ProjetEtendu.Services
             ApplicationUser? user = await _userService.GetUserById(actorId);
 
             // If user not found, return error message
-            if(user == null)
+            if (user == null)
                 return "Utilisateur introuvable pour l'annulation de la commande.";
             // If order not found or already delivered/cancelled, return appropriate message
             if (order == null)
@@ -198,14 +203,14 @@ namespace E25ProjetEtendu.Services
                     if (order.BuyerId != actorId)
                         return "Accès refusé.";
                     if (order.Status == OrderStatus.InProgress)
-                        return "Commande déjà en cours de livraison."; 
+                        return "Commande déjà en cours de livraison.";
                     break;
 
                 //Cancellation by Deliverer
                 case CancellationActor.Deliverer:
                     ///Check access rights
                     if (order.DelivererId != actorId)
-                        return "Accès refusé.";                    
+                        return "Accès refusé.";
                     // If returnInventory is false, we notify admin
                     if (returnInventory == false)
                         await _emailSender.SendEmailAsync(
@@ -223,7 +228,7 @@ namespace E25ProjetEtendu.Services
             }
 
             // **** Refund user ****
-            var refundResult = await RefundUser(order);
+            string? refundResult = await RefundUser(order);
 
             // If refund failed, notify admin and buyer
             if (refundResult != null)
@@ -234,7 +239,6 @@ namespace E25ProjetEtendu.Services
                         $"La commande #{order.OrderId} a été annulé, mais le remboursement a peut-être rencontré un problème.  Veuillez vérifier, et contacter l'ADEPT au besoin.",
                         order
                     );
-
                 await _emailSender.SendEmailAsync(
                        _adminSettings.Email,
                        $"Erreur lors du remboursement de la commande #{order.OrderId} de {order.Buyer.FullName}",
@@ -242,72 +246,87 @@ namespace E25ProjetEtendu.Services
                        order
                    );
             }
-            else if(refundResult == null && actorType == CancellationActor.Buyer) // If refund was successful and actor is buyer
+            // If refund was successful and actor is buyer
+            else if (refundResult == null && actorType == CancellationActor.Buyer)
             {
                 await _emailSender.SendEmailAsync(
                     order.Buyer.Email!,
                     "Remboursement de votre commande",
-                    $"Votre commande #{order.OrderId} a été annulée et un remboursement a été effectué. Le montant de {order.TotalPrice}$ a été crédité sur votre compte.",
+                    $"Votre commande #{order.OrderId} a bien été annulée et un remboursement a été effectué. Le montant de {order.TotalPrice}$ a été crédité sur votre compte.",
                     order
                 );
             }
-
+            // If refund was successful and actor is not buyer
+            else if (refundResult == null && actorType != CancellationActor.Buyer)
+            {
+                await _emailSender.SendEmailAsync(
+                    order.Buyer.Email!,
+                    $"Remboursement de la commande #{order.OrderId} de {order.Buyer.FullName}",
+                    $"Votre commande #{order.OrderId} a été annulée et un remboursement a été effectué. Le montant de {order.TotalPrice}$ a été crédité sur le compte de l'utilisateur. Nous sommes désolés des inconvénients, veuillez contacter l'ADEPT pour plus d'informations",
+                    order
+                );
+            }
+            
             // **** Replenish Inventory if needed ****
+            bool restockResult = returnInventory;            
             if (returnInventory)
             {
-                bool restockResult = await RestockInventory(order);
-
-                // If restock failed, notify admin
-                if (!restockResult && actorType == CancellationActor.Deliverer)
-                {
-                    await _emailSender.SendEmailAsync(
-                        _adminSettings.Email,
-                        $"Erreur de réapprovisionnement de l'inventaire pour la commande #{order.OrderId}",
-                        $"La commande #{order.OrderId} a été annulé, mais le réapprovisionnement de l'inventaire a échoué. Veuillez vérifier que le livreur {order.Deliverer!.FullName} a bien retourné les produits, et ajustez l'inventaire en conséquence.",
-                        order
-                    );
-
-                }
-                else if (!restockResult && actorType == CancellationActor.Buyer)
-                {
-                    await _emailSender.SendEmailAsync(
-                        _adminSettings.Email,
-                        $"Erreur de réapprovisionnement de l'inventaire pour la commande #{order.OrderId}",
-                        $"La commande #{order.OrderId} a été annulé, mais le réapprovisionnement de l'inventaire a échoué. Veuillez vérifier et ajuster l'inventaire en conséquence."
-                        , order
-                    );
-                }
-                else if (!restockResult && actorType == CancellationActor.DeliveryStation)
-                {
-                    await _emailSender.SendEmailAsync(
-                        _adminSettings.Email,
-                        $"Erreur de réapprovisionnement de l'inventaire pour la commande #{order.OrderId}",
-                        $"La commande #{order.OrderId} a été annulé par le poste de livraison, mais le réapprovisionnement de l'inventaire a échoué. Veuillez vérifier et ajuster l'inventaire en conséquence."
-                        , order
-                    );
-                }
+                restockResult = await RestockInventory(order);
             }
 
-            // Cancel order
+            // If restock failed, notify admin
+            if (!restockResult && actorType == CancellationActor.Deliverer)
+            {
+                await _emailSender.SendEmailAsync(
+                    _adminSettings.Email,
+                    $"Erreur de réapprovisionnement de l'inventaire pour la commande #{order.OrderId}",
+                    $"La commande #{order.OrderId} a été annulé, mais le réapprovisionnement de l'inventaire a échoué. Veuillez vérifier que le livreur {order.Deliverer!.FullName} a bien retourné les produits, et ajustez l'inventaire en conséquence.",
+                    order
+                );
+            }
+            else if (!restockResult && actorType == CancellationActor.Buyer)
+            {
+                await _emailSender.SendEmailAsync(
+                    _adminSettings.Email,
+                    $"Erreur de réapprovisionnement de l'inventaire pour la commande #{order.OrderId}",
+                    $"La commande #{order.OrderId} a été annulé, mais le réapprovisionnement de l'inventaire a échoué. Veuillez vérifier et ajuster l'inventaire en conséquence."
+                    , order
+                );
+            }
+            else if (!restockResult && actorType == CancellationActor.DeliveryStation)
+            {
+                await _emailSender.SendEmailAsync(
+                    _adminSettings.Email,
+                    $"Erreur de réapprovisionnement de l'inventaire pour la commande #{order.OrderId}",
+                    $"La commande #{order.OrderId} a été annulé par le poste de livraison, mais le réapprovisionnement de l'inventaire a échoué. Veuillez vérifier et ajuster l'inventaire en conséquence."
+                    , order
+                );
+            }
+
+            // **** Update Order Status ****
             order.Status = OrderStatus.Cancelled;
             order.CancellingUserId = actorId;
             order.CancellationActor = actorType;
             order.CancellationDate = DateTime.UtcNow;
 
+            // Save changes to the database
             await _context.SaveChangesAsync();
 
-            return null; // null = success
+            return null; /// null = success
         }
 
+        /// <summary>
+        /// Refund the user by adding the order total to their balance. Returns null if successful, or an error message if there was an issue.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
         private async Task<string?> RefundUser(Order order)
         {
-            
             ApplicationUser? user = await _userService.GetUserById(order.BuyerId);
             if (user == null)
                 return "Utilisateur introuvable pour le remboursement.";
 
             user.Balance += order.TotalPrice;
-
             try
             {
                 await _context.SaveChangesAsync();
@@ -319,6 +338,11 @@ namespace E25ProjetEtendu.Services
             }
         }
 
+        /// <summary>
+        /// Restock the inventory for each product in the order. Returns true if all products were successfully restocked, false if any product was not found.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
         private async Task<bool> RestockInventory(Order order)
         {
             // Return true if there are no order items to restock
@@ -332,12 +356,11 @@ namespace E25ProjetEtendu.Services
                 if (produit != null)
                 {
                     produit.InventoryQuantity += item.Quantity;
-                }                
+                }
                 else
                 {
                     // Return false if any product is not found.   
-                    /// Later, instead of returning false, we should pass a list of products to manually restock, and restock the rest. 
-                    return false;
+                    return false;                                       /// Later, instead of returning false, we should pass a list of products to manually restock, and restock the rest. 
                 }
             }
 
@@ -346,8 +369,6 @@ namespace E25ProjetEtendu.Services
             return true;
         }
 
-
         #endregion
-
     }
 }

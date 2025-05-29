@@ -21,7 +21,6 @@ namespace E25ProjetEtendu.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IDeliveryService _deliveryService;
 
-
         public OrderController(ApplicationDbContext context, IOrderService orderService, IDeliveryService deliveryService, UserManager<ApplicationUser> userManager)
         {
             _context = context;
@@ -29,9 +28,6 @@ namespace E25ProjetEtendu.Controllers
             _deliveryService = deliveryService;
             _userManager = userManager;
         }
-
-
-
 
         [HttpGet]
         [Authorize]
@@ -50,6 +46,7 @@ namespace E25ProjetEtendu.Controllers
             }
             return View(order);
         }
+
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> TerminateOrder(int orderId)
@@ -145,9 +142,82 @@ namespace E25ProjetEtendu.Controllers
 				HttpContext.Session.SetString("DeliveredOrderSeen", "true");
 			}
 
-
 			return View(order);
 		}
 
-	}
+        /// <summary>
+        /// Cancels an order as a buyer.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> CancelAsBuyer(int orderId, string? returnUrl = null)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _orderService.CancelOrder(orderId, userId, CancellationActor.Buyer, returnInventory: true);
+
+            if (result != null)
+            {
+                TempData["Error"] = result;
+            }
+            else
+            {
+                TempData["Success"] = "Votre commande a été annulée avec succès.";
+            }
+            return returnUrl != null ? Redirect(returnUrl) : RedirectToAction("OrderStatus");
+        }
+
+        /// <summary>
+        /// Cancels an order as a deliverer.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="returnInventory"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Deliverer")]
+        public async Task<IActionResult> CancelAsDeliverer(int orderId, bool returnInventory = true, string? returnUrl = null)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _orderService.CancelOrder(orderId, userId, CancellationActor.Deliverer, returnInventory);
+
+            if (result != null)
+            {
+                TempData["Error"] = result;
+            }
+            else
+            {
+                TempData["Success"] = "La commande a été annulée avec succès.";
+            }
+            return returnUrl != null ? Redirect(returnUrl) : RedirectToAction("Index", "Delivery");
+        }
+
+        /// <summary>
+        /// Cancels an order as the delivery station.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "DeliveryStation")]
+        public async Task<IActionResult> CancelAsStation(int orderId, string? returnUrl = null)
+        {
+            var userId = _userManager.GetUserId(User); // Technically unused in validation, but recorded in order
+            var result = await _orderService.CancelOrder(orderId, userId, CancellationActor.DeliveryStation, returnInventory: true);
+
+            if (result != null)
+            {
+                TempData["Error"] = result;
+            }
+            else
+            {
+                TempData["Success"] = "La commande a été annulée par le poste de livraison.";
+            }
+
+            return returnUrl != null ? Redirect(returnUrl) : RedirectToAction("Index", "Admin");
+        }
+    }
 }
