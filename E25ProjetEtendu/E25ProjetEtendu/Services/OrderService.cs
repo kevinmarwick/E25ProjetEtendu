@@ -6,6 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using E25ProjetEtendu.Enums;
 using Microsoft.AspNetCore.SignalR;
 using E25ProjetEtendu.Hubs;
+using Microsoft.AspNetCore.Identity;
+using E25ProjetEtendu.Configuration;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using E25ProjetEtendu.Utils;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 
 
@@ -14,49 +19,60 @@ namespace E25ProjetEtendu.Services
     public class OrderService : IOrderService
     {
         private readonly ApplicationDbContext _context;
-		private readonly IHubContext<OrderHub> _hubContext;
+        private readonly IHubContext<OrderHub> _hubContext;
+        private readonly IUserService _userService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IProduitService _produitService;
+        private readonly EmailSender _emailSender;
+        private readonly AdminSettings _adminSettings;
 
-		public OrderService(ApplicationDbContext context, IHubContext<OrderHub> hubContext)
+        public OrderService(ApplicationDbContext context, IHubContext<OrderHub> hubContext, IUserService userService, UserManager<ApplicationUser> userManager, IProduitService produitService, EmailSender emailSender, AdminSettings adminSettings)
         {
             _context = context;
             _hubContext = hubContext;
+            _userService = userService;
+            _userManager = userManager;
+            _produitService = produitService;
+            _emailSender = emailSender;
+            _adminSettings = adminSettings;
         }
 
-		public async Task<Order?> GetOrderById(int orderId)
-		{
-			return await _context.Orders
-				.Include(o => o.OrderItems)
-				  .ThenInclude(oi => oi.Product)
-				.Include(o => o.Buyer)
-				.Include(o => o.Deliverer)
-				.FirstOrDefaultAsync(o => o.OrderId == orderId);
-		}
-
-		public async Task<bool> EndCompleteOrder(int orderId, string livreurId)
+        public async Task<Order?> GetOrderById(int orderId)
         {
-			Order? commande = await _context.Orders
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                  .ThenInclude(oi => oi.Product)
+                .Include(o => o.Buyer)
+                .Include(o => o.Deliverer)
+                .FirstOrDefaultAsync(o => o.OrderId == orderId);
+        }
+
+        public async Task<bool> EndCompleteOrder(int orderId, string livreurId)
+        {
+            Order? commande = await _context.Orders
                 .FirstOrDefaultAsync(o => o.OrderId == orderId && o.DelivererId == livreurId);
 
-            
-                
+
+
 
             commande.Status = OrderStatus.Delivered;
             await _context.SaveChangesAsync();
-			await NotifierClientCommandeTermineeAsync(commande);
+            await NotifierClientCommandeTermineeAsync(commande);
 
-			return true;
+            return true;
         }
-		public async Task NotifierClientCommandeTermineeAsync(Order order)
-		{
-			if (order?.BuyerId != null)
-			{
-				await _hubContext.Clients
-					.User(order.BuyerId)
-					.SendAsync("CommandeTerminee", order.OrderId);
-			}
-		}
 
-		public async Task<Order> CreateOrder(OrderRequestDTO dto, string userId, List<Produit> products)
+        public async Task NotifierClientCommandeTermineeAsync(Order order)
+        {
+            if (order?.BuyerId != null)
+            {
+                await _hubContext.Clients
+                    .User(order.BuyerId)
+                    .SendAsync("CommandeTerminee", order.OrderId);
+            }
+        }
+
+        public async Task<Order> CreateOrder(OrderRequestDTO dto, string userId, List<Produit> products)
         {
             var orderItems = dto.Items.Select(item =>
             {
@@ -69,7 +85,10 @@ namespace E25ProjetEtendu.Services
                 };
             }).ToList();
 
-            var totalPrice = orderItems.Sum(oi => oi.Quantity * oi.UnitPrice);
+            var subtotal = orderItems.Sum(oi => oi.Quantity * oi.UnitPrice);
+            var tps = subtotal * TaxConstants.TPS;
+            var tvq = subtotal * TaxConstants.TVQ;
+            var totalPrice = subtotal + tps + tvq;
 
             var order = new Order
             {
@@ -151,8 +170,184 @@ namespace E25ProjetEtendu.Services
 
         }
 
+        #region Order Cancellation
+
+        public async Task<string?> CancelOrder(int orderId, string actorId, CancellationActor actorType, bool returnInventory = true)
+        {
+            // Check if order exists and get user details
+            Order? order = await GetOrderById(orderId);
+            ApplicationUser? user = await _userService.GetUserById(actorId);
+
+            // If user not found, return error message
+            if(user == null)
+                return "Utilisateur introuvable pour l'annulation de la commande.";
+            // If order not found or already delivered/cancelled, return appropriate message
+            if (order == null)
+                return "Commande introuvable.";
+            if (order.Status == OrderStatus.Cancelled)
+                return "Commande déjà annulée";
+            if (order.Status == OrderStatus.Delivered)
+                return "Commande déjà livrée";
+
+            // Check access rights based on actor type
+            switch (actorType)
+            {
+                // Cancellation by Buyer
+                case CancellationActor.Buyer:
+                    /// Check access rights
+                    if (order.BuyerId != actorId)
+                        return "Accès refusé.";
+                    if (order.Status == OrderStatus.InProgress)
+                        return "Commande déjà en cours de livraison."; 
+                    break;
+
+                //Cancellation by Deliverer
+                case CancellationActor.Deliverer:
+                    ///Check access rights
+                    if (order.DelivererId != actorId)
+                        return "Accès refusé.";                    
+                    // If returnInventory is false, we notify admin
+                    if (returnInventory == false)
+                        await _emailSender.SendEmailAsync(
+                            _adminSettings.Email,
+                            $"Non retour de produits lors d'une commande annulée par le livreur {order.Deliverer.FullName}",
+                            $"La commande #{order.OrderId} a été annulée par le livreur {order.Deliverer.FullName} ID:{order.DelivererId}. L'inventaire n'a pas été restockée." +
+                            $"Veuillez vérifier les raisons de l'annulation avec le livreur et ajuster l'inventaire manuellement si nécessaire."
+                    );
+                    break;
+
+                // Cancellation by Delivery Station
+                case CancellationActor.DeliveryStation:
+                    /// No ID check for station, assumed trusted role                   
+                    break;
+            }
+
+            // **** Refund user ****
+            var refundResult = await RefundUser(order);
+
+            // If refund failed, notify admin and buyer
+            if (refundResult != null)
+            {
+                await _emailSender.SendEmailAsync(
+                        order.Buyer.Email!,
+                        $"Erreur lors du remboursement de la commande #{order.OrderId}",
+                        $"La commande #{order.OrderId} a été annulé, mais le remboursement a peut-être rencontré un problème.  Veuillez vérifier, et contacter l'ADEPT au besoin.",
+                        order
+                    );
+
+                await _emailSender.SendEmailAsync(
+                       _adminSettings.Email,
+                       $"Erreur lors du remboursement de la commande #{order.OrderId} de {order.Buyer.FullName}",
+                       $"La commande #{order.OrderId} effectuée par {order.Buyer.FullName} ID:{order.BuyerId} a été annulé, mais le remboursement a peut-être rencontré un problème.  Veuillez vérifier et ajuster le solde de {order.Buyer.FirstName} au besoin",
+                       order
+                   );
+            }
+            else if(refundResult == null && actorType == CancellationActor.Buyer) // If refund was successful and actor is buyer
+            {
+                await _emailSender.SendEmailAsync(
+                    order.Buyer.Email!,
+                    "Remboursement de votre commande",
+                    $"Votre commande #{order.OrderId} a été annulée et un remboursement a été effectué. Le montant de {order.TotalPrice}$ a été crédité sur votre compte.",
+                    order
+                );
+            }
+
+            // **** Replenish Inventory if needed ****
+            if (returnInventory)
+            {
+                bool restockResult = await RestockInventory(order);
+
+                // If restock failed, notify admin
+                if (!restockResult && actorType == CancellationActor.Deliverer)
+                {
+                    await _emailSender.SendEmailAsync(
+                        _adminSettings.Email,
+                        $"Erreur de réapprovisionnement de l'inventaire pour la commande #{order.OrderId}",
+                        $"La commande #{order.OrderId} a été annulé, mais le réapprovisionnement de l'inventaire a échoué. Veuillez vérifier que le livreur {order.Deliverer!.FullName} a bien retourné les produits, et ajustez l'inventaire en conséquence.",
+                        order
+                    );
+
+                }
+                else if (!restockResult && actorType == CancellationActor.Buyer)
+                {
+                    await _emailSender.SendEmailAsync(
+                        _adminSettings.Email,
+                        $"Erreur de réapprovisionnement de l'inventaire pour la commande #{order.OrderId}",
+                        $"La commande #{order.OrderId} a été annulé, mais le réapprovisionnement de l'inventaire a échoué. Veuillez vérifier et ajuster l'inventaire en conséquence."
+                        , order
+                    );
+                }
+                else if (!restockResult && actorType == CancellationActor.DeliveryStation)
+                {
+                    await _emailSender.SendEmailAsync(
+                        _adminSettings.Email,
+                        $"Erreur de réapprovisionnement de l'inventaire pour la commande #{order.OrderId}",
+                        $"La commande #{order.OrderId} a été annulé par le poste de livraison, mais le réapprovisionnement de l'inventaire a échoué. Veuillez vérifier et ajuster l'inventaire en conséquence."
+                        , order
+                    );
+                }
+            }
+
+            // Cancel order
+            order.Status = OrderStatus.Cancelled;
+            order.CancellingUserId = actorId;
+            order.CancellationActor = actorType;
+            order.CancellationDate = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return null; // null = success
+        }
+
+        private async Task<string?> RefundUser(Order order)
+        {
+            
+            ApplicationUser? user = await _userService.GetUserById(order.BuyerId);
+            if (user == null)
+                return "Utilisateur introuvable pour le remboursement.";
+
+            user.Balance += order.TotalPrice;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return $"Erreur lors du remboursement de l'utilisateur : {ex.Message}";
+            }
+        }
+
+        private async Task<bool> RestockInventory(Order order)
+        {
+            // Return true if there are no order items to restock
+            if (order.OrderItems == null || !order.OrderItems.Any())
+                return true;
+
+            // Loop through each order item and restock the inventory
+            foreach (var item in order.OrderItems)
+            {
+                var produit = await _produitService.GetProduitById(item.ProductId);
+                if (produit != null)
+                {
+                    produit.InventoryQuantity += item.Quantity;
+                }                
+                else
+                {
+                    // Return false if any product is not found.   
+                    /// Later, instead of returning false, we should pass a list of products to manually restock, and restock the rest. 
+                    return false;
+                }
+            }
+
+            // Save changes to the database if no errors
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
 
+        #endregion
 
     }
 }
