@@ -150,6 +150,76 @@ namespace TonProjet.Controllers
             TempData["Error"] = "Paiement annulé. Les articles ont été remis en stock.";
             return RedirectToAction("Pannier", "Produit");
         }
+        [HttpPost]
+        public async Task<IActionResult> SubmitPaymentWithBalance(string panierJson, string paymentMethod)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var dto = JsonConvert.DeserializeObject<OrderRequestDTO>(panierJson);
+            TempData["LastDeliveryLocation"] = dto.Location;
+
+            var produits = await _context.produits
+                .Where(p => dto.Items.Select(i => i.ProductId).Contains(p.ProduitId))
+                .ToListAsync();
+
+            decimal sousTotal = dto.Items.Sum(item =>
+            {
+                var produit = produits.First(p => p.ProduitId == item.ProductId);
+                return produit.Prix * item.Quantity;
+            });
+
+            const decimal TPS = 0.05m;
+            const decimal TVQ = 0.09975m;
+            decimal tps = sousTotal * TPS;
+            decimal tvq = sousTotal * TVQ;
+            decimal totalTTC = sousTotal + tps + tvq;
+
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+            {
+                TempData["Error"] = "Utilisateur introuvable.";
+                return RedirectToAction("Pannier", "Produit");
+            }
+
+            if (paymentMethod == "solde")
+            {
+                if (user.Balance >= totalTTC)
+                {
+                    bool reserved = await _produitService.ReserveStock(dto.Items, userId);
+                    if (!reserved)
+                    {
+                        TempData["Error"] = "Stock insuffisant.";
+                        return RedirectToAction("Pannier", "Produit");
+                    }
+
+                    user.Balance -= totalTTC;
+                    await _context.SaveChangesAsync();
+
+                    bool created = await _orderService.TryCreateOrderFromReservation(userId, dto.Location);
+                    if (created)
+                    {
+                        await _produitService.FinalizeReservation(userId);
+                        TempData["ClearCart"] = "true";
+                        return RedirectToAction("CurrentOrderStatus", "Order");
+                    }
+                    else
+                    {
+                        TempData["Error"] = "Erreur lors de la création de la commande.";
+                        return RedirectToAction("Pannier", "Produit");
+                    }
+                }
+                else
+                {
+                    TempData["Error"] = "Solde insuffisant.";
+                    return RedirectToAction("Pannier", "Produit");
+                }
+            }
+
+            // Sinon rediriger vers Stripe
+            return RedirectToAction("CreateCheckoutSession", new { panierJson });
+        }
+
+
 
     }
 }

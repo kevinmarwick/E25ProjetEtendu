@@ -150,24 +150,28 @@ namespace E25ProjetEtendu.Controllers
             return RedirectToAction("IndexUsers");
         }
         [HttpPost]
-        public async Task<IActionResult> AddBalance(string userId, decimal montant)
+        public async Task<IActionResult> AddBalance(UserViewModel model)
         {
-            if (string.IsNullOrEmpty(userId) || montant <= 0)
+            if (string.IsNullOrEmpty(model.Id) || model.Balance <= 0)
             {
                 TempData["Error"] = "Identifiant utilisateur invalide ou montant incorrect.";
+                return RedirectToAction("IndexUsers");
             }
-            var success = await _adminService.AddBalance(userId, montant);
+
+            var success = await _adminService.AddBalance(model.Id, model.Balance);
             if (!success)
             {
                 TempData["Error"] = "Échec lors de l'ajout du solde. Assurez-vous que l'utilisateur existe et que le montant est valide.";
             }
             else
             {
-                TempData["Success"] = "Solde ajouté avec succès à l'utilisateur.";
+                TempData["Success"] = $"Solde ajouté avec succès à l'utilisateur {model.FullName}.";
             }
+
             return RedirectToAction("IndexUsers");
         }
+
     }
 
-   
+
 }

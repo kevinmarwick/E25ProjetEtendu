@@ -12,6 +12,13 @@
     <form id="checkout-form" method="post" asp-controller="Payment" asp-action="CreateCheckoutSession" class="m-0">
         <input type="hidden" name="panierJson" id="panierJson" />
         <input type="hidden" name="location" id="hiddenLocation" />
+        <div class="form-group mt-3">
+            <label for="payment-method" class="form-label">Méthode de paiement</label>
+            <select id="payment-method" name="paymentMethod" class="form-select">
+                <option value="solde">Utiliser mon solde</option>
+                <option value="carte">Carte de crédit</option>
+            </select>
+        </div>
 
 
         <div class="form-group mt-4">
@@ -184,6 +191,12 @@
                 let cart = JSON.parse(localStorage.getItem(storageKey)) || [];
 
                 const location = document.getElementById("delivery-location").value;
+                const paymentMethod = $('#payment-method').val();
+                $('<input>').attr({
+                    type: 'hidden',
+                    name: 'paymentMethod',
+                    value: paymentMethod
+                }).appendTo('#checkout-form');
 
                 if (!location || location.trim() === "") {
                     alert("Veuillez entrer une adresse de livraison avant de procéder au paiement.");
