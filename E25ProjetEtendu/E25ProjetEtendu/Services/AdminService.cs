@@ -131,7 +131,8 @@ namespace E25ProjetEtendu.Services
         public async Task<bool> AddBalance(string userId, decimal montant)
         {
             var user = await _context.Users.FindAsync(userId);
-            if(user == null || montant <= 0)
+            int maxBalance = 1000; // Maximum balance limit
+            if (user == null || montant <= 0 || montant + user.Balance > maxBalance)
             {
                 return false;
             }

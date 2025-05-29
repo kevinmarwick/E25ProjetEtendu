@@ -25,7 +25,7 @@ namespace E25ProjetEtendu.Areas.Identity.Pages.Account.Manage
             _userManager = userManager;
             _signInManager = signInManager;
         }
-
+        public decimal Balance { get; set; } 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -81,7 +81,7 @@ namespace E25ProjetEtendu.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
-
+            Balance = user.Balance;
             await LoadAsync(user);
             return Page();
         }
