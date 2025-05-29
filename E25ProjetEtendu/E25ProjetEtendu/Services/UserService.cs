@@ -35,7 +35,8 @@ namespace E25ProjetEtendu.Services
                         Email = user.Email,
                         FirstName = user.FirstName,
                         LastName = user.LastName,
-                        Roles = roles.ToList()
+                        Roles = roles.ToList(),
+                        Balance = user.Balance
                     });
                 }
             }

@@ -22,7 +22,7 @@ namespace E25ProjetEtendu.Controllers
             _userService = userService;
         }
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Dashboard()
         {
             return View();
@@ -52,12 +52,12 @@ namespace E25ProjetEtendu.Controllers
                 TempData["SuccessMessage"] = "Produit mis à jour avec succès.";
                 return RedirectToAction("IndexProduits");
             }
-            catch(InvalidOperationException ex)
+            catch (InvalidOperationException ex)
             {
                 ModelState.AddModelError("SKU", ex.Message);
                 return View(vm);
             }
-           
+
         }
 
 
@@ -100,19 +100,19 @@ namespace E25ProjetEtendu.Controllers
                 TempData["SuccessMessage"] = "Produit créé avec succès.";
                 return RedirectToAction("AddProduct");
             }
-            catch(InvalidOperationException ex)
+            catch (InvalidOperationException ex)
             {
                 ModelState.AddModelError("SKU", ex.Message);
                 return View(vm);
             }
-            
 
-            
+
+
         }
 
         public async Task<IActionResult> IndexUsers()
         {
-            List<UserViewModel>  users = await _userService.GetNonPrivilegedUsers();
+            List<UserViewModel> users = await _userService.GetNonPrivilegedUsers();
             return View(users);
         }
 
@@ -149,5 +149,29 @@ namespace E25ProjetEtendu.Controllers
 
             return RedirectToAction("IndexUsers");
         }
+        [HttpPost]
+        public async Task<IActionResult> AddBalance(UserViewModel model)
+        {
+            if (string.IsNullOrEmpty(model.Id) || model.Balance <= 0)
+            {
+                TempData["Error"] = "Identifiant utilisateur invalide ou montant incorrect.";
+                return RedirectToAction("IndexUsers");
+            }
+
+            var success = await _adminService.AddBalance(model.Id, model.Balance);
+            if (!success)
+            {
+                TempData["Error"] = "Échec lors de l'ajout du solde. Assurez-vous que l'utilisateur existe et que le montant est valide.";
+            }
+            else
+            {
+                TempData["Success"] = $"Solde ajouté avec succès à l'utilisateur {model.FullName}.";
+            }
+
+            return RedirectToAction("IndexUsers");
+        }
+
     }
+
+
 }

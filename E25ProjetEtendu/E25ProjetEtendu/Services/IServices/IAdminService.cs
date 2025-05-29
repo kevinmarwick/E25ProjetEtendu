@@ -11,6 +11,7 @@ namespace E25ProjetEtendu.Services.IServices
         Task<Produit> AddProductFromVM(AddProductVM vm);
         Task<EditProductVM?> GetEditProductVM(int id);
         Task<Produit> EditProductFromVM(EditProductVM vm);
+        Task<bool> AddBalance(string userId, decimal montant);
 
     }
 }

@@ -128,6 +128,19 @@ namespace E25ProjetEtendu.Services
             await _context.SaveChangesAsync();
             return product;
         }
+        public async Task<bool> AddBalance(string userId, decimal montant)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            int maxBalance = 1000; // Maximum balance limit
+            if (user == null || montant <= 0 || montant + user.Balance > maxBalance)
+            {
+                return false;
+            }
+            user.Balance += montant;
+            await _context.SaveChangesAsync();
+            return true;
+
+        }
 
 
     }
