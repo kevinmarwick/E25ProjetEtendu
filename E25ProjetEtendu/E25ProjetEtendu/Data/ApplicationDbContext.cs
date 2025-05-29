@@ -149,7 +149,7 @@ namespace E25ProjetEtendu.Data
 
             #region Deliverer Role + User Seed Data
             modelBuilder.Entity<IdentityRole>().HasData(
-                new IdentityRole { Id = "livreur-role-id", Name = "Livreur", NormalizedName = "LIVREUR" }
+                new IdentityRole { Id = "deliverer-role-id", Name = "Deliverer", NormalizedName = "DELIVERER" }
             );
 
             modelBuilder.Entity<ApplicationUser>().HasData(
@@ -172,11 +172,9 @@ namespace E25ProjetEtendu.Data
                 new IdentityUserRole<string>
                 {
                     UserId = "43333333-3333-3333-3333-333333333333", // Jacob
-                    RoleId = "livreur-role-id"
+                    RoleId = "deliverer-role-id"
                 }
             );
-
-
 
             #endregion
 
@@ -215,7 +213,6 @@ namespace E25ProjetEtendu.Data
 				new Produit { ProduitId = 31, SKU = "100031", Nom = "BandAid", InventoryQuantity = 0, Prix = 3, Image = "Aid.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 0" }
 			);
 			#endregion
-
 
 			#region Sample Orders Seed Data
 
