@@ -11,6 +11,7 @@ using E25ProjetEtendu.Configuration;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using E25ProjetEtendu.Utils;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Extensions.Options;
 
 
 
@@ -26,7 +27,7 @@ namespace E25ProjetEtendu.Services
         private readonly EmailSender _emailSender;
         private readonly AdminSettings _adminSettings;
 
-        public OrderService(ApplicationDbContext context, IHubContext<OrderHub> hubContext, IUserService userService, UserManager<ApplicationUser> userManager, IProduitService produitService, EmailSender emailSender, AdminSettings adminSettings)
+        public OrderService(ApplicationDbContext context, IHubContext<OrderHub> hubContext, IUserService userService, UserManager<ApplicationUser> userManager, IProduitService produitService, EmailSender emailSender, IOptions<AdminSettings> adminSettings)
         {
             _context = context;
             _hubContext = hubContext;
@@ -34,7 +35,7 @@ namespace E25ProjetEtendu.Services
             _userManager = userManager;
             _produitService = produitService;
             _emailSender = emailSender;
-            _adminSettings = adminSettings;
+            _adminSettings = adminSettings.Value;
         }
 
         public async Task<Order?> GetOrderById(int orderId)

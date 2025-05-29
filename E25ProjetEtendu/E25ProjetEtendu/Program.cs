@@ -54,6 +54,7 @@ builder.Services.Configure<SmtpSettings>(
 builder.Services.Configure<AdminSettings>(builder.Configuration.GetSection("Admin"));
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddTransient<EmailSender>();
 builder.Services.AddSignalR();
 
 
