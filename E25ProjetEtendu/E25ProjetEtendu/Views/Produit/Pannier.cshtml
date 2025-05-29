@@ -3,6 +3,9 @@
 {
     <div class="alert alert-danger">@TempData["Error"]</div>
 }
+<script>
+    var userId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+</script>
 
 <div id="panier-container">
     <!-- Le tableau sera généré par JS -->

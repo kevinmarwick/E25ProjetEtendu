@@ -41,20 +41,12 @@ namespace E25ProjetEtendu.Services
                 
 
             commande.Status = OrderStatus.Delivered;
-            await _context.SaveChangesAsync();
-			await NotifierClientCommandeTermineeAsync(commande);
+            await _context.SaveChangesAsync();		
+            await _hubContext.Clients.Group(orderId.ToString()).SendAsync("ReceiveOrderStatusUpdate", commande.OrderId);
 
-			return true;
+            return true;
         }
-		public async Task NotifierClientCommandeTermineeAsync(Order order)
-		{
-			if (order?.BuyerId != null)
-			{
-				await _hubContext.Clients
-					.User(order.BuyerId)
-					.SendAsync("CommandeTerminee", order.OrderId);
-			}
-		}
+		
 
 		public async Task<Order> CreateOrder(OrderRequestDTO dto, string userId, List<Produit> products)
         {

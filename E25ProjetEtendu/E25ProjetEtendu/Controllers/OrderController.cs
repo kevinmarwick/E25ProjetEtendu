@@ -1,5 +1,6 @@
 using E25ProjetEtendu.Data;
 using E25ProjetEtendu.Enums;
+using E25ProjetEtendu.Hubs;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Models.DTOs;
 using E25ProjetEtendu.Services;
@@ -7,6 +8,7 @@ using E25ProjetEtendu.Services.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Security.Claims;
@@ -20,14 +22,16 @@ namespace E25ProjetEtendu.Controllers
         private readonly IOrderService _orderService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IDeliveryService _deliveryService;
+        private readonly IHubContext<OrderHub> _hubContext;
 
 
-        public OrderController(ApplicationDbContext context, IOrderService orderService, IDeliveryService deliveryService, UserManager<ApplicationUser> userManager)
+        public OrderController(ApplicationDbContext context, IOrderService orderService, IDeliveryService deliveryService, UserManager<ApplicationUser> userManager, IHubContext<OrderHub> hubContext)
         {
             _context = context;
             _orderService = orderService;
             _deliveryService = deliveryService;
             _userManager = userManager;
+            _hubContext = hubContext;
         }
 
 
@@ -59,8 +63,7 @@ namespace E25ProjetEtendu.Controllers
             {
                 return NotFound();
             }
-            order.Status = OrderStatus.Delivered;            
-            await _context.SaveChangesAsync();
+            await _orderService.EndCompleteOrder(orderId, order.DelivererId);            
             return RedirectToAction("EndOrder", new { orderId });
 
         }

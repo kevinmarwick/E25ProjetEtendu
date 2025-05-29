@@ -201,36 +201,30 @@
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
 
-	<!-- ✅ SignalR client + écoute commande terminée -->
+	<!-- ✅ Ajout SignalR -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 	<script>
+		const userId = document.body.dataset.userid;
+
 		const connection = new signalR.HubConnectionBuilder()
-			.withUrl("/orderHub")
+			.withUrl("/orderStatusHub")
 			.build();
 
-		connection.on("CommandeTerminee", function (orderId) {
-			const badge = document.getElementById("notif-badge");
-			const list = document.getElementById("notif-list");
-
-			// Retirer le "aucune notification"
-			const noNotif = list.querySelector(".text-muted");
-			if (noNotif) noNotif.remove();
-
-			// Créer l'élément notification
-			const li = document.createElement("li");
-			li.className = "dropdown-item text-success";
-			li.innerText = "📦 Commande #" + orderId + " terminée !";
-			list.prepend(li);
-
-			// Affiche la pastille
-			badge.classList.remove("d-none");
+		connection.on("ReceiveOrderStatusUpdate", function (orderId, newStatus) {
+			const element = document.getElementById("order-status-" + orderId);
+			if (element) {
+				element.textContent = newStatus;
+			}
 		});
 
-		connection.start().catch(function (err) {
-			console.error("Erreur de SignalR :", err.toString());
-		});
+		connection.start()
+			.then(() => {
+				if (userId) {
+					connection.invoke("JoinGroup", userId);
+				}
+			})
+			.catch(err => console.error("Erreur SignalR :", err));
 	</script>
-
 
 	@await RenderSectionAsync("Scripts", required: false)
 </body>
