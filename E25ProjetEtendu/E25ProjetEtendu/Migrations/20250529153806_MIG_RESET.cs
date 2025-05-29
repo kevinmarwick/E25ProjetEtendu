@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace E25ProjetEtendu.Migrations
 {
     /// <inheritdoc />
-    public partial class migrationreset : Migration
+    public partial class MIG_RESET : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -67,7 +67,8 @@ namespace E25ProjetEtendu.Migrations
                     Image = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     EstActif = table.Column<bool>(type: "bit", nullable: false),
                     Note = table.Column<int>(type: "int", nullable: true),
-                    ValeurNutritive = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                    ValeurNutritive = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    SKU = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -266,7 +267,8 @@ namespace E25ProjetEtendu.Migrations
                 values: new object[,]
                 {
                     { "admin-role-id", null, "Admin", "ADMIN" },
-                    { "delivery-role-id", null, "Delivery", "DELIVERY" },
+                    { "deliverystation-role-id", null, "DeliveryStation", "DELIVERYSTATION" },
+                    { "livreur-role-id", null, "Livreur", "LIVREUR" },
                     { "user-role-id", null, "User", "USER" }
                 });
 
@@ -275,50 +277,50 @@ namespace E25ProjetEtendu.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "Balance", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "21111111-1111-1111-1111-111111111111", 0, 0m, "636774c9-e1b6-4a22-a92b-fcc476dda047", "admin@example.com", true, "Admin", "Admin", false, null, "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEBTXXTihDHwIYpDAurpMC+aHeWXubQ6iLlPv/dJhXj9YndUorT653YYu/uXIgHCbcw==", null, false, "46555518-b2a8-45a6-8ddc-9dacb67f9b65", false, "admin@example.com" },
-                    { "32222222-2222-2222-2222-222222222222", 0, 0m, "93702ea9-7ecd-4150-be92-70fb02bb0b23", "user@example.com", true, "Jean", "Utilisateur", false, null, "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAIAAYagAAAAEF1/k05ekORzAsC9x29sZMKQNQ2VVQuqTMpOVR+hkSz0rWrbVFefYsYmU96FcnNSRQ==", null, false, "f866dfc1-8687-42d7-b442-401058df7feb", false, "user@example.com" },
-                    { "42222222-2222-2222-2222-222222222222", 0, 0m, "a36bc3b2-a12a-4809-a1ad-519f4708327c", "livreur@example.com", true, "Livreur", "Livreur", false, null, "LIVREUR@EXAMPLE.COM", "LIVREUR@EXAMPLE.COM", "AQAAAAIAAYagAAAAEHsdQ1pPvKzQT0uXy3fiq6icqpoh0FStzRjuc8k1cpve1RG7leeahjPeo3UkxIGX2Q==", null, false, "eef6c348-b0c2-4ce2-9e96-4434f0b709fb", false, "livreur@example.com" },
-                    { "43333333-3333-3333-3333-333333333333", 0, 0m, "060cf558-f6a9-47ab-9a25-d4f5002c5552", "jacob@example.com", true, "Jacob", "Utilisateur", false, null, "JACOB@EXAMPLE.COM", "JACOB@EXAMPLE.COM", "AQAAAAIAAYagAAAAEF1/k05ekORzAsC9x29sZMKQNQ2VVQuqTMpOVR+hkSz0rWrbVFefYsYmU96FcnNSRQ==", null, false, "8daf4f3d-456c-4a29-bdff-e9a4b993851b", false, "jacob@example.com" },
-                    { "54444444-4444-4444-4444-444444444444", 0, 0m, "85a2bdde-ee50-4165-ad5c-8f69e1d41f98", "maxime@example.com", true, "Maxime", "Utilisateur", false, null, "MAXIME@EXAMPLE.COM", "MAXIME@EXAMPLE.COM", "AQAAAAIAAYagAAAAEF1/k05ekORzAsC9x29sZMKQNQ2VVQuqTMpOVR+hkSz0rWrbVFefYsYmU96FcnNSRQ==", null, false, "46392c2a-49f2-48be-829f-ca6a85b2eb5e", false, "maxime@example.com" },
-                    { "65555555-5555-5555-5555-555555555555", 0, 0m, "6ac0145a-00b4-4998-abd3-2be40d300824", "nicolas@example.com", true, "Nicolas", "Utilisateur", false, null, "NICOLAS@EXAMPLE.COM", "NICOLAS@EXAMPLE.COM", "AQAAAAIAAYagAAAAEF1/k05ekORzAsC9x29sZMKQNQ2VVQuqTMpOVR+hkSz0rWrbVFefYsYmU96FcnNSRQ==", null, false, "a15acea6-872c-4640-843f-013648f4a9b5", false, "nicolas@example.com" }
+                    { "21111111-1111-1111-1111-111111111111", 0, 0m, "c10d0088-c7f3-4fd6-b3c7-f7f709cffcf2", "admin@example.com", true, "Admin", "Admin", false, null, "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEOIdkYxq+1XB2VFMqMyyKjudbkBCSULAdVkf/e6DHGrYieFD0EOd9uk43zHId35VrQ==", null, false, "9b108876-a962-4c77-bef2-87a3fd5818d9", false, "admin@example.com" },
+                    { "32222222-2222-2222-2222-222222222222", 0, 0m, "5b8d1b86-c210-4b12-a64b-36c16104c9f4", "user@example.com", true, "Jean", "Utilisateur", false, null, "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAIAAYagAAAAEAUOhYozFE9yvlCTyCV8vzWacV4la1j6+K05POn+6rg3LLpw8a//U8JgajNr/VoCpA==", null, false, "c6f61dda-d64f-4ebb-81b1-6da97ed91aa6", false, "jean@example.com" },
+                    { "42222222-2222-2222-2222-222222222222", 0, 0m, "457d3ca4-4781-47c0-bcdf-fd847f752b71", "livreur@example.com", true, "Livreur", "Livreur", false, null, "LIVREUR@EXAMPLE.COM", "LIVREUR@EXAMPLE.COM", "AQAAAAIAAYagAAAAEL6eT59Yc/Lxqo4O6f/6vsDsIt8TU38t+KFFxcJtIHXrZHwzJCYaRGE9+AxIeWP/VA==", null, false, "c0b072a8-b781-4fcc-8fd8-054a4b53a820", false, "livreur@example.com" },
+                    { "43333333-3333-3333-3333-333333333333", 0, 0m, "cbb0cd42-3660-4437-add6-56da75eb6e5e", "jacob@example.com", true, "Jacob", "Utilisateur", false, null, "JACOB@EXAMPLE.COM", "JACOB@EXAMPLE.COM", "AQAAAAIAAYagAAAAEAUOhYozFE9yvlCTyCV8vzWacV4la1j6+K05POn+6rg3LLpw8a//U8JgajNr/VoCpA==", null, false, "9b01a83f-fed9-4d6d-9982-aefb6fbdeb56", false, "jacob@example.com" },
+                    { "54444444-4444-4444-4444-444444444444", 0, 0m, "fdf9479c-da23-4c2a-856c-e248226f693f", "maxime@example.com", true, "Maxime", "Utilisateur", false, null, "MAXIME@EXAMPLE.COM", "MAXIME@EXAMPLE.COM", "AQAAAAIAAYagAAAAEAUOhYozFE9yvlCTyCV8vzWacV4la1j6+K05POn+6rg3LLpw8a//U8JgajNr/VoCpA==", null, false, "49c5985e-050f-4298-8043-3f33738dda96", false, "maxime@example.com" },
+                    { "65555555-5555-5555-5555-555555555555", 0, 0m, "2720d98e-83cd-453c-bf05-df164328856a", "nicolas@example.com", true, "Nicolas", "Utilisateur", false, null, "NICOLAS@EXAMPLE.COM", "NICOLAS@EXAMPLE.COM", "AQAAAAIAAYagAAAAEAUOhYozFE9yvlCTyCV8vzWacV4la1j6+K05POn+6rg3LLpw8a//U8JgajNr/VoCpA==", null, false, "d327e4ca-be80-433e-b44b-564fb13d7c31", false, "nicolas@example.com" }
                 });
 
             migrationBuilder.InsertData(
                 table: "produits",
-                columns: new[] { "ProduitId", "EstActif", "Image", "InventoryQuantity", "Nom", "Note", "Prix", "ValeurNutritive" },
+                columns: new[] { "ProduitId", "EstActif", "Image", "InventoryQuantity", "Nom", "Note", "Prix", "SKU", "ValeurNutritive" },
                 values: new object[,]
                 {
-                    { 1, true, "redbull.png", 120, "Red Bull", 4, 3m, "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g" },
-                    { 2, true, "pogo.jpg", 200, "Pogo", 3, 2m, "Calories: 190, Lipides: 9g, Glucides: 20g, Protéines: 6g, Sodium: 500mg" },
-                    { 3, true, "eau.jpg", 300, "Bouteille d'eau", 5, 1m, "Calories: 0, Lipides: 0g, Sucres: 0g, Sodium: 0mg" },
-                    { 4, true, "chips.jpg", 100, "Chips Lay’s", 4, 2m, "Calories: 160, Lipides: 10g, Glucides: 15g, Sucres: 1g, Sodium: 170mg" },
-                    { 5, true, "nutella.jpg", 80, "Nutella", 5, 5m, "Calories: 200, Lipides: 11g, Glucides: 22g, Sucres: 21g, Protéines: 2g" },
-                    { 6, true, "activia.jpg", 150, "Yogourt Activia", 4, 3m, "Calories: 100, Lipides: 2g, Glucides: 15g, Sucres: 12g, Protéines: 5g" },
-                    { 7, true, "pizza.jpg", 60, "Pizza congelée", 4, 6m, "Calories: 350, Lipides: 15g, Glucides: 40g, Sucres: 5g, Protéines: 12g" },
-                    { 8, true, "granola.jpg", 180, "Barre de granola", 4, 2m, "Calories: 190, Lipides: 7g, Glucides: 29g, Sucres: 11g, Protéines: 4g" },
-                    { 9, true, "coca.jpg", 220, "Coca-Cola", 3, 2m, "Calories: 140, Sucres: 39g, Glucides: 39g, Sodium: 45mg" },
-                    { 10, true, "sandwich.jpg", 75, "Sandwich jambon-fromage", 4, 4m, "Calories: 320, Lipides: 12g, Glucides: 30g, Protéines: 18g, Sodium: 780mg" },
-                    { 11, true, "starbucks.jpg", 90, "Café Starbucks", 4, 4m, "Calories: 150, Sucres: 20g, Caféine: 95mg" },
-                    { 12, true, "axe.jpg", 50, "Déodorant Axe", 5, 6m, "Sans calories" },
-                    { 13, true, "headshoulders.jpg", 60, "Shampooing Head & Shoulders", 4, 7m, "Sans calories" },
-                    { 14, true, "benjerry.jpg", 40, "Crème glacée Ben & Jerry's", 5, 8m, "Calories: 270, Lipides: 14g, Sucres: 26g" },
-                    { 15, true, "pain.jpg", 120, "Pain tranché", 3, 3m, "Calories: 80, Glucides: 15g, Protéines: 3g" },
-                    { 16, true, "cheddar.jpg", 100, "Fromage cheddar", 4, 5m, "Calories: 110, Lipides: 9g, Protéines: 7g" },
-                    { 17, true, "yaourt.jpg", 130, "Yaourt grec", 4, 4m, "Calories: 120, Protéines: 10g, Sucres: 8g" },
-                    { 18, true, "ritz.jpg", 80, "Crackers Ritz", 3, 3m, "Calories: 160, Lipides: 8g, Glucides: 20g" },
-                    { 19, true, "soupe.jpg", 70, "Soupe Campbell", 4, 2m, "Calories: 90, Sodium: 480mg" },
-                    { 20, true, "tropicana.jpg", 150, "Jus d'orange Tropicana", 4, 3m, "Calories: 110, Sucres: 23g" },
-                    { 21, true, "colgate.jpg", 200, "Brosse à dents Colgate", 4, 2m, "Sans calories" },
-                    { 22, true, "sensodyne.jpg", 150, "Dentifrice Sensodyne", 5, 5m, "Sans calories" },
-                    { 23, true, "dove.jpg", 180, "Savon Dove", 4, 2m, "Sans calories" },
-                    { 24, true, "gatorade.jpg", 110, "Boisson Gatorade", 4, 3m, "Calories: 80, Sucres: 21g" },
-                    { 25, true, "kinder.jpg", 100, "Chocolat Kinder", 5, 2m, "Calories: 120, Sucres: 12g" },
-                    { 26, true, "cheerios.jpg", 90, "Céréales Cheerios", 4, 4m, "Calories: 110, Glucides: 20g, Protéines: 3g" },
-                    { 27, true, "oreo.jpg", 130, "Biscuit Oreo", 4, 3m, "Calories: 160, Sucres: 14g" },
-                    { 28, true, "beurre.jpg", 70, "Beurre d'arachide", 4, 5m, "Calories: 190, Lipides: 16g, Protéines: 7g" },
-                    { 29, true, "perrier.jpg", 200, "Eau gazeuse Perrier", 4, 2m, "Calories: 0" },
-                    { 30, true, "muffin.jpg", 60, "Muffin aux bleuets", 5, 3m, "Calories: 380, Lipides: 16g, Sucres: 28g" },
-                    { 31, true, "Aid.jpg", 0, "BandAid", 5, 3m, "Calories: 0" }
+                    { 1, true, "redbull.png", 120, "Red Bull", 4, 3m, "100001", "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g" },
+                    { 2, true, "pogo.jpg", 200, "Pogo", 3, 2m, "100002", "Calories: 190, Lipides: 9g, Glucides: 20g, Protéines: 6g, Sodium: 500mg" },
+                    { 3, true, "eau.jpg", 300, "Bouteille d'eau", 5, 1m, "100003", "Calories: 0, Lipides: 0g, Sucres: 0g, Sodium: 0mg" },
+                    { 4, true, "chips.jpg", 100, "Chips Lay’s", 4, 2m, "100004", "Calories: 160, Lipides: 10g, Glucides: 15g, Sucres: 1g, Sodium: 170mg" },
+                    { 5, true, "nutella.jpg", 80, "Nutella", 5, 5m, "100005", "Calories: 200, Lipides: 11g, Glucides: 22g, Sucres: 21g, Protéines: 2g" },
+                    { 6, true, "activia.jpg", 150, "Yogourt Activia", 4, 3m, "100006", "Calories: 100, Lipides: 2g, Glucides: 15g, Sucres: 12g, Protéines: 5g" },
+                    { 7, true, "pizza.jpg", 60, "Pizza congelée", 4, 6m, "100007", "Calories: 350, Lipides: 15g, Glucides: 40g, Sucres: 5g, Protéines: 12g" },
+                    { 8, true, "granola.jpg", 180, "Barre de granola", 4, 2m, "100008", "Calories: 190, Lipides: 7g, Glucides: 29g, Sucres: 11g, Protéines: 4g" },
+                    { 9, true, "coca.jpg", 220, "Coca-Cola", 3, 2m, "100009", "Calories: 140, Sucres: 39g, Glucides: 39g, Sodium: 45mg" },
+                    { 10, true, "sandwich.jpg", 75, "Sandwich jambon-fromage", 4, 4m, "100010", "Calories: 320, Lipides: 12g, Glucides: 30g, Protéines: 18g, Sodium: 780mg" },
+                    { 11, true, "starbucks.jpg", 90, "Café Starbucks", 4, 4m, "100011", "Calories: 150, Sucres: 20g, Caféine: 95mg" },
+                    { 12, true, "axe.jpg", 50, "Déodorant Axe", 5, 6m, "100012", "Sans calories" },
+                    { 13, true, "headshoulders.jpg", 60, "Shampooing Head & Shoulders", 4, 7m, "100013", "Sans calories" },
+                    { 14, true, "benjerry.jpg", 40, "Crème glacée Ben & Jerry's", 5, 8m, "100014", "Calories: 270, Lipides: 14g, Sucres: 26g" },
+                    { 15, true, "pain.jpg", 120, "Pain tranché", 3, 3m, "100015", "Calories: 80, Glucides: 15g, Protéines: 3g" },
+                    { 16, true, "cheddar.jpg", 100, "Fromage cheddar", 4, 5m, "100016", "Calories: 110, Lipides: 9g, Protéines: 7g" },
+                    { 17, true, "yaourt.jpg", 130, "Yaourt grec", 4, 4m, "100017", "Calories: 120, Protéines: 10g, Sucres: 8g" },
+                    { 18, true, "ritz.jpg", 80, "Crackers Ritz", 3, 3m, "100018", "Calories: 160, Lipides: 8g, Glucides: 20g" },
+                    { 19, true, "soupe.jpg", 70, "Soupe Campbell", 4, 2m, "100019", "Calories: 90, Sodium: 480mg" },
+                    { 20, true, "tropicana.jpg", 150, "Jus d'orange Tropicana", 4, 3m, "100020", "Calories: 110, Sucres: 23g" },
+                    { 21, true, "colgate.jpg", 200, "Brosse à dents Colgate", 4, 2m, "100021", "Sans calories" },
+                    { 22, true, "sensodyne.jpg", 150, "Dentifrice Sensodyne", 5, 5m, "100022", "Sans calories" },
+                    { 23, true, "dove.jpg", 180, "Savon Dove", 4, 2m, "100023", "Sans calories" },
+                    { 24, true, "gatorade.jpg", 110, "Boisson Gatorade", 4, 3m, "100024", "Calories: 80, Sucres: 21g" },
+                    { 25, true, "kinder.jpg", 100, "Chocolat Kinder", 5, 2m, "100025", "Calories: 120, Sucres: 12g" },
+                    { 26, true, "cheerios.jpg", 90, "Céréales Cheerios", 4, 4m, "100026", "Calories: 110, Glucides: 20g, Protéines: 3g" },
+                    { 27, true, "oreo.jpg", 130, "Biscuit Oreo", 4, 3m, "100027", "Calories: 160, Sucres: 14g" },
+                    { 28, true, "beurre.jpg", 70, "Beurre d'arachide", 4, 5m, "100028", "Calories: 190, Lipides: 16g, Protéines: 7g" },
+                    { 29, true, "perrier.jpg", 200, "Eau gazeuse Perrier", 4, 2m, "100029", "Calories: 0" },
+                    { 30, true, "muffin.jpg", 60, "Muffin aux bleuets", 5, 3m, "100030", "Calories: 380, Lipides: 16g, Sucres: 28g" },
+                    { 31, true, "Aid.jpg", 0, "BandAid", 5, 3m, "100031", "Calories: 0" }
                 });
 
             migrationBuilder.InsertData(
@@ -328,7 +330,8 @@ namespace E25ProjetEtendu.Migrations
                 {
                     { "admin-role-id", "21111111-1111-1111-1111-111111111111" },
                     { "user-role-id", "32222222-2222-2222-2222-222222222222" },
-                    { "delivery-role-id", "42222222-2222-2222-2222-222222222222" },
+                    { "deliverystation-role-id", "42222222-2222-2222-2222-222222222222" },
+                    { "livreur-role-id", "43333333-3333-3333-3333-333333333333" },
                     { "user-role-id", "43333333-3333-3333-3333-333333333333" },
                     { "user-role-id", "54444444-4444-4444-4444-444444444444" },
                     { "user-role-id", "65555555-5555-5555-5555-555555555555" }
