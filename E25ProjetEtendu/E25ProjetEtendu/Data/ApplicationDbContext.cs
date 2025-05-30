@@ -43,10 +43,11 @@ namespace E25ProjetEtendu.Data
                 LastName = "Admin",
                 NormalizedUserName = "EDOUARDLIVRAISONSANTE@GMAIL.COM",
                 Email = "edouardlivraisonsante@gmail.com",
-                NormalizedEmail = "EDOUARDLIVRAISONSANTE@GMAIL.COMM",
+                NormalizedEmail = "EDOUARDLIVRAISONSANTE@GMAIL.COM",
                 EmailConfirmed = true,
                 PasswordHash = adminPassword,
-                SecurityStamp = Guid.NewGuid().ToString()
+                SecurityStamp = Guid.NewGuid().ToString(),
+                PhoneNumber = "5149465399"
             }
             );
 
@@ -64,16 +65,17 @@ namespace E25ProjetEtendu.Data
                 new ApplicationUser
                 {
                     Id = "42222222-2222-2222-2222-222222222222",
-                    UserName = "livreur@example.com",
-                    FirstName = "Livreur",
+                    UserName = "postelivraisonedouard@gmail.com",
+                    FirstName = "Poste",
                     LastName = "Livreur",
-                    NormalizedUserName = "LIVREUR@EXAMPLE.COM",
-                    Email = "livreur@example.com",
-                    NormalizedEmail = "LIVREUR@EXAMPLE.COM",
+                    NormalizedUserName = "POSTELIVRAISONEDOUARD@GMAIL.COM",
+                    Email = "postelivraisonedouard@gmail.com",
+                    NormalizedEmail = "POSTELIVRAISONEDOUARD@GMAIL.COM",
                     EmailConfirmed = true,
                     PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(null, "Qwerty123!!"),
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    
+                    PhoneNumber = "5149465399"
+
                 }
             ); modelBuilder.Entity<IdentityUserRole<string>>().HasData(
                 new IdentityUserRole<string>
@@ -100,41 +102,44 @@ namespace E25ProjetEtendu.Data
                 new ApplicationUser
                 {
                     Id = "32222222-2222-2222-2222-222222222222",
-                    UserName = "jean@example.com",
+                    UserName = "jeanbeliveau011@gmail.com",
                     FirstName = "Jean",
-                    LastName = "Utilisateur",
-                    NormalizedUserName = "USER@EXAMPLE.COM",
-                    Email = "user@example.com",
-                    NormalizedEmail = "USER@EXAMPLE.COM",
+                    LastName = "Beliveau",
+                    NormalizedUserName = "JEANBELIVEAU011@GMAIL.COM",
+                    Email = "jeanbeliveau011@gmail.com",
+                    NormalizedEmail = "JEANBELIVEAU011@GMAIL.COM",
                     EmailConfirmed = true,
                     PasswordHash = userPassword,
-                    SecurityStamp = Guid.NewGuid().ToString()
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    PhoneNumber = "5149465399"
                 },
                 new ApplicationUser
                 {
                     Id = "54444444-4444-4444-4444-444444444444",
-                    UserName = "maxime@example.com",
+                    UserName = "maximee011@gmail.com",
                     FirstName = "Maxime",
-                    LastName = "Utilisateur",
-                    NormalizedUserName = "MAXIME@EXAMPLE.COM",
-                    Email = "maxime@example.com",
-                    NormalizedEmail = "MAXIME@EXAMPLE.COM",
+                    LastName = "Ninep",
+                    NormalizedUserName = "MAXIMEE011@GMAIL.COM",
+                    Email = "maximee011@gmail.com",
+                    NormalizedEmail = "MAXIMEE011@GMAIL.COM",
                     EmailConfirmed = true,
                     PasswordHash = userPassword,
-                    SecurityStamp = Guid.NewGuid().ToString()
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    PhoneNumber = "5149465399"
                 },
                 new ApplicationUser
                 {
                     Id = "65555555-5555-5555-5555-555555555555",
-                    UserName = "nicolas@example.com",
+                    UserName = "nicolasquebec420@gmail.com",
                     FirstName = "Nicolas",
-                    LastName = "Utilisateur",
-                    NormalizedUserName = "NICOLAS@EXAMPLE.COM",
-                    Email = "nicolas@example.com",
-                    NormalizedEmail = "NICOLAS@EXAMPLE.COM",
+                    LastName = "Quebec",
+                    NormalizedUserName = "NICOLASQUEBEC420@GMAIL.COM",
+                    Email = "nicolasquebec420@gmail.com",
+                    NormalizedEmail = "NICOLASQUEBEC420@GMAIL.COM",
                     EmailConfirmed = true,
                     PasswordHash = userPassword,
-                    SecurityStamp = Guid.NewGuid().ToString()
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    PhoneNumber = "5149465399"
                 }
             );
 
@@ -157,15 +162,16 @@ namespace E25ProjetEtendu.Data
                 new ApplicationUser
                 {
                     Id = "43333333-3333-3333-3333-333333333333",
-                    UserName = "jacob@example.com",
+                    UserName = "jacobby911@gmail.com",
                     FirstName = "Jacob",
-                    LastName = "Utilisateur",
-                    NormalizedUserName = "JACOB@EXAMPLE.COM",
-                    Email = "jacob@example.com",
-                    NormalizedEmail = "JACOB@EXAMPLE.COM",
+                    LastName = "Lelivreux",
+                    NormalizedUserName = "JACOBBY911@GMAIL.COM",
+                    Email = "jacobby911@gmail.com",
+                    NormalizedEmail = "JACOBBY911@GMAIL.COM",
                     EmailConfirmed = true,
                     PasswordHash = userPassword,
-                    SecurityStamp = Guid.NewGuid().ToString()
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    PhoneNumber = "5149465399"
                 }
             );
 
@@ -177,47 +183,48 @@ namespace E25ProjetEtendu.Data
                 }
             );
             #endregion
+
             #region Products Seed Data
             modelBuilder.Entity<Produit>().HasData(
-				new Produit { ProduitId = 1, SKU = "100001", Nom = "Red Bull", InventoryQuantity = 120, Prix = 3, Image = "redbull.png", EstActif = true, Note = 4, ValeurNutritive = "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g" },
-				new Produit { ProduitId = 2, SKU = "100002", Nom = "Pogo", InventoryQuantity = 200, Prix = 2, Image = "pogo.jpg", EstActif = true, Note = 3, ValeurNutritive = "Calories: 190, Lipides: 9g, Glucides: 20g, Protéines: 6g, Sodium: 500mg" },
-				new Produit { ProduitId = 3, SKU = "100003", Nom = "Bouteille d'eau", InventoryQuantity = 300, Prix = 1, Image = "eau.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 0, Lipides: 0g, Sucres: 0g, Sodium: 0mg" },
-				new Produit { ProduitId = 4, SKU = "100004", Nom = "Chips Lay’s", InventoryQuantity = 100, Prix = 2, Image = "chips.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 160, Lipides: 10g, Glucides: 15g, Sucres: 1g, Sodium: 170mg" },
-				new Produit { ProduitId = 5, SKU = "100005", Nom = "Nutella", InventoryQuantity = 80, Prix = 5, Image = "nutella.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 200, Lipides: 11g, Glucides: 22g, Sucres: 21g, Protéines: 2g" },
-				new Produit { ProduitId = 6, SKU = "100006", Nom = "Yogourt Activia", InventoryQuantity = 150, Prix = 3, Image = "activia.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 100, Lipides: 2g, Glucides: 15g, Sucres: 12g, Protéines: 5g" },
-				new Produit { ProduitId = 7, SKU = "100007", Nom = "Pizza congelée", InventoryQuantity = 60, Prix = 6, Image = "pizza.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 350, Lipides: 15g, Glucides: 40g, Sucres: 5g, Protéines: 12g" },
-				new Produit { ProduitId = 8, SKU = "100008", Nom = "Barre de granola", InventoryQuantity = 180, Prix = 2, Image = "granola.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 190, Lipides: 7g, Glucides: 29g, Sucres: 11g, Protéines: 4g" },
-				new Produit { ProduitId = 9, SKU = "100009", Nom = "Coca-Cola", InventoryQuantity = 220, Prix = 2, Image = "coca.jpg", EstActif = true, Note = 3, ValeurNutritive = "Calories: 140, Sucres: 39g, Glucides: 39g, Sodium: 45mg" },
-				new Produit { ProduitId = 10, SKU = "100010", Nom = "Sandwich jambon-fromage", InventoryQuantity = 75, Prix = 4, Image = "sandwich.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 320, Lipides: 12g, Glucides: 30g, Protéines: 18g, Sodium: 780mg" },
-				new Produit { ProduitId = 11, SKU = "100011", Nom = "Café Starbucks", InventoryQuantity = 90, Prix = 4, Image = "starbucks.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 150, Sucres: 20g, Caféine: 95mg" },
-				new Produit { ProduitId = 12, SKU = "100012", Nom = "Déodorant Axe", InventoryQuantity = 50, Prix = 6, Image = "axe.jpg", EstActif = true, Note = 5, ValeurNutritive = "Sans calories" },
-				new Produit { ProduitId = 13, SKU = "100013", Nom = "Shampooing Head & Shoulders", InventoryQuantity = 60, Prix = 7, Image = "headshoulders.jpg", EstActif = true, Note = 4, ValeurNutritive = "Sans calories" },
-				new Produit { ProduitId = 14, SKU = "100014", Nom = "Crème glacée Ben & Jerry's", InventoryQuantity = 40, Prix = 8, Image = "benjerry.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 270, Lipides: 14g, Sucres: 26g" },
-				new Produit { ProduitId = 15, SKU = "100015", Nom = "Pain tranché", InventoryQuantity = 120, Prix = 3, Image = "pain.jpg", EstActif = true, Note = 3, ValeurNutritive = "Calories: 80, Glucides: 15g, Protéines: 3g" },
-				new Produit { ProduitId = 16, SKU = "100016", Nom = "Fromage cheddar", InventoryQuantity = 100, Prix = 5, Image = "cheddar.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 110, Lipides: 9g, Protéines: 7g" },
-				new Produit { ProduitId = 17, SKU = "100017", Nom = "Yaourt grec", InventoryQuantity = 130, Prix = 4, Image = "yaourt.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 120, Protéines: 10g, Sucres: 8g" },
-				new Produit { ProduitId = 18, SKU = "100018", Nom = "Crackers Ritz", InventoryQuantity = 80, Prix = 3, Image = "ritz.jpg", EstActif = true, Note = 3, ValeurNutritive = "Calories: 160, Lipides: 8g, Glucides: 20g" },
-				new Produit { ProduitId = 19, SKU = "100019", Nom = "Soupe Campbell", InventoryQuantity = 70, Prix = 2, Image = "soupe.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 90, Sodium: 480mg" },
-				new Produit { ProduitId = 20, SKU = "100020", Nom = "Jus d'orange Tropicana", InventoryQuantity = 150, Prix = 3, Image = "tropicana.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 110, Sucres: 23g" },
-				new Produit { ProduitId = 21, SKU = "100021", Nom = "Brosse à dents Colgate", InventoryQuantity = 200, Prix = 2, Image = "colgate.jpg", EstActif = true, Note = 4, ValeurNutritive = "Sans calories" },
-				new Produit { ProduitId = 22, SKU = "100022", Nom = "Dentifrice Sensodyne", InventoryQuantity = 150, Prix = 5, Image = "sensodyne.jpg", EstActif = true, Note = 5, ValeurNutritive = "Sans calories" },
-				new Produit { ProduitId = 23, SKU = "100023", Nom = "Savon Dove", InventoryQuantity = 180, Prix = 2, Image = "dove.jpg", EstActif = true, Note = 4, ValeurNutritive = "Sans calories" },
-				new Produit { ProduitId = 24, SKU = "100024", Nom = "Boisson Gatorade", InventoryQuantity = 110, Prix = 3, Image = "gatorade.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 80, Sucres: 21g" },
-				new Produit { ProduitId = 25, SKU = "100025", Nom = "Chocolat Kinder", InventoryQuantity = 100, Prix = 2, Image = "kinder.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 120, Sucres: 12g" },
-				new Produit { ProduitId = 26, SKU = "100026", Nom = "Céréales Cheerios", InventoryQuantity = 90, Prix = 4, Image = "cheerios.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 110, Glucides: 20g, Protéines: 3g" },
-				new Produit { ProduitId = 27, SKU = "100027", Nom = "Biscuit Oreo", InventoryQuantity = 130, Prix = 3, Image = "oreo.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 160, Sucres: 14g" },
-				new Produit { ProduitId = 28, SKU = "100028", Nom = "Beurre d'arachide", InventoryQuantity = 70, Prix = 5, Image = "beurre.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 190, Lipides: 16g, Protéines: 7g" },
-				new Produit { ProduitId = 29, SKU = "100029", Nom = "Eau gazeuse Perrier", InventoryQuantity = 200, Prix = 2, Image = "perrier.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 0" },
-				new Produit { ProduitId = 30, SKU = "100030", Nom = "Muffin aux bleuets", InventoryQuantity = 60, Prix = 3, Image = "muffin.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 380, Lipides: 16g, Sucres: 28g" },
-				new Produit { ProduitId = 31, SKU = "100031", Nom = "BandAid", InventoryQuantity = 0, Prix = 3, Image = "Aid.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 0" }
-			);
-			#endregion
+                new Produit { ProduitId = 1, SKU = "100001", Nom = "Red Bull", InventoryQuantity = 120, Prix = 3, Image = "redbull.png", EstActif = true, Note = 4, ValeurNutritive = "Calories: 110, Sucres: 27g, Caféine: 80mg, Glucides: 28g, Protéines: 1g" },
+                new Produit { ProduitId = 2, SKU = "100002", Nom = "Pogo", InventoryQuantity = 200, Prix = 2, Image = "pogo.jpg", EstActif = true, Note = 3, ValeurNutritive = "Calories: 190, Lipides: 9g, Glucides: 20g, Protéines: 6g, Sodium: 500mg" },
+                new Produit { ProduitId = 3, SKU = "100003", Nom = "Bouteille d'eau", InventoryQuantity = 300, Prix = 1, Image = "eau.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 0, Lipides: 0g, Sucres: 0g, Sodium: 0mg" },
+                new Produit { ProduitId = 4, SKU = "100004", Nom = "Chips Lay’s", InventoryQuantity = 100, Prix = 2, Image = "chips.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 160, Lipides: 10g, Glucides: 15g, Sucres: 1g, Sodium: 170mg" },
+                new Produit { ProduitId = 5, SKU = "100005", Nom = "Nutella", InventoryQuantity = 80, Prix = 5, Image = "nutella.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 200, Lipides: 11g, Glucides: 22g, Sucres: 21g, Protéines: 2g" },
+                new Produit { ProduitId = 6, SKU = "100006", Nom = "Yogourt Activia", InventoryQuantity = 150, Prix = 3, Image = "activia.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 100, Lipides: 2g, Glucides: 15g, Sucres: 12g, Protéines: 5g" },
+                new Produit { ProduitId = 7, SKU = "100007", Nom = "Pizza congelée", InventoryQuantity = 60, Prix = 6, Image = "pizza.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 350, Lipides: 15g, Glucides: 40g, Sucres: 5g, Protéines: 12g" },
+                new Produit { ProduitId = 8, SKU = "100008", Nom = "Barre de granola", InventoryQuantity = 180, Prix = 2, Image = "granola.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 190, Lipides: 7g, Glucides: 29g, Sucres: 11g, Protéines: 4g" },
+                new Produit { ProduitId = 9, SKU = "100009", Nom = "Coca-Cola", InventoryQuantity = 220, Prix = 2, Image = "coca.jpg", EstActif = true, Note = 3, ValeurNutritive = "Calories: 140, Sucres: 39g, Glucides: 39g, Sodium: 45mg" },
+                new Produit { ProduitId = 10, SKU = "100010", Nom = "Sandwich jambon-fromage", InventoryQuantity = 75, Prix = 4, Image = "sandwich.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 320, Lipides: 12g, Glucides: 30g, Protéines: 18g, Sodium: 780mg" },
+                new Produit { ProduitId = 11, SKU = "100011", Nom = "Café Starbucks", InventoryQuantity = 90, Prix = 4, Image = "starbucks.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 150, Sucres: 20g, Caféine: 95mg" },
+                new Produit { ProduitId = 12, SKU = "100012", Nom = "Déodorant Axe", InventoryQuantity = 50, Prix = 6, Image = "axe.jpg", EstActif = true, Note = 5, ValeurNutritive = "Sans calories" },
+                new Produit { ProduitId = 13, SKU = "100013", Nom = "Shampooing Head & Shoulders", InventoryQuantity = 60, Prix = 7, Image = "headshoulders.jpg", EstActif = true, Note = 4, ValeurNutritive = "Sans calories" },
+                new Produit { ProduitId = 14, SKU = "100014", Nom = "Crème glacée Ben & Jerry's", InventoryQuantity = 40, Prix = 8, Image = "benjerry.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 270, Lipides: 14g, Sucres: 26g" },
+                new Produit { ProduitId = 15, SKU = "100015", Nom = "Pain tranché", InventoryQuantity = 120, Prix = 3, Image = "pain.jpg", EstActif = true, Note = 3, ValeurNutritive = "Calories: 80, Glucides: 15g, Protéines: 3g" },
+                new Produit { ProduitId = 16, SKU = "100016", Nom = "Fromage cheddar", InventoryQuantity = 100, Prix = 5, Image = "cheddar.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 110, Lipides: 9g, Protéines: 7g" },
+                new Produit { ProduitId = 17, SKU = "100017", Nom = "Yaourt grec", InventoryQuantity = 130, Prix = 4, Image = "yaourt.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 120, Protéines: 10g, Sucres: 8g" },
+                new Produit { ProduitId = 18, SKU = "100018", Nom = "Crackers Ritz", InventoryQuantity = 80, Prix = 3, Image = "ritz.jpg", EstActif = true, Note = 3, ValeurNutritive = "Calories: 160, Lipides: 8g, Glucides: 20g" },
+                new Produit { ProduitId = 19, SKU = "100019", Nom = "Soupe Campbell", InventoryQuantity = 70, Prix = 2, Image = "soupe.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 90, Sodium: 480mg" },
+                new Produit { ProduitId = 20, SKU = "100020", Nom = "Jus d'orange Tropicana", InventoryQuantity = 150, Prix = 3, Image = "tropicana.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 110, Sucres: 23g" },
+                new Produit { ProduitId = 21, SKU = "100021", Nom = "Brosse à dents Colgate", InventoryQuantity = 200, Prix = 2, Image = "colgate.jpg", EstActif = true, Note = 4, ValeurNutritive = "Sans calories" },
+                new Produit { ProduitId = 22, SKU = "100022", Nom = "Dentifrice Sensodyne", InventoryQuantity = 150, Prix = 5, Image = "sensodyne.jpg", EstActif = true, Note = 5, ValeurNutritive = "Sans calories" },
+                new Produit { ProduitId = 23, SKU = "100023", Nom = "Savon Dove", InventoryQuantity = 180, Prix = 2, Image = "dove.jpg", EstActif = true, Note = 4, ValeurNutritive = "Sans calories" },
+                new Produit { ProduitId = 24, SKU = "100024", Nom = "Boisson Gatorade", InventoryQuantity = 110, Prix = 3, Image = "gatorade.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 80, Sucres: 21g" },
+                new Produit { ProduitId = 25, SKU = "100025", Nom = "Chocolat Kinder", InventoryQuantity = 100, Prix = 2, Image = "kinder.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 120, Sucres: 12g" },
+                new Produit { ProduitId = 26, SKU = "100026", Nom = "Céréales Cheerios", InventoryQuantity = 90, Prix = 4, Image = "cheerios.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 110, Glucides: 20g, Protéines: 3g" },
+                new Produit { ProduitId = 27, SKU = "100027", Nom = "Biscuit Oreo", InventoryQuantity = 130, Prix = 3, Image = "oreo.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 160, Sucres: 14g" },
+                new Produit { ProduitId = 28, SKU = "100028", Nom = "Beurre d'arachide", InventoryQuantity = 70, Prix = 5, Image = "beurre.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 190, Lipides: 16g, Protéines: 7g" },
+                new Produit { ProduitId = 29, SKU = "100029", Nom = "Eau gazeuse Perrier", InventoryQuantity = 200, Prix = 2, Image = "perrier.jpg", EstActif = true, Note = 4, ValeurNutritive = "Calories: 0" },
+                new Produit { ProduitId = 30, SKU = "100030", Nom = "Muffin aux bleuets", InventoryQuantity = 60, Prix = 3, Image = "muffin.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 380, Lipides: 16g, Sucres: 28g" },
+                new Produit { ProduitId = 31, SKU = "100031", Nom = "BandAid", InventoryQuantity = 0, Prix = 3, Image = "Aid.jpg", EstActif = true, Note = 5, ValeurNutritive = "Calories: 0" }
+            );
+            #endregion
 
 
-			#region Sample Orders Seed Data
+            #region Sample Orders Seed Data
 
-			// Delivered Orders
-			modelBuilder.Entity<Order>().HasData(
+            // Delivered Orders
+            modelBuilder.Entity<Order>().HasData(
                 new Order { OrderId = 2001, BuyerId = "32222222-2222-2222-2222-222222222222", DelivererId = "43333333-3333-3333-3333-333333333333", OrderDate = new DateTime(2024, 5, 1), TotalPrice = 6.00m, Location = "D-0001", Status = OrderStatus.Delivered },
                 new Order { OrderId = 2002, BuyerId = "32222222-2222-2222-2222-222222222222", DelivererId = "43333333-3333-3333-3333-333333333333", OrderDate = new DateTime(2024, 5, 2), TotalPrice = 4.00m, Location = "D-0002", Status = OrderStatus.Delivered },
 
