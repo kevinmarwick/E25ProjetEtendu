@@ -32,23 +32,27 @@ namespace E25ProjetEtendu.Services
 				.FirstOrDefaultAsync(o => o.OrderId == orderId);
 		}
 
-		public async Task<bool> EndCompleteOrder(int orderId, string livreurId)
+        public async Task<bool> EndCompleteOrder(int orderId, string livreurId)
         {
-			Order? commande = await _context.Orders
+            var commande = await _context.Orders
                 .FirstOrDefaultAsync(o => o.OrderId == orderId && o.DelivererId == livreurId);
 
-            
-                
+            if (commande == null) return false;
 
             commande.Status = OrderStatus.Delivered;
-            await _context.SaveChangesAsync();		
-            await _hubContext.Clients.Group(orderId.ToString()).SendAsync("ReceiveOrderStatusUpdate", commande.OrderId);
+            await _context.SaveChangesAsync();
+
+            // ✅ Envoie la notification SignalR à l'utilisateur concerné
+            await _hubContext.Clients.Group(commande.BuyerId)
+            .SendAsync("ReceiveOrderStatusUpdate", commande.OrderId, commande.Status.ToString());
+
 
             return true;
         }
-		
 
-		public async Task<Order> CreateOrder(OrderRequestDTO dto, string userId, List<Produit> products)
+
+
+        public async Task<Order> CreateOrder(OrderRequestDTO dto, string userId, List<Produit> products)
         {
             var orderItems = dto.Items.Select(item =>
             {

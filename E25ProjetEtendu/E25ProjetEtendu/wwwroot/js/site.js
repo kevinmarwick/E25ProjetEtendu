@@ -1,3 +1,34 @@
+connection.on("ReceiveOrderStatusUpdate", function (orderId, newStatus) {
+    console.log("🔔 Changement reçu !", orderId, newStatus);
+
+    const element = document.getElementById("order-status-" + orderId);
+    if (element) {
+        element.textContent = newStatus;
+
+        // Mise à jour de la couleur selon le nouveau statut
+        element.classList.remove("text-warning", "text-primary", "text-success", "text-danger", "text-muted");
+
+        switch (newStatus) {
+            case "Pending":
+                element.classList.add("text-warning");
+                break;
+            case "InProgress":
+                element.classList.add("text-primary");
+                break;
+            case "Delivered":
+                element.classList.add("text-success");
+                break;
+            case "Cancelled":
+                element.classList.add("text-danger");
+                break;
+            default:
+                element.classList.add("text-muted");
+                break;
+        }
+    }
+});
+
+
 // Patch jQuery validation to support French decimal commas
 function showToast(message, type = "success") {
     const toastEl = document.getElementById("toastMessage");

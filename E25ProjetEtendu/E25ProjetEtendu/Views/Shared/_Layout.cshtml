@@ -131,9 +131,14 @@
 						@if (user != null && orderToDisplay != null && !string.IsNullOrEmpty(label))
 						{
 							<li class="nav-item">
-								<a class="nav-link @color fw-bold" asp-controller="Order" asp-action="CurrentOrderStatus" asp-route-id="@orderToDisplay.OrderId">
+								<a id="order-status-@orderToDisplay.OrderId"
+								   class="nav-link @color fw-bold"
+								   asp-controller="Order"
+								   asp-action="CurrentOrderStatus"
+								   asp-route-id="@orderToDisplay.OrderId">
 									@label
 								</a>
+
 							</li>
 						}
 						
@@ -211,11 +216,14 @@
 			.build();
 
 		connection.on("ReceiveOrderStatusUpdate", function (orderId, newStatus) {
+			console.log("🔔 Changement reçu !", orderId, newStatus); 
+
 			const element = document.getElementById("order-status-" + orderId);
 			if (element) {
 				element.textContent = newStatus;
 			}
 		});
+
 
 		connection.start()
 			.then(() => {
