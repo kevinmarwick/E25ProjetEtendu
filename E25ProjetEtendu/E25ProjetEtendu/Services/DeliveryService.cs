@@ -48,13 +48,16 @@ namespace E25ProjetEtendu.Services
         /// <returns></returns>
         public async Task<Order> GetUnassignedOrder()
         {
-            return await _context.Orders
+            var order = await _context.Orders
                 .Include(o => o.Buyer)
                 .Include(o => o.OrderItems)
                 .ThenInclude(o => o.Product)
                 .Where(o => o.DelivererId == null)
+                .Where(o => o.Status == Enums.OrderStatus.Pending)                 
                 .OrderBy(o => o.OrderDate)
                 .FirstOrDefaultAsync();
+
+            return order;
                 
         }
         /// <summary>
@@ -66,7 +69,7 @@ namespace E25ProjetEtendu.Services
             return await _context.Orders
                 .Include(o => o.Buyer)
                 .Include(o => o.Deliverer)
-                .Where(o => o.DelivererId != null)
+                .Where(o => o.DelivererId != null)                
                 .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
         }

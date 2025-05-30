@@ -205,7 +205,7 @@ namespace E25ProjetEtendu.Controllers
         [Authorize(Roles = "DeliveryStation")]
         public async Task<IActionResult> CancelAsStation(int orderId, string? returnUrl = null)
         {
-            var userId = _userManager.GetUserId(User); // Technically unused in validation, but recorded in order
+            var userId = _userManager.GetUserId(User)!; 
             var result = await _orderService.CancelOrder(orderId, userId, CancellationActor.DeliveryStation, returnInventory: true);
 
             if (result != null)
