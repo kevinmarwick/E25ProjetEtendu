@@ -224,7 +224,15 @@ namespace E25ProjetEtendu.Services
 
                 // Cancellation by Delivery Station
                 case CancellationActor.DeliveryStation:
-                    /// No ID check for station, assumed trusted role                   
+                    /// No ID check for station, assumed trusted role  
+                    // If returnInventory is false, we notify admin
+                    if (returnInventory == false)
+                        await _emailSender.SendEmailAsync(
+                            _adminSettings.Email,
+                            $"Non retour de produits lors d'une commande annulée par le poste de livraison",
+                            $"La commande #{order.OrderId} a été annulée par le poste de livraison et l'inventaire n'a pas été restockée." +
+                            $"Veuillez vérifier les raisons de l'annulation avec les livreurs et ajuster l'inventaire manuellement si nécessaire."
+                    );
                     break;
             }
 
