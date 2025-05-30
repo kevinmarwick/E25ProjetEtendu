@@ -72,7 +72,7 @@ CultureInfo.DefaultThreadCurrentUICulture = culture;
 
 
 var app = builder.Build();
-app.MapHub<OrderHub>("/orderHub");
+app.MapHub<OrderHub>("/orderStatusHub");
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
