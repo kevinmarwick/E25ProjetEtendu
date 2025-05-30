@@ -38,12 +38,12 @@ namespace E25ProjetEtendu.Data
             new ApplicationUser
             {
                 Id = "21111111-1111-1111-1111-111111111111",
-                UserName = "admin@example.com",
+                UserName = "edouardlivraisonsante@gmail.com",
                 FirstName = "Admin",
                 LastName = "Admin",
-                NormalizedUserName = "ADMIN@EXAMPLE.COM",
-                Email = "admin@example.com",
-                NormalizedEmail = "ADMIN@EXAMPLE.COM",
+                NormalizedUserName = "EDOUARDLIVRAISONSANTE@GMAIL.COM",
+                Email = "edouardlivraisonsante@gmail.com",
+                NormalizedEmail = "EDOUARDLIVRAISONSANTE@GMAIL.COMM",
                 EmailConfirmed = true,
                 PasswordHash = adminPassword,
                 SecurityStamp = Guid.NewGuid().ToString()
@@ -72,7 +72,8 @@ namespace E25ProjetEtendu.Data
                     NormalizedEmail = "LIVREUR@EXAMPLE.COM",
                     EmailConfirmed = true,
                     PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(null, "Qwerty123!!"),
-                    SecurityStamp = Guid.NewGuid().ToString()
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    
                 }
             ); modelBuilder.Entity<IdentityUserRole<string>>().HasData(
                 new IdentityUserRole<string>
