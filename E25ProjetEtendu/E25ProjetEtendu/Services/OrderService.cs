@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using E25ProjetEtendu.Utils;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Options;
+using System.Globalization;
+using System.Text;
 
 
 
@@ -166,6 +168,24 @@ namespace E25ProjetEtendu.Services
                  .OrderByDescending(o => o.OrderDate)
                  .FirstOrDefaultAsync();
 
+        }
+
+        public string BuildOrderSummaryHtml(Order order)
+        {
+            if (order.OrderItems == null || !order.OrderItems.Any())
+                return "<br/><br/><strong>Détails de la commande :</strong><br/><em>Aucun produit dans cette commande.</em>";
+
+            var sb = new StringBuilder();
+            sb.Append("<br/><br/><strong>Détails de la commande :</strong>");
+            sb.Append("<ul>");
+            foreach (var item in order.OrderItems)
+            {
+                sb.Append($"<li>{item.Quantity} × {item.Product.Nom}</li>");
+            }
+            sb.Append("</ul>");
+            sb.Append($"<strong>Total :</strong> {order.TotalPrice.ToString("C", CultureInfo.GetCultureInfo("fr-CA"))}");
+
+            return sb.ToString();
         }
 
         #region Order Cancellation
