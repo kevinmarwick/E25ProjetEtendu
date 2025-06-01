@@ -146,10 +146,15 @@ namespace E25ProjetEtendu.Services
             return true;
         }
 
+        /// <summary>
+        /// Returns true if the user has an active order (not delivered or cancelled).
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public async Task<bool> HasActiveOrder(string userId)
         {
             return await _context.Orders
-                .AnyAsync(o => o.BuyerId == userId && o.Status != OrderStatus.Delivered);
+                .AnyAsync(o => o.BuyerId == userId && (o.Status != OrderStatus.Delivered || o.Status == OrderStatus.Cancelled));
         }
 
         public async Task<Order?> GetMostRecentOrder(string userId)

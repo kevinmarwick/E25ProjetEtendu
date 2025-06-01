@@ -1,4 +1,5 @@
 ﻿using E25ProjetEtendu.Data;
+using E25ProjetEtendu.Enums;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services.IServices;
 using Microsoft.EntityFrameworkCore;
@@ -72,6 +73,17 @@ namespace E25ProjetEtendu.Services
                 .Where(o => o.DelivererId != null)                
                 .OrderByDescending(o => o.OrderDate)
                 .ToListAsync();
+        }
+
+        /// <summary>
+        /// Returns true if the user has an active delivery (order in progress) assigned to them as a deliverer.
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<bool> HasActiveDelivery(string userId)
+        {
+            return await _context.Orders
+                .AnyAsync(o => o.DelivererId == userId && o.Status == OrderStatus.InProgress);
         }
 
     }

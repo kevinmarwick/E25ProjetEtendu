@@ -111,6 +111,15 @@ namespace E25ProjetEtendu.Controllers
                 return RedirectToAction("Index");
             }
 
+            //Check if user has an active order
+            var hasActiveOrder = await _deliveryService.HasActiveDelivery(user.Id);
+            if (hasActiveOrder)
+            {
+                TempData["Erreur"] = "Vous avez déjà une commande en cours. Veuillez terminer la livraison actuelle avant d'en accepter une nouvelle.";
+
+                return RedirectToAction("Index");
+            }
+
             //Assign Order
             var assignationReussie = await _deliveryService.AssignerCommandeAuLivreur(orderId, user.Id);
             if (!assignationReussie)
