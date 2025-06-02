@@ -207,7 +207,7 @@
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
 
-	<!-- ✅ Ajout SignalR -->
+	
 	<!-- ✅ SignalR : Mise à jour du statut de commande -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 	<script>
@@ -219,46 +219,45 @@
 				.withUrl("/orderStatusHub")
 				.build();
 
+			const statusToCssClass = {
+				"Pending": "text-warning",
+				"InProgress": "text-primary",
+				"Delivered": "text-success",
+				"Cancelled": "text-danger",
+				"Default": "text-muted"
+			};
+
 			connection.on("ReceiveOrderStatusUpdate", function (orderId, newStatus) {
-				console.log("🔔 Statut mis à jour :", orderId, newStatus);
-
 				const element = document.getElementById("order-status-" + orderId);
-				if (!element) return;
+				if (element) {
+					// Mise à jour du texte (affichage)
+					element.textContent = getLabelFromStatus(newStatus);
 
-				element.textContent = newStatus;
+					// Reset des couleurs
+					element.classList.remove("text-warning", "text-primary", "text-success", "text-danger", "text-muted");
 
-				// Reset des anciennes couleurs
-				element.classList.remove(
-					"text-warning",
-					"text-primary",
-					"text-success",
-					"text-danger",
-					"text-muted"
-				);
-
-				switch (newStatus) {
-					case "Commande en attente":
-						element.classList.add("text-warning");
-						break;
-					case "Commande en cours":
-						element.classList.add("text-primary");
-						break;
-					case "Commande Livrée":
-						element.classList.add("text-success");
-						break;
-					case "Commande annulée":
-						element.classList.add("text-danger");
-						break;
-					default:
-						element.classList.add("text-muted");
-						break;
-				}				
+					// Ajout nouvelle couleur
+					element.classList.add(statusToCssClass[newStatus] || statusToCssClass["Default"]);
+				}
 			});
+
 			connection.start()
 				.then(() => connection.invoke("JoinGroup", userId))
 				.catch(err => console.error("❌ SignalR erreur :", err));
+
+			// 🧠 Optionnel : retourne la même valeur que Razor (ex. "Commande en cours")
+			function getLabelFromStatus(status) {
+				switch (status) {
+					case "Pending": return "Commande en attente";
+					case "InProgress": return "Commande en cours";
+					case "Delivered": return "Commande terminée";
+					case "Cancelled": return "Commande annulée";
+					default: return "Dernière commande";
+				}
+			}
 		})();
 	</script>
+
 
 
 	@await RenderSectionAsync("Scripts", required: false)

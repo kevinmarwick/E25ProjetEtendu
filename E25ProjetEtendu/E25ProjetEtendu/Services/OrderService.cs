@@ -82,8 +82,11 @@ namespace E25ProjetEtendu.Services
             try
             {
                 await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
+				await _hubContext.Clients.Group("DeliveryStation")
+	            .SendAsync("NouvelleCommandeDisponible");
+
+			}
+			catch (Exception ex)
             {
                 Console.WriteLine("DB ERROR: " + ex.InnerException?.Message ?? ex.Message);
                 throw;

@@ -14,5 +14,11 @@ namespace E25ProjetEtendu.Hubs
         {
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, userId);
         }
-    }
+
+		public async Task JoinDeliveryStation()
+		{
+			await Groups.AddToGroupAsync(Context.ConnectionId, "DeliveryStation");
+		}
+
+	}
 }
