@@ -154,7 +154,8 @@
 
         connection.on("NouvelleCommandeDisponible", function () {
             console.log("📦 Nouvelle commande reçue, rechargement de la page...");
-            location.reload();
+            location.replace(location.href);
+
         });
 
         connection.start()
