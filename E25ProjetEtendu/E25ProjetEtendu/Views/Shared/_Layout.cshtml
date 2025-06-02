@@ -237,24 +237,23 @@
 				);
 
 				switch (newStatus) {
-					case "Pending":
+					case "Commande en attente":
 						element.classList.add("text-warning");
 						break;
-					case "InProgress":
+					case "Commande en cours":
 						element.classList.add("text-primary");
 						break;
-					case "Delivered":
+					case "Commande Livrée":
 						element.classList.add("text-success");
 						break;
-					case "Cancelled":
+					case "Commande annulée":
 						element.classList.add("text-danger");
 						break;
 					default:
 						element.classList.add("text-muted");
 						break;
-				}
+				}				
 			});
-
 			connection.start()
 				.then(() => connection.invoke("JoinGroup", userId))
 				.catch(err => console.error("❌ SignalR erreur :", err));

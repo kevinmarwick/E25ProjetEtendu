@@ -80,3 +80,28 @@
         localStorage.removeItem('deliveryLocation');
     </script>
 }
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        const orderId = @Model.OrderId;
+        const userId = "@User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/orderStatusHub")
+            .build();
+
+        connection.on("ReceiveOrderStatusUpdate", function (updatedOrderId, newStatus) {
+            if (updatedOrderId === orderId) {
+                console.log("📦 Statut mis à jour, rechargement...");
+                location.reload(); // Recharge la page avec les nouvelles données
+            }
+        });
+
+        connection.start().then(() => {
+            if (userId) {
+                connection.invoke("JoinGroup", userId);
+            }
+        }).catch(err => console.error("❌ Erreur SignalR :", err));
+    </script>
+}
+
