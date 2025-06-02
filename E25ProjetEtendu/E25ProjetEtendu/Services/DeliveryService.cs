@@ -1,6 +1,8 @@
 ﻿using E25ProjetEtendu.Data;
+using E25ProjetEtendu.Hubs;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services.IServices;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace E25ProjetEtendu.Services
@@ -8,11 +10,12 @@ namespace E25ProjetEtendu.Services
     public class DeliveryService : IDeliveryService
     {
         private readonly ApplicationDbContext _context;
-
-        public DeliveryService(ApplicationDbContext context)
+		private readonly IHubContext<OrderHub> _hubContext;
+		public DeliveryService(ApplicationDbContext context, IHubContext<OrderHub> hubContext)
         {
             _context = context;
-        }
+			_hubContext = hubContext;
+		}
         /// <summary>
         /// permet d'avoir toute les commandes 
         /// </summary>
@@ -40,7 +43,10 @@ namespace E25ProjetEtendu.Services
             order.Status = Enums.OrderStatus.InProgress;
 
             await _context.SaveChangesAsync();
-            return true;
+			// ✅ Envoie la notification SignalR à l'utilisateur concerné
+			await _hubContext.Clients.Group(order.BuyerId)
+			.SendAsync("ReceiveOrderStatusUpdate", order.OrderId, order.Status.ToString());
+			return true;
         }
         /// <summary>
         /// Récupere tout les commandes non accepter par un livreur
