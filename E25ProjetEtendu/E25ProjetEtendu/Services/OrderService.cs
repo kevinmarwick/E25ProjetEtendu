@@ -309,7 +309,7 @@ namespace E25ProjetEtendu.Services
             }
 
             // If restock failed, notify admin
-            if (!restockResult && actorType == CancellationActor.Deliverer)
+            if ((!restockResult && actorType == CancellationActor.Deliverer) && returnInventory == true)
             {
                 await _emailSender.SendEmailAsync(
                     _adminSettings.Email,
@@ -327,7 +327,7 @@ namespace E25ProjetEtendu.Services
                     , order
                 );
             }
-            else if (!restockResult && actorType == CancellationActor.DeliveryStation)
+            else if (!restockResult && actorType == CancellationActor.DeliveryStation && returnInventory == true)
             {
                 await _emailSender.SendEmailAsync(
                     _adminSettings.Email,
