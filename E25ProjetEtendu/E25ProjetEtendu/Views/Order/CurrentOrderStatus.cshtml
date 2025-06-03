@@ -116,3 +116,43 @@
         localStorage.removeItem('deliveryLocation');
     </script>
 }
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        const orderId = @Model.OrderId;
+        const userId = "@User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/orderStatusHub")
+            .build();
+
+        connection.on("ReceiveOrderStatusUpdate", function (updatedOrderId, newStatus) {
+            // Vérifie que c'est bien cette commande
+            if (updatedOrderId === orderId) {
+                console.log(" Mise à jour du statut reçue : " + newStatus);
+
+                // Si déjà Delivered ou Cancelled, on évite les reloads inutiles
+                const currentStatus = "@Model.Status.ToString()";
+                if (currentStatus !== newStatus) {
+                    console.log(" Statut différent, rechargement de la page...");
+                    location.reload();
+                } else {
+                    console.log(" Statut inchangé, pas de reload.");
+                }
+            }
+        });
+
+        connection.start()
+            .then(() => {
+                console.log(" Connexion SignalR établie (CurrentOrderStatus).");
+                if (userId) {
+                    connection.invoke("JoinGroup", userId)
+                        .then(() => console.log(" Rejoint le groupe de l'utilisateur : " + userId))
+                        .catch(err => console.error(" Erreur d'abonnement :", err));
+                }
+            })
+            .catch(err => console.error(" Échec de la connexion SignalR :", err));
+    </script>
+}
+
+

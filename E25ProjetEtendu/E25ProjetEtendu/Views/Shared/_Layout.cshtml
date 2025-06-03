@@ -99,6 +99,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/js/site.js" asp-append-version="true" />
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
 </head>
 <body data-userid="@User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier)">
@@ -131,11 +132,16 @@
 						@if (user != null && orderToDisplay != null && !string.IsNullOrEmpty(label))
 						{
 							<li class="nav-item">
-								<a class="nav-link @color fw-bold" asp-controller="Order" asp-action="CurrentOrderStatus" asp-route-id="@orderToDisplay.OrderId">
+								<a id="order-status-@orderToDisplay.OrderId"
+								   class="nav-link @color fw-bold"
+								   asp-controller="Order"
+								   asp-action="CurrentOrderStatus"
+								   asp-route-id="@orderToDisplay.OrderId">
 									@label
 								</a>
 							</li>
 						}
+
 						
 
 					</ul>
@@ -201,35 +207,59 @@
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
 
-	<!-- ✅ SignalR client + écoute commande terminée -->
+	
+	<!-- ✅ SignalR : Mise à jour du statut de commande -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
 	<script>
-		const connection = new signalR.HubConnectionBuilder()
-			.withUrl("/orderHub")
-			.build();
+		(function () {
+			const userId = document.body.dataset.userid;
+			if (!userId) return;
 
-		connection.on("CommandeTerminee", function (orderId) {
-			const badge = document.getElementById("notif-badge");
-			const list = document.getElementById("notif-list");
+			const connection = new signalR.HubConnectionBuilder()
+				.withUrl("/orderStatusHub")
+				.build();
 
-			// Retirer le "aucune notification"
-			const noNotif = list.querySelector(".text-muted");
-			if (noNotif) noNotif.remove();
+			const statusToCssClass = {
+				"Pending": "text-warning",
+				"InProgress": "text-primary",
+				"Delivered": "text-success",
+				"Cancelled": "text-danger",
+				"Default": "text-muted"
+			};
 
-			// Créer l'élément notification
-			const li = document.createElement("li");
-			li.className = "dropdown-item text-success";
-			li.innerText = "📦 Commande #" + orderId + " terminée !";
-			list.prepend(li);
+			connection.on("ReceiveOrderStatusUpdate", function (orderId, newStatus) {
+				const element = document.getElementById("order-status-" + orderId);
+				if (element) {
+					// Mise à jour du texte (affichage)
+					element.textContent = getLabelFromStatus(newStatus);
 
-			// Affiche la pastille
-			badge.classList.remove("d-none");
-		});
+					// Reset des couleurs
+					element.classList.remove("text-warning", "text-primary", "text-success", "text-danger", "text-muted");
 
-		connection.start().catch(function (err) {
-			console.error("Erreur de SignalR :", err.toString());
-		});
+					// Ajout nouvelle couleur
+					element.classList.add(statusToCssClass[newStatus] || statusToCssClass["Default"]);
+				}
+			});
+
+			connection.start()
+				.then(() => connection.invoke("JoinGroup", userId))
+				.catch(err => console.error("❌ SignalR erreur :", err));
+
+			// 🧠 Optionnel : retourne la même valeur que Razor (ex. "Commande en cours")
+			function getLabelFromStatus(status) {
+				switch (status) {
+					case "Pending": return "Commande en attente";
+					case "InProgress": return "Commande en cours";
+					case "Delivered": return "Commande terminée";
+					case "Cancelled": return "Commande annulée";
+					default: return "Dernière commande";
+				}
+			}
+		})();
 	</script>
+
+
+
 
 
 	@await RenderSectionAsync("Scripts", required: false)

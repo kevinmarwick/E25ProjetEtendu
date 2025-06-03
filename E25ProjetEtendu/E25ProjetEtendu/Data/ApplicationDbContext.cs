@@ -220,7 +220,6 @@ namespace E25ProjetEtendu.Data
             );
             #endregion
 
-
             #region Sample Orders Seed Data
 
             // Delivered Orders

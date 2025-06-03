@@ -1,3 +1,5 @@
+
+
 // Patch jQuery validation to support French decimal commas
 function showToast(message, type = "success") {
     const toastEl = document.getElementById("toastMessage");

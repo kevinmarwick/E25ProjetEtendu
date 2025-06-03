@@ -52,25 +52,22 @@ namespace E25ProjetEtendu.Services
 
         public async Task<bool> EndCompleteOrder(int orderId, string livreurId)
         {
-            Order? commande = await _context.Orders
+            var commande = await _context.Orders
                 .FirstOrDefaultAsync(o => o.OrderId == orderId && o.DelivererId == livreurId);
+
+            if (commande == null) return false;
 
             commande.Status = OrderStatus.Delivered;
             await _context.SaveChangesAsync();
-            await NotifierClientCommandeTermineeAsync(commande);
+
+            // ✅ Envoie la notification SignalR à l'utilisateur concerné
+            await _hubContext.Clients.Group(commande.BuyerId)
+            .SendAsync("ReceiveOrderStatusUpdate", commande.OrderId, commande.Status.ToString());
+
 
             return true;
         }
-
-        public async Task NotifierClientCommandeTermineeAsync(Order order)
-        {
-            if (order?.BuyerId != null)
-            {
-                await _hubContext.Clients
-                    .User(order.BuyerId)
-                    .SendAsync("CommandeTerminee", order.OrderId);
-            }
-        }
+        
 
         public async Task<Order> CreateOrder(OrderRequestDTO dto, string userId, List<Produit> products)
         {
@@ -105,8 +102,11 @@ namespace E25ProjetEtendu.Services
             try
             {
                 await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
+				await _hubContext.Clients.Group("DeliveryStation")
+	            .SendAsync("NouvelleCommandeDisponible");
+
+			}
+			catch (Exception ex)
             {
                 Console.WriteLine("DB ERROR: " + ex.InnerException?.Message ?? ex.Message);
                 throw;
@@ -345,7 +345,9 @@ namespace E25ProjetEtendu.Services
 
             // Save changes to the database
             await _context.SaveChangesAsync();
-
+            // Send a signal to the user when a change happen in the database
+            await _hubContext.Clients.Group(order.BuyerId)
+            .SendAsync("ReceiveOrderStatusUpdate", order.OrderId, order.Status.ToString());
             return null; /// null = success
         }
 
