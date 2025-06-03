@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Localization;
 using E25ProjetEtendu.Binders;
 using E25ProjetEtendu.Configuration;
 using E25ProjetEtendu.Hubs;
+using Stripe;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +37,11 @@ builder.Services.AddHostedService<ReservationCleanupService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+
+    options.LoginPath = "/Identity/Account/Login"; // ou autre chemin de connexion});
+});
 
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
@@ -56,7 +63,6 @@ builder.Services.Configure<AdminSettings>(builder.Configuration.GetSection("Admi
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 builder.Services.AddTransient<EmailSender>();
 builder.Services.AddSignalR();
-
 
 
 var culture = new CultureInfo("fr-CA");
