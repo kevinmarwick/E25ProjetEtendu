@@ -345,7 +345,9 @@ namespace E25ProjetEtendu.Services
 
             // Save changes to the database
             await _context.SaveChangesAsync();
-
+            // Send a signal to the user when a change happen in the database
+            await _hubContext.Clients.Group(order.BuyerId)
+            .SendAsync("ReceiveOrderStatusUpdate", order.OrderId, order.Status.ToString());
             return null; /// null = success
         }
 
