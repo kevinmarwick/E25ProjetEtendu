@@ -10,8 +10,11 @@ namespace E25ProjetEtendu.Models
         public DateTime OrderDate { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPrice { get; set; }
-        
 
+        //cancellation properties
+        public string? CancellingUserId { get; set; }
+        public CancellationActor? CancellationActor { get; set; }
+        public DateTime? CancellationDate { get; set; }
 
         //Navigation properties
         public string BuyerId { get; set; }

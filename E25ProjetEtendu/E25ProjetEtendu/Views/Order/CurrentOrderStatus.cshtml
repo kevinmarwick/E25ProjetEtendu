@@ -1,4 +1,5 @@
 ﻿@using E25ProjetEtendu.Extensions
+@using E25ProjetEtendu.Enums
 @model E25ProjetEtendu.Models.Order
 
 @{
@@ -31,6 +32,14 @@
         @if (Model.Deliverer != null)
         {
             <p><strong>Livreur :</strong> @Model.Deliverer.FirstName</p>
+        }
+        else if(Model.Status == OrderStatus.Pending)
+        {
+            <div class="text-end">
+                <button type="button" class="btn btn-danger mt-3" data-bs-toggle="modal" data-bs-target="#cancelBuyerModal">
+                    Annuler la commande
+                </button>
+            </div>
         }
 
        
@@ -70,6 +79,33 @@
         <h4 class="fw-bold"><strong>Total :</strong> @total.ToString("C")</h4>
     </div>
 </div>
+
+<!-- Modal de confirmation d'annulation par l'acheteur -->
+<div class="modal fade" id="cancelBuyerModal" tabindex="-1" aria-labelledby="cancelBuyerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content shadow">
+            <form method="post" asp-controller="Order" asp-action="CancelAsBuyer">
+                <input type="hidden" name="orderId" value="@Model.OrderId" />
+                <input type="hidden" name="returnUrl" value="@Url.Action("CurrentOrderStatus", "Order", new { id = Model.OrderId })" />
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelBuyerModalLabel">Confirmation d'annulation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+
+                <div class="modal-body">
+                    Êtes-vous certain(e) de vouloir annuler la commande <strong>#@Model.OrderId</strong> ?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-danger">Oui, annuler</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 
 
 <!--Vide le panier si redirigé depuis Success()-->

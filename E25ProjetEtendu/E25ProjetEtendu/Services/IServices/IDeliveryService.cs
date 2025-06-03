@@ -9,6 +9,7 @@ namespace E25ProjetEtendu.Services.IServices
         Task<Order> GetUnassignedOrder();
         Task<bool> AssignerCommandeAuLivreur(int orderId, string userId);
         Task<List<Order>> GetAssignedOrders();
+        Task<bool> HasActiveDelivery(string userId);
 
 
 

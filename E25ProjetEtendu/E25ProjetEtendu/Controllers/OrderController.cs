@@ -34,58 +34,88 @@ namespace E25ProjetEtendu.Controllers
             _hubContext = hubContext;
         }
 
-
-
-
+        /// <summary>
+        /// Display the order details and allow the deliverer to end the order.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles ="Deliverer")]
+        [Route("Order/EndOrder/{orderId:int}")]
         public async Task<IActionResult> EndOrder(int orderId)
-
-        {
-            Order? order = await _orderService.GetOrderById(orderId);
-            ApplicationUser? user = await _userManager.GetUserAsync(User); 
-            if(user.Id != order.DelivererId)
+        {            
+            try
             {
-                return Forbid();
+                Order? order = await _orderService.GetOrderById(orderId);
+                ApplicationUser? user = await _userManager.GetUserAsync(User);
+                if (user.Id != order.DelivererId)
+                {
+                    return Forbid();
+                }
+                if (order == null)
+                {
+                    return NotFound();
+                }
+                return View(order);
             }
-            if(order == null)
+            catch (Exception ex)
             {
-                return NotFound();
-            }
-            return View(order);
+                Console.WriteLine($"Error retrieving order or user: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }            
         }
+
+        /// <summary>
+        /// Set the order status to "Delivered"
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
         [HttpPost]
-        [AllowAnonymous]
+        [Authorize(Roles = "Deliverer")]        
         public async Task<IActionResult> TerminateOrder(int orderId)
         {
-            var order = await _orderService.GetOrderById(orderId);
-            if(order == null)
+            try
             {
-                return NotFound();
-            }
-            await _orderService.EndCompleteOrder(orderId, order.DelivererId);            
-            return RedirectToAction("EndOrder", new { orderId });
+                var order = await _orderService.GetOrderById(orderId);
+                if (order == null)
+                {
+                    return NotFound();
+                }
 
+                var user = await _userManager.GetUserAsync(User);
+                if (order.DelivererId != user?.Id)
+                    return Forbid();
+
+                order.Status = OrderStatus.Delivered;
+                await _context.SaveChangesAsync();
+                return RedirectToAction("EndOrder", new { orderId });
+            }
+            catch
+            (Exception ex)
+            {
+                Console.WriteLine($"Error terminating order: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpPost("create")]
-		public async Task<IActionResult> Create([FromBody] OrderRequestDTO dto)
-		{
-			try
-			{
-				if (!ModelState.IsValid)
-				{
-					foreach (var entry in ModelState)
-					{
-						foreach (var error in entry.Value.Errors)
-						{
-							Console.WriteLine($"Field: {entry.Key} - Error: {error.ErrorMessage}");
-						}
-					}
-					return BadRequest(ModelState);
-				}
-				//Find User
-				var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        public async Task<IActionResult> Create([FromBody] OrderRequestDTO dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    foreach (var entry in ModelState)
+                    {
+                        foreach (var error in entry.Value.Errors)
+                        {
+                            Console.WriteLine($"Field: {entry.Key} - Error: {error.ErrorMessage}");
+                        }
+                    }
+                    return BadRequest(ModelState);
+                }
+                //Find User
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
                 //Empty Cart
                 if (dto.Items == null || !dto.Items.Any())
@@ -111,46 +141,123 @@ namespace E25ProjetEtendu.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
+        /// <summary>
+        /// Displays the current order status for the logged-in user.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
 		[Authorize]
-		public async Task<IActionResult> CurrentOrderStatus(int? id)
-		{
-			var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        public async Task<IActionResult> CurrentOrderStatus(int? id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-			Order? order;
+            Order? order;
 
-			if (id.HasValue)
-			{
-				order = await _context.Orders
-					.Include(o => o.OrderItems).ThenInclude(oi => oi.Product)
-					.Include(o => o.Deliverer)
-					.FirstOrDefaultAsync(o => o.OrderId == id && o.BuyerId == userId);
-			}
-			else
-			{
-				order = await _context.Orders
-					.Where(o => o.BuyerId == userId && o.Status != OrderStatus.Delivered)
-					.Include(o => o.OrderItems).ThenInclude(oi => oi.Product)
-					.Include(o => o.Deliverer)
-					.OrderByDescending(o => o.OrderDate)
-					.FirstOrDefaultAsync();
-			}
+            if (id.HasValue)
+            {
+                order = await _context.Orders
+                    .Include(o => o.OrderItems).ThenInclude(oi => oi.Product)
+                    .Include(o => o.Deliverer)
+                    .FirstOrDefaultAsync(o => o.OrderId == id && o.BuyerId == userId);
+            }
+            else
+            {
+                order = await _context.Orders
+                    .Where(o => o.BuyerId == userId && o.Status != OrderStatus.Delivered)
+                    .Include(o => o.OrderItems).ThenInclude(oi => oi.Product)
+                    .Include(o => o.Deliverer)
+                    .OrderByDescending(o => o.OrderDate)
+                    .FirstOrDefaultAsync();
+            }
 
-			if (order == null)
-				return RedirectToAction("Index", "Home");
+            if (order == null)
+                return RedirectToAction("Index", "Home");
 
-			if (order.Status == OrderStatus.Cancelled)
-			{
-				HttpContext.Session.SetString("CancelledOrderSeen", "true");
-			}
-			if (order.Status == OrderStatus.Delivered)
-			{
-				HttpContext.Session.SetString("DeliveredOrderSeen", "true");
-			}
+            if (order.Status == OrderStatus.Cancelled)
+            {
+                HttpContext.Session.SetString("CancelledOrderSeen", "true");
+            }
+            if (order.Status == OrderStatus.Delivered)
+            {
+                HttpContext.Session.SetString("DeliveredOrderSeen", "true");
+            }
 
+            return View(order);
+        }
 
-			return View(order);
-		}
+        /// <summary>
+        /// Cancels an order as a buyer.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> CancelAsBuyer(int orderId, string? returnUrl = null)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _orderService.CancelOrder(orderId, userId, CancellationActor.Buyer, returnInventory: true);
 
-	}
+            if (result != null)
+            {
+                TempData["Error"] = result;
+            }
+            else
+            {
+                TempData["Success"] = "Votre commande a été annulée avec succès.";
+            }
+            return returnUrl != null ? Redirect(returnUrl) : RedirectToAction("OrderStatus");
+        }
+
+        /// <summary>
+        /// Cancels an order as a deliverer.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="returnInventory"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Deliverer")]
+        public async Task<IActionResult> CancelAsDeliverer(int orderId, bool returnInventory = true, string? returnUrl = null)
+        {
+            var userId = _userManager.GetUserId(User);
+            var result = await _orderService.CancelOrder(orderId, userId, CancellationActor.Deliverer, returnInventory);
+
+            if (result != null)
+            {
+                TempData["Error"] = result;
+            }
+            else
+            {
+                TempData["Success"] = "La commande a été annulée avec succès.";
+            }
+            return returnUrl != null ? Redirect(returnUrl) : RedirectToAction("Index", "Delivery");
+        }
+
+        /// <summary>
+        /// Cancels an order as the delivery station.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "DeliveryStation")]
+        public async Task<IActionResult> CancelAsStation(int orderId, string? returnUrl = null)
+        {
+            var userId = _userManager.GetUserId(User)!;
+            var result = await _orderService.CancelOrder(orderId, userId, CancellationActor.DeliveryStation, returnInventory: true);
+
+            if (result != null)
+            {
+                TempData["Error"] = result;
+            }
+            else
+            {
+                TempData["Success"] = "La commande a été annulée par le poste de livraison.";
+            }
+
+            return returnUrl != null ? Redirect(returnUrl) : RedirectToAction("Index", "Admin");
+        }
+    }
 }

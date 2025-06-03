@@ -87,6 +87,11 @@
                                 Tentatives épuisées
                             </button>
                         }
+
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelStationConfirmModal">
+                            Annuler la commande
+                        </button>
+
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
                     </div>
                 </div>
@@ -121,6 +126,33 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal de confirmation d'annulation par le poste de livraison -->
+        <div class="modal fade" id="cancelStationConfirmModal" tabindex="-1" aria-labelledby="cancelStationConfirmModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content shadow">
+                    <form method="post" asp-controller="Order" asp-action="CancelAsStation">
+                        <input type="hidden" name="orderId" value="@Model.NextOrder.OrderId" />
+                        <input type="hidden" name="returnUrl" value="@Url.Action("Index", "Delivery")" />
+
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cancelStationConfirmModalLabel">Confirmation d'annulation</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            Voulez-vous vraiment annuler la commande <strong>#@Model.NextOrder.OrderId</strong> ?
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-danger">Oui, annuler</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
     }
 
     <hr class="my-5" />

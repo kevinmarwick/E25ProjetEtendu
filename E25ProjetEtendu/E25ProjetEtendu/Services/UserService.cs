@@ -17,6 +17,12 @@ namespace E25ProjetEtendu.Services
             _userManager = userManager;
         }
 
+        public async Task<ApplicationUser?> GetUserById(string userId)
+        {
+            return await _userManager.FindByIdAsync(userId);
+        }
+
+
         public async Task<List<UserViewModel>> GetNonPrivilegedUsers()
         {
             List<ApplicationUser> users = await _userManager.Users.ToListAsync();

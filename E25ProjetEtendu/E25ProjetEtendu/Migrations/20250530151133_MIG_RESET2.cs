@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace E25ProjetEtendu.Migrations
 {
     /// <inheritdoc />
-    public partial class DeliveryRoleFix : Migration
+    public partial class MIG_RESET2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,6 +21,24 @@ namespace E25ProjetEtendu.Migrations
                 keyColumn: "Id",
                 keyValue: "livreur-role-id");
 
+            migrationBuilder.AddColumn<int>(
+                name: "CancellationActor",
+                table: "Orders",
+                type: "int",
+                nullable: true);
+
+            migrationBuilder.AddColumn<DateTime>(
+                name: "CancellationDate",
+                table: "Orders",
+                type: "datetime2",
+                nullable: true);
+
+            migrationBuilder.AddColumn<string>(
+                name: "CancellingUserId",
+                table: "Orders",
+                type: "nvarchar(max)",
+                nullable: true);
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
@@ -30,42 +49,105 @@ namespace E25ProjetEtendu.Migrations
                 keyColumn: "Id",
                 keyValue: "21111111-1111-1111-1111-111111111111",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "384aea33-7c53-408a-b26c-79df024388bf", "AQAAAAIAAYagAAAAEF2fxFXdkev51MzgUyFz4wk+sHiObSX4e0DYIJtalj2899yFzPZDb6eyhP9tbNw7mA==", "d20c9e4a-0d81-4168-8c69-dc5c6af9f6e0" });
+                values: new object[] { "38146c09-78ef-462d-9d4a-7d46a4b0120b", "AQAAAAIAAYagAAAAEDaj1GYDmT0AkFE/juuMQCdvUXgUPhKCVSOjykbEzAICFFlYCNZtcDkpNQh7AeieFQ==", "78cb89af-a012-447f-8a0c-1395ad1e9684" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "32222222-2222-2222-2222-222222222222",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "af5d043b-9fc2-4fd7-9aac-1973f1008e0b", "AQAAAAIAAYagAAAAEHq19s+xWeFkOL5fLtHwqI+bnhvWxUSy88YJ5PuVhE0cCohu+ooask2vTZncMFQaeQ==", "6097c829-94bd-4dbc-b934-cea057decfa2" });
+                values: new object[] { "72bbc71d-5f75-4a91-b5ed-2067c4f6e692", "AQAAAAIAAYagAAAAEIhYsR0U4MwiHGgjuAg9spVmDYro80iCpPeO5XxtA2Qj3kuKjq8jJ7ilgmd3rVM1bQ==", "fdd5dd3c-44ad-4b9d-a953-307bf8701b4a" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "42222222-2222-2222-2222-222222222222",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "1e8a207d-a598-444f-bab4-51b295efcd99", "AQAAAAIAAYagAAAAECdZWWhRIZZ27yESWqXUfVTWxN3PuV41yOmO5vADog/yQM0b3j6CAxUhbVk0NaHLRg==", "7b3972b1-f03a-41b1-b473-be6b287777a3" });
+                values: new object[] { "9310a091-3634-4080-8d5e-611a16e8da08", "AQAAAAIAAYagAAAAELFuIic87PexQCvLH1oviIG7+/Yi1Cg+/9khzF3Fw26rMu76oFLubcWRIO0lkbOAsw==", "5ebf7afe-618d-419b-bcb3-fcf8237d6df9" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "43333333-3333-3333-3333-333333333333",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "3d4a1237-6ec5-4ef6-9e0e-600482366dd9", "AQAAAAIAAYagAAAAEHq19s+xWeFkOL5fLtHwqI+bnhvWxUSy88YJ5PuVhE0cCohu+ooask2vTZncMFQaeQ==", "abaade34-17d9-420b-8f78-6e597c13051d" });
+                values: new object[] { "daef4464-865d-4d9e-b9d9-1e8dec33c343", "AQAAAAIAAYagAAAAEIhYsR0U4MwiHGgjuAg9spVmDYro80iCpPeO5XxtA2Qj3kuKjq8jJ7ilgmd3rVM1bQ==", "3d154fb3-405a-4b61-bbf6-0643b69eed94" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "54444444-4444-4444-4444-444444444444",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "55a64862-bc9b-4b66-886f-30d4e19d7d6c", "AQAAAAIAAYagAAAAEHq19s+xWeFkOL5fLtHwqI+bnhvWxUSy88YJ5PuVhE0cCohu+ooask2vTZncMFQaeQ==", "6fc394a8-0b81-489f-8887-15ed13ba1942" });
+                values: new object[] { "174582eb-64e9-4d58-98aa-e29e0c4d63a1", "AQAAAAIAAYagAAAAEIhYsR0U4MwiHGgjuAg9spVmDYro80iCpPeO5XxtA2Qj3kuKjq8jJ7ilgmd3rVM1bQ==", "ae5f4100-c9ff-41ba-8fa3-2946e0a24850" });
 
             migrationBuilder.UpdateData(
                 table: "AspNetUsers",
                 keyColumn: "Id",
                 keyValue: "65555555-5555-5555-5555-555555555555",
                 columns: new[] { "ConcurrencyStamp", "PasswordHash", "SecurityStamp" },
-                values: new object[] { "4243228d-293b-41bb-b535-9ece457d4c8b", "AQAAAAIAAYagAAAAEHq19s+xWeFkOL5fLtHwqI+bnhvWxUSy88YJ5PuVhE0cCohu+ooask2vTZncMFQaeQ==", "59b60a68-38b7-41d1-b52f-59edabbc1e71" });
+                values: new object[] { "cd0d8e07-00f4-443a-914a-cb0cce73c9d5", "AQAAAAIAAYagAAAAEIhYsR0U4MwiHGgjuAg9spVmDYro80iCpPeO5XxtA2Qj3kuKjq8jJ7ilgmd3rVM1bQ==", "09b5be32-30bd-4a37-9129-caecf0c8c8cc" });
+
+            migrationBuilder.UpdateData(
+                table: "Orders",
+                keyColumn: "OrderId",
+                keyValue: 2001,
+                columns: new[] { "CancellationActor", "CancellationDate", "CancellingUserId" },
+                values: new object[] { null, null, null });
+
+            migrationBuilder.UpdateData(
+                table: "Orders",
+                keyColumn: "OrderId",
+                keyValue: 2002,
+                columns: new[] { "CancellationActor", "CancellationDate", "CancellingUserId" },
+                values: new object[] { null, null, null });
+
+            migrationBuilder.UpdateData(
+                table: "Orders",
+                keyColumn: "OrderId",
+                keyValue: 2003,
+                columns: new[] { "CancellationActor", "CancellationDate", "CancellingUserId" },
+                values: new object[] { null, null, null });
+
+            migrationBuilder.UpdateData(
+                table: "Orders",
+                keyColumn: "OrderId",
+                keyValue: 2004,
+                columns: new[] { "CancellationActor", "CancellationDate", "CancellingUserId" },
+                values: new object[] { null, null, null });
+
+            migrationBuilder.UpdateData(
+                table: "Orders",
+                keyColumn: "OrderId",
+                keyValue: 2005,
+                columns: new[] { "CancellationActor", "CancellationDate", "CancellingUserId" },
+                values: new object[] { null, null, null });
+
+            migrationBuilder.UpdateData(
+                table: "Orders",
+                keyColumn: "OrderId",
+                keyValue: 2006,
+                columns: new[] { "CancellationActor", "CancellationDate", "CancellingUserId" },
+                values: new object[] { null, null, null });
+
+            migrationBuilder.UpdateData(
+                table: "Orders",
+                keyColumn: "OrderId",
+                keyValue: 2007,
+                columns: new[] { "CancellationActor", "CancellationDate", "CancellingUserId" },
+                values: new object[] { null, null, null });
+
+            migrationBuilder.UpdateData(
+                table: "Orders",
+                keyColumn: "OrderId",
+                keyValue: 2008,
+                columns: new[] { "CancellationActor", "CancellationDate", "CancellingUserId" },
+                values: new object[] { null, null, null });
+
+            migrationBuilder.UpdateData(
+                table: "Orders",
+                keyColumn: "OrderId",
+                keyValue: 2009,
+                columns: new[] { "CancellationActor", "CancellationDate", "CancellingUserId" },
+                values: new object[] { null, null, null });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -85,6 +167,18 @@ namespace E25ProjetEtendu.Migrations
                 table: "AspNetRoles",
                 keyColumn: "Id",
                 keyValue: "deliverer-role-id");
+
+            migrationBuilder.DropColumn(
+                name: "CancellationActor",
+                table: "Orders");
+
+            migrationBuilder.DropColumn(
+                name: "CancellationDate",
+                table: "Orders");
+
+            migrationBuilder.DropColumn(
+                name: "CancellingUserId",
+                table: "Orders");
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",

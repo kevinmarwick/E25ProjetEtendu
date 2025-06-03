@@ -1,3 +1,4 @@
+using E25ProjetEtendu.Enums;
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Models.DTOs;
 using Microsoft.AspNetCore.Mvc;
@@ -13,9 +14,8 @@ namespace E25ProjetEtendu.Services.IServices
 		Task<Order?> GetActiveOrder(string userId);
 		Task<bool> EndCompleteOrder(int orderId, string livreurId);
 		Task<Order?> GetOrderById(int orderId);
-		
+		Task NotifierClientCommandeTermineeAsync(Order order);
+		Task<string?> CancelOrder(int orderId, string actorId, CancellationActor actorType, bool returnInventory = true);
 
-
-
-	}
+    }
 }
