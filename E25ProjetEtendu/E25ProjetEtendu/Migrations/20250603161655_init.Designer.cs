@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace E25ProjetEtendu.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250603154245_ajoutEmailPhone")]
-    partial class ajoutEmailPhone
+    [Migration("20250603161655_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -108,7 +108,7 @@ namespace E25ProjetEtendu.Migrations
                             Id = "21111111-1111-1111-1111-111111111111",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "50e02674-5bcd-45d5-8077-f19b90ff3c6e",
+                            ConcurrencyStamp = "6c7003f2-e816-473a-bf93-2b7df3fe175d",
                             Email = "edouardlivraisonsante@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Admin",
@@ -116,10 +116,10 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "EDOUARDLIVRAISONSANTE@GMAIL.COM",
                             NormalizedUserName = "EDOUARDLIVRAISONSANTE@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJPMMSrYVsoPqMyfyOxSvcryWnbKmkhOJMPFfgfj9OTb0SX0icLcm9D7yKBQWzob3w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDQW32Li/+QK/sYpUVyryJ0eOAay4enCyb6jRqUPxxNLSROvIpXo71TirdayNedlew==",
                             PhoneNumber = "5149465399",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "58e870c7-e786-48d4-a711-07d45ac9eb44",
+                            SecurityStamp = "bb38db1d-1d66-4328-8518-3491740c4635",
                             TwoFactorEnabled = false,
                             UserName = "edouardlivraisonsante@gmail.com"
                         },
@@ -128,7 +128,7 @@ namespace E25ProjetEtendu.Migrations
                             Id = "42222222-2222-2222-2222-222222222222",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "2295bcdc-f4df-4ea1-87eb-632e7cc63a7e",
+                            ConcurrencyStamp = "9883216e-2d54-4ad2-a444-c0c5babbd9cb",
                             Email = "postelivraisonedouard@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Poste",
@@ -136,10 +136,10 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "POSTELIVRAISONEDOUARD@GMAIL.COM",
                             NormalizedUserName = "POSTELIVRAISONEDOUARD@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGVK6dfx62i8d6scn5AcYlaT2AVMcowZVkmG0WCidZDBQf+i1nofJXNZb8ULYN2sKA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIBfmkCa1sHY44t2hBZ8p2vNlpbbfhY5uPqElUemoJc+QpUd01l4SYfutlaT96o6IQ==",
                             PhoneNumber = "5149465399",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "12ed36c8-7494-46af-91d0-c80aef11b1f4",
+                            SecurityStamp = "5a28aa8c-8638-4f7b-951e-203ad0e56e60",
                             TwoFactorEnabled = false,
                             UserName = "postelivraisonedouard@gmail.com"
                         },
@@ -148,7 +148,7 @@ namespace E25ProjetEtendu.Migrations
                             Id = "32222222-2222-2222-2222-222222222222",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "78a41163-f38e-4757-9469-2418da9c95bd",
+                            ConcurrencyStamp = "d0ee7214-59fd-4d3a-b6f5-80f06f7a765c",
                             Email = "jeanbeliveau011@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Jean",
@@ -156,10 +156,10 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "JEANBELIVEAU011@GMAIL.COM",
                             NormalizedUserName = "JEANBELIVEAU011@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHa0BpjhTFYuipNTdKI8agbMxqvbthm95Bv+S0Tc9H75eMVezel2W6qpFMXffiMHRg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECGnax8seY7VQjFMq8Dm3dy76Ktlio8/zPgpV8zn0mhX1TrLwN40PbvDVKibLGrwFw==",
                             PhoneNumber = "5149465399",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a360213e-22e9-48c3-9399-67034c6bf330",
+                            SecurityStamp = "e0e40b9d-1dd9-48e6-a12f-60c98f165edd",
                             TwoFactorEnabled = false,
                             UserName = "jeanbeliveau011@gmail.com"
                         },
@@ -168,7 +168,7 @@ namespace E25ProjetEtendu.Migrations
                             Id = "54444444-4444-4444-4444-444444444444",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "5e36a988-dbba-456a-9483-e1b3e2a06ad7",
+                            ConcurrencyStamp = "bcaecddb-6417-426c-b16a-2a218fb468af",
                             Email = "maximee011@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Maxime",
@@ -176,10 +176,10 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "MAXIMEE011@GMAIL.COM",
                             NormalizedUserName = "MAXIMEE011@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHa0BpjhTFYuipNTdKI8agbMxqvbthm95Bv+S0Tc9H75eMVezel2W6qpFMXffiMHRg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECGnax8seY7VQjFMq8Dm3dy76Ktlio8/zPgpV8zn0mhX1TrLwN40PbvDVKibLGrwFw==",
                             PhoneNumber = "5149465399",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f421b53d-5edd-4eaf-8526-d6013e6602bc",
+                            SecurityStamp = "b038333a-8bf1-4f2f-8656-106d655420be",
                             TwoFactorEnabled = false,
                             UserName = "maximee011@gmail.com"
                         },
@@ -188,7 +188,7 @@ namespace E25ProjetEtendu.Migrations
                             Id = "65555555-5555-5555-5555-555555555555",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "6c004337-33e5-4e2b-bae6-087fc8e420b2",
+                            ConcurrencyStamp = "d29cd8cd-2461-4559-b063-ddaa55cbcf2d",
                             Email = "nicolasquebec420@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Nicolas",
@@ -196,10 +196,10 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "NICOLASQUEBEC420@GMAIL.COM",
                             NormalizedUserName = "NICOLASQUEBEC420@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHa0BpjhTFYuipNTdKI8agbMxqvbthm95Bv+S0Tc9H75eMVezel2W6qpFMXffiMHRg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECGnax8seY7VQjFMq8Dm3dy76Ktlio8/zPgpV8zn0mhX1TrLwN40PbvDVKibLGrwFw==",
                             PhoneNumber = "5149465399",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "bfb3e894-9738-4487-9326-5a84477e147e",
+                            SecurityStamp = "ca257ddd-172f-42ff-ada8-33758be592e8",
                             TwoFactorEnabled = false,
                             UserName = "nicolasquebec420@gmail.com"
                         },
@@ -208,7 +208,7 @@ namespace E25ProjetEtendu.Migrations
                             Id = "43333333-3333-3333-3333-333333333333",
                             AccessFailedCount = 0,
                             Balance = 0m,
-                            ConcurrencyStamp = "504c0e80-e8a6-4dd5-93f1-5ef1818ef5fa",
+                            ConcurrencyStamp = "1a536ecd-b4cb-4e1d-8ca8-58ac4f763018",
                             Email = "jacobby911@gmail.com",
                             EmailConfirmed = true,
                             FirstName = "Jacob",
@@ -216,10 +216,10 @@ namespace E25ProjetEtendu.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "JACOBBY911@GMAIL.COM",
                             NormalizedUserName = "JACOBBY911@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHa0BpjhTFYuipNTdKI8agbMxqvbthm95Bv+S0Tc9H75eMVezel2W6qpFMXffiMHRg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAECGnax8seY7VQjFMq8Dm3dy76Ktlio8/zPgpV8zn0mhX1TrLwN40PbvDVKibLGrwFw==",
                             PhoneNumber = "5149465399",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "735690a2-1ab5-4182-9464-04998155554e",
+                            SecurityStamp = "31fe873d-0ddc-44ab-9a43-4b483ed8f2f6",
                             TwoFactorEnabled = false,
                             UserName = "jacobby911@gmail.com"
                         });
@@ -236,6 +236,15 @@ namespace E25ProjetEtendu.Migrations
                     b.Property<string>("BuyerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("CancellationActor")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CancellationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CancellingUserId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DelivererId")
                         .HasColumnType("nvarchar(450)");

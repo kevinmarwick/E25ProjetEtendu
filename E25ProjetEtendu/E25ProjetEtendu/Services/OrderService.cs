@@ -67,18 +67,7 @@ namespace E25ProjetEtendu.Services
 
             return true;
         }
-
-
-
-        public async Task<Order> CreateOrder(OrderRequestDTO dto, string userId, List<Produit> products)
-        {
-            if (order?.BuyerId != null)
-            {
-                await _hubContext.Clients
-                    .User(order.BuyerId)
-                    .SendAsync("CommandeTerminee", order.OrderId);
-            }
-        }
+        
 
         public async Task<Order> CreateOrder(OrderRequestDTO dto, string userId, List<Produit> products)
         {

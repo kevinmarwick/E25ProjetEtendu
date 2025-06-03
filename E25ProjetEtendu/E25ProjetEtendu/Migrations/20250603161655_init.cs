@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace E25ProjetEtendu.Migrations
 {
     /// <inheritdoc />
-    public partial class MIG_RESET : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -189,6 +189,9 @@ namespace E25ProjetEtendu.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CancellingUserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CancellationActor = table.Column<int>(type: "int", nullable: true),
+                    CancellationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     BuyerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DelivererId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -267,8 +270,8 @@ namespace E25ProjetEtendu.Migrations
                 values: new object[,]
                 {
                     { "admin-role-id", null, "Admin", "ADMIN" },
+                    { "deliverer-role-id", null, "Deliverer", "DELIVERER" },
                     { "deliverystation-role-id", null, "DeliveryStation", "DELIVERYSTATION" },
-                    { "livreur-role-id", null, "Livreur", "LIVREUR" },
                     { "user-role-id", null, "User", "USER" }
                 });
 
@@ -277,12 +280,12 @@ namespace E25ProjetEtendu.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "Balance", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { "21111111-1111-1111-1111-111111111111", 0, 0m, "c10d0088-c7f3-4fd6-b3c7-f7f709cffcf2", "admin@example.com", true, "Admin", "Admin", false, null, "ADMIN@EXAMPLE.COM", "ADMIN@EXAMPLE.COM", "AQAAAAIAAYagAAAAEOIdkYxq+1XB2VFMqMyyKjudbkBCSULAdVkf/e6DHGrYieFD0EOd9uk43zHId35VrQ==", null, false, "9b108876-a962-4c77-bef2-87a3fd5818d9", false, "admin@example.com" },
-                    { "32222222-2222-2222-2222-222222222222", 0, 0m, "5b8d1b86-c210-4b12-a64b-36c16104c9f4", "user@example.com", true, "Jean", "Utilisateur", false, null, "USER@EXAMPLE.COM", "USER@EXAMPLE.COM", "AQAAAAIAAYagAAAAEAUOhYozFE9yvlCTyCV8vzWacV4la1j6+K05POn+6rg3LLpw8a//U8JgajNr/VoCpA==", null, false, "c6f61dda-d64f-4ebb-81b1-6da97ed91aa6", false, "jean@example.com" },
-                    { "42222222-2222-2222-2222-222222222222", 0, 0m, "457d3ca4-4781-47c0-bcdf-fd847f752b71", "livreur@example.com", true, "Livreur", "Livreur", false, null, "LIVREUR@EXAMPLE.COM", "LIVREUR@EXAMPLE.COM", "AQAAAAIAAYagAAAAEL6eT59Yc/Lxqo4O6f/6vsDsIt8TU38t+KFFxcJtIHXrZHwzJCYaRGE9+AxIeWP/VA==", null, false, "c0b072a8-b781-4fcc-8fd8-054a4b53a820", false, "livreur@example.com" },
-                    { "43333333-3333-3333-3333-333333333333", 0, 0m, "cbb0cd42-3660-4437-add6-56da75eb6e5e", "jacob@example.com", true, "Jacob", "Utilisateur", false, null, "JACOB@EXAMPLE.COM", "JACOB@EXAMPLE.COM", "AQAAAAIAAYagAAAAEAUOhYozFE9yvlCTyCV8vzWacV4la1j6+K05POn+6rg3LLpw8a//U8JgajNr/VoCpA==", null, false, "9b01a83f-fed9-4d6d-9982-aefb6fbdeb56", false, "jacob@example.com" },
-                    { "54444444-4444-4444-4444-444444444444", 0, 0m, "fdf9479c-da23-4c2a-856c-e248226f693f", "maxime@example.com", true, "Maxime", "Utilisateur", false, null, "MAXIME@EXAMPLE.COM", "MAXIME@EXAMPLE.COM", "AQAAAAIAAYagAAAAEAUOhYozFE9yvlCTyCV8vzWacV4la1j6+K05POn+6rg3LLpw8a//U8JgajNr/VoCpA==", null, false, "49c5985e-050f-4298-8043-3f33738dda96", false, "maxime@example.com" },
-                    { "65555555-5555-5555-5555-555555555555", 0, 0m, "2720d98e-83cd-453c-bf05-df164328856a", "nicolas@example.com", true, "Nicolas", "Utilisateur", false, null, "NICOLAS@EXAMPLE.COM", "NICOLAS@EXAMPLE.COM", "AQAAAAIAAYagAAAAEAUOhYozFE9yvlCTyCV8vzWacV4la1j6+K05POn+6rg3LLpw8a//U8JgajNr/VoCpA==", null, false, "d327e4ca-be80-433e-b44b-564fb13d7c31", false, "nicolas@example.com" }
+                    { "21111111-1111-1111-1111-111111111111", 0, 0m, "6c7003f2-e816-473a-bf93-2b7df3fe175d", "edouardlivraisonsante@gmail.com", true, "Admin", "Admin", false, null, "EDOUARDLIVRAISONSANTE@GMAIL.COM", "EDOUARDLIVRAISONSANTE@GMAIL.COM", "AQAAAAIAAYagAAAAEDQW32Li/+QK/sYpUVyryJ0eOAay4enCyb6jRqUPxxNLSROvIpXo71TirdayNedlew==", "5149465399", false, "bb38db1d-1d66-4328-8518-3491740c4635", false, "edouardlivraisonsante@gmail.com" },
+                    { "32222222-2222-2222-2222-222222222222", 0, 0m, "d0ee7214-59fd-4d3a-b6f5-80f06f7a765c", "jeanbeliveau011@gmail.com", true, "Jean", "Beliveau", false, null, "JEANBELIVEAU011@GMAIL.COM", "JEANBELIVEAU011@GMAIL.COM", "AQAAAAIAAYagAAAAECGnax8seY7VQjFMq8Dm3dy76Ktlio8/zPgpV8zn0mhX1TrLwN40PbvDVKibLGrwFw==", "5149465399", false, "e0e40b9d-1dd9-48e6-a12f-60c98f165edd", false, "jeanbeliveau011@gmail.com" },
+                    { "42222222-2222-2222-2222-222222222222", 0, 0m, "9883216e-2d54-4ad2-a444-c0c5babbd9cb", "postelivraisonedouard@gmail.com", true, "Poste", "Livreur", false, null, "POSTELIVRAISONEDOUARD@GMAIL.COM", "POSTELIVRAISONEDOUARD@GMAIL.COM", "AQAAAAIAAYagAAAAEIBfmkCa1sHY44t2hBZ8p2vNlpbbfhY5uPqElUemoJc+QpUd01l4SYfutlaT96o6IQ==", "5149465399", false, "5a28aa8c-8638-4f7b-951e-203ad0e56e60", false, "postelivraisonedouard@gmail.com" },
+                    { "43333333-3333-3333-3333-333333333333", 0, 0m, "1a536ecd-b4cb-4e1d-8ca8-58ac4f763018", "jacobby911@gmail.com", true, "Jacob", "Lelivreux", false, null, "JACOBBY911@GMAIL.COM", "JACOBBY911@GMAIL.COM", "AQAAAAIAAYagAAAAECGnax8seY7VQjFMq8Dm3dy76Ktlio8/zPgpV8zn0mhX1TrLwN40PbvDVKibLGrwFw==", "5149465399", false, "31fe873d-0ddc-44ab-9a43-4b483ed8f2f6", false, "jacobby911@gmail.com" },
+                    { "54444444-4444-4444-4444-444444444444", 0, 0m, "bcaecddb-6417-426c-b16a-2a218fb468af", "maximee011@gmail.com", true, "Maxime", "Ninep", false, null, "MAXIMEE011@GMAIL.COM", "MAXIMEE011@GMAIL.COM", "AQAAAAIAAYagAAAAECGnax8seY7VQjFMq8Dm3dy76Ktlio8/zPgpV8zn0mhX1TrLwN40PbvDVKibLGrwFw==", "5149465399", false, "b038333a-8bf1-4f2f-8656-106d655420be", false, "maximee011@gmail.com" },
+                    { "65555555-5555-5555-5555-555555555555", 0, 0m, "d29cd8cd-2461-4559-b063-ddaa55cbcf2d", "nicolasquebec420@gmail.com", true, "Nicolas", "Quebec", false, null, "NICOLASQUEBEC420@GMAIL.COM", "NICOLASQUEBEC420@GMAIL.COM", "AQAAAAIAAYagAAAAECGnax8seY7VQjFMq8Dm3dy76Ktlio8/zPgpV8zn0mhX1TrLwN40PbvDVKibLGrwFw==", "5149465399", false, "ca257ddd-172f-42ff-ada8-33758be592e8", false, "nicolasquebec420@gmail.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -331,7 +334,7 @@ namespace E25ProjetEtendu.Migrations
                     { "admin-role-id", "21111111-1111-1111-1111-111111111111" },
                     { "user-role-id", "32222222-2222-2222-2222-222222222222" },
                     { "deliverystation-role-id", "42222222-2222-2222-2222-222222222222" },
-                    { "livreur-role-id", "43333333-3333-3333-3333-333333333333" },
+                    { "deliverer-role-id", "43333333-3333-3333-3333-333333333333" },
                     { "user-role-id", "43333333-3333-3333-3333-333333333333" },
                     { "user-role-id", "54444444-4444-4444-4444-444444444444" },
                     { "user-role-id", "65555555-5555-5555-5555-555555555555" }
@@ -339,18 +342,18 @@ namespace E25ProjetEtendu.Migrations
 
             migrationBuilder.InsertData(
                 table: "Orders",
-                columns: new[] { "OrderId", "BuyerId", "DelivererId", "Location", "OrderDate", "Status", "TotalPrice" },
+                columns: new[] { "OrderId", "BuyerId", "CancellationActor", "CancellationDate", "CancellingUserId", "DelivererId", "Location", "OrderDate", "Status", "TotalPrice" },
                 values: new object[,]
                 {
-                    { 2001, "32222222-2222-2222-2222-222222222222", "43333333-3333-3333-3333-333333333333", "D-0001", new DateTime(2024, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 6.00m },
-                    { 2002, "32222222-2222-2222-2222-222222222222", "43333333-3333-3333-3333-333333333333", "D-0002", new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 4.00m },
-                    { 2003, "54444444-4444-4444-4444-444444444444", "43333333-3333-3333-3333-333333333333", "D-0003", new DateTime(2024, 5, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 5.00m },
-                    { 2004, "54444444-4444-4444-4444-444444444444", "43333333-3333-3333-3333-333333333333", "D-0004", new DateTime(2024, 5, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 2.00m },
-                    { 2005, "65555555-5555-5555-5555-555555555555", "43333333-3333-3333-3333-333333333333", "D-0005", new DateTime(2024, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 2.00m },
-                    { 2006, "65555555-5555-5555-5555-555555555555", "43333333-3333-3333-3333-333333333333", "D-0006", new DateTime(2024, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 3.00m },
-                    { 2007, "32222222-2222-2222-2222-222222222222", null, "D-0007", new DateTime(2024, 5, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 3.00m },
-                    { 2008, "54444444-4444-4444-4444-444444444444", null, "D-0008", new DateTime(2024, 5, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 4.00m },
-                    { 2009, "65555555-5555-5555-5555-555555555555", null, "D-0009", new DateTime(2024, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 2.00m }
+                    { 2001, "32222222-2222-2222-2222-222222222222", null, null, null, "43333333-3333-3333-3333-333333333333", "D-0001", new DateTime(2024, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 6.00m },
+                    { 2002, "32222222-2222-2222-2222-222222222222", null, null, null, "43333333-3333-3333-3333-333333333333", "D-0002", new DateTime(2024, 5, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 4.00m },
+                    { 2003, "54444444-4444-4444-4444-444444444444", null, null, null, "43333333-3333-3333-3333-333333333333", "D-0003", new DateTime(2024, 5, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 5.00m },
+                    { 2004, "54444444-4444-4444-4444-444444444444", null, null, null, "43333333-3333-3333-3333-333333333333", "D-0004", new DateTime(2024, 5, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 2.00m },
+                    { 2005, "65555555-5555-5555-5555-555555555555", null, null, null, "43333333-3333-3333-3333-333333333333", "D-0005", new DateTime(2024, 5, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 2.00m },
+                    { 2006, "65555555-5555-5555-5555-555555555555", null, null, null, "43333333-3333-3333-3333-333333333333", "D-0006", new DateTime(2024, 5, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 3.00m },
+                    { 2007, "32222222-2222-2222-2222-222222222222", null, null, null, null, "D-0007", new DateTime(2024, 5, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 3.00m },
+                    { 2008, "54444444-4444-4444-4444-444444444444", null, null, null, null, "D-0008", new DateTime(2024, 5, 8, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 4.00m },
+                    { 2009, "65555555-5555-5555-5555-555555555555", null, null, null, null, "D-0009", new DateTime(2024, 5, 9, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 2.00m }
                 });
 
             migrationBuilder.InsertData(

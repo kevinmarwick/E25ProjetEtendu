@@ -86,8 +86,7 @@ namespace E25ProjetEtendu.Controllers
                 if (order.DelivererId != user?.Id)
                     return Forbid();
 
-                order.Status = OrderStatus.Delivered;
-                await _context.SaveChangesAsync();
+                await _orderService.EndCompleteOrder(orderId, order.DelivererId);
                 return RedirectToAction("EndOrder", new { orderId });
             }
             catch
