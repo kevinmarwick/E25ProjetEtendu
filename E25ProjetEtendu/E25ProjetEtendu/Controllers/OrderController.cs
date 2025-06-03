@@ -36,21 +36,26 @@ namespace E25ProjetEtendu.Controllers
         /// <returns></returns>
         [HttpGet]
         [Authorize(Roles ="Deliverer")]
-        [Route("Order/EndOrder/{orderId:int}")]
-        public async Task<IActionResult> EndOrder(int orderId)
+		[Route("Order/EndOrder/{orderId:int}")] // Pour /Order/EndOrder/2007
+		[Route("Order/EndOrder")]               // Pour /Order/EndOrder?orderId=2007
+		public async Task<IActionResult> EndOrder(int orderId)
         {            
             try
             {
                 Order? order = await _orderService.GetOrderById(orderId);
                 ApplicationUser? user = await _userManager.GetUserAsync(User);
-                if (user.Id != order.DelivererId)
-                {
-                    return Forbid();
-                }
                 if (order == null)
                 {
                     return NotFound();
                 }
+                if(user == null)
+                {
+                    return NotFound();
+                }
+                if (user.Id != order.DelivererId)
+                {
+                    return Forbid();
+                }               
                 return View(order);
             }
             catch (Exception ex)
@@ -227,7 +232,7 @@ namespace E25ProjetEtendu.Controllers
             {
                 TempData["Success"] = "La commande a été annulée avec succès.";
             }
-            return returnUrl != null ? Redirect(returnUrl) : RedirectToAction("Index", "Delivery");
+            return RedirectToAction("EndOrder", "Order", orderId);
         }
 
         /// <summary>

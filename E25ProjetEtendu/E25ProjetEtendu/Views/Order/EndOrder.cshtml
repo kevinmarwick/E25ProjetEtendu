@@ -1,7 +1,7 @@
 ﻿@model E25ProjetEtendu.Models.Order
 
 @{
-    ViewData["Title"] = "Terminer la commande";
+	ViewData["Title"] = "Terminer la commande";
 }
 
 <h1>Détails de la commande #@Model.OrderId</h1>
@@ -13,32 +13,82 @@
 <p><strong>Statut actuel:</strong> @Model.Status.ToString()</p>
 <p>    <strong>Articles commandés:</strong></p>
 <p></p>
-    <ul>
-        @foreach (var item in Model.OrderItems)
-        {
-            <li>@item.Product.Nom - @item.Quantity x @item.Product.Prix.ToString("C")</li>
-        }
-    </ul>
+<ul>
+	@foreach (var item in Model.OrderItems)
+	{
+		<li>@item.Product.Nom - @item.Quantity x @item.Product.Prix.ToString("C")</li>
+	}
+</ul>
 <hr />
 
 @if (Model.Status == E25ProjetEtendu.Enums.OrderStatus.InProgress)
 {
-    <form asp-action="TerminateOrder" asp-controller="Order" method="post">
-        <input type="hidden" name="orderId" value="@Model.OrderId" />
-        <button type="submit" class="btn btn-danger">
-            Conclure la livraison
-        </button>
-    </form>
+	<div class="row">
+		<div class="col-auto">
+			<form asp-action="TerminateOrder" asp-controller="Order" method="post">
+				<input type="hidden" name="orderId" value="@Model.OrderId" />
+				<button type="submit" class="btn btn-success">
+					Conclure la livraison
+				</button>
+			</form>
+		</div>
+		<div class="col-auto">
+			<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">
+				Annuler la commande
+			</button>
+
+		</div>
+	</div>
+
 }
-else if(Model.Status == E25ProjetEtendu.Enums.OrderStatus.Delivered)
+else if (Model.Status == E25ProjetEtendu.Enums.OrderStatus.Delivered)
 {
-    <div class="alert alert-success">
-        La commande est déjà <strong>terminée</strong>.
-    </div>
+	<div class="alert alert-success">
+		La commande est déjà <strong>terminée</strong>.
+	</div>
 }
-else if(Model.Status == E25ProjetEtendu.Enums.OrderStatus.Cancelled)
+else if (Model.Status == E25ProjetEtendu.Enums.OrderStatus.Cancelled)
 {
-    <div class="alert alert-danger">
-        La commande a été <strong>annulée</strong>.
-    </div>
+	<div class="alert alert-danger">
+		La commande a été <strong>annulée</strong>.
+	</div>
 }
+
+
+<!-- Cancel Order Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form asp-action="CancelAsDeliverer" asp-controller="Order" method="post">
+				@Html.AntiForgeryToken()
+				<div class="modal-header">
+					<h5 class="modal-title" id="cancelModalLabel">Annuler la commande</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+				</div>
+				<div class="modal-body">
+					<p>Retournez-vous l'entièreté de la commande à l'ADEPT? Sinon, l'administrateur en sera alerté.</p>
+
+					<input type="hidden" name="orderId" value="@Model.OrderId" />
+
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="returnInventory" id="returnYes" value="true" checked />
+						<label class="form-check-label" for="returnYes">
+							Oui, je retourne les produits.
+						</label>
+					</div>
+
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="returnInventory" id="returnNo" value="false" />
+						<label class="form-check-label" for="returnNo">
+							Non, je ne retourne pas les produits.
+						</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Retour</button>
+					<button type="submit" class="btn btn-danger">Procéder à l'annulation</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
