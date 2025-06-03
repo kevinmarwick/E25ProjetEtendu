@@ -129,29 +129,29 @@
         connection.on("ReceiveOrderStatusUpdate", function (updatedOrderId, newStatus) {
             // Vérifie que c'est bien cette commande
             if (updatedOrderId === orderId) {
-                console.log("📦 Mise à jour du statut reçue : " + newStatus);
+                console.log(" Mise à jour du statut reçue : " + newStatus);
 
                 // Si déjà Delivered ou Cancelled, on évite les reloads inutiles
                 const currentStatus = "@Model.Status.ToString()";
                 if (currentStatus !== newStatus) {
-                    console.log("🔁 Statut différent, rechargement de la page...");
+                    console.log(" Statut différent, rechargement de la page...");
                     location.reload();
                 } else {
-                    console.log("✅ Statut inchangé, pas de reload.");
+                    console.log(" Statut inchangé, pas de reload.");
                 }
             }
         });
 
         connection.start()
             .then(() => {
-                console.log("✅ Connexion SignalR établie (CurrentOrderStatus).");
+                console.log(" Connexion SignalR établie (CurrentOrderStatus).");
                 if (userId) {
                     connection.invoke("JoinGroup", userId)
-                        .then(() => console.log("📡 Rejoint le groupe de l'utilisateur : " + userId))
-                        .catch(err => console.error("❌ Erreur d'abonnement :", err));
+                        .then(() => console.log(" Rejoint le groupe de l'utilisateur : " + userId))
+                        .catch(err => console.error(" Erreur d'abonnement :", err));
                 }
             })
-            .catch(err => console.error("❌ Échec de la connexion SignalR :", err));
+            .catch(err => console.error(" Échec de la connexion SignalR :", err));
     </script>
 }
 
