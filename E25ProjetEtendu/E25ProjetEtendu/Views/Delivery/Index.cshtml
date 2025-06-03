@@ -1,149 +1,158 @@
 ﻿@model E25ProjetEtendu.ViewModels.DeliveryVM
 
 @{
-    int maxAttempts = 3;
-    int? attempts = Context.Session.GetInt32("DeliveryLoginAttempts");
-    bool isLockedOut = attempts.HasValue && attempts.Value >= maxAttempts;
+    ViewData["Title"] = "Tableau de livraison";
 }
 
 <div class="container mt-4">
+    <h2 class="mb-4">Commandes en attente</h2>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Prochaine commande à livrer</h2>
-        <a class="btn btn-outline-dark" asp-controller="Delivery" asp-action="DeliveryHistories">
-            <i class="bi bi-clock-history me-1"></i> Historique des commandes
-        </a>
-    </div>
-
-    @if (TempData["Erreur"] != null)
+    @if (!Model.PendingOrders.Any())
     {
-        <div class="alert alert-danger">@TempData["Erreur"]</div>
-    }
-    @if (TempData["Succès"] != null)
-    {
-        <div class="alert alert-success">@TempData["Succès"]</div>
-    }
-
-    @if (Model.NextOrder == null)
-    {
-        <div class="alert alert-info">Aucune commande disponible pour le moment.</div>
+        <div class="alert alert-info">Aucune commande en attente pour le moment.</div>
     }
     else
     {
-        <div class="card shadow-sm">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h5 class="card-title mb-1">Commande #@Model.NextOrder.OrderId</h5>
-                    <p class="mb-0 text-muted">Client : @Model.NextOrder.Buyer?.UserName</p>
-                </div>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#commandeModal">
-                    Voir la commande
-                </button>
-            </div>
-        </div>
-
-        <!-- Modal Bootstrap -->
-        <div class="modal fade" id="commandeModal" tabindex="-1" aria-labelledby="commandeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content shadow">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="commandeModalLabel">Détails de la commande #@Model.NextOrder.OrderId</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6 border-end">
-                                <p><strong>Client :</strong> @Model.NextOrder.Buyer?.UserName</p>
-                                <p><strong>Adresse de livraison :</strong> @Model.NextOrder.Location</p>
-                                <p><strong>Date :</strong> @Model.NextOrder.OrderDate.ToString("yyyy-MM-dd HH:mm")</p>
-                                <p><strong>Total :</strong> @Model.NextOrder.TotalPrice.ToString("C")</p>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h6 class="mb-3">Produits :</h6>
-                                <ul class="list-group">
-                                    @foreach (var item in Model.NextOrder.OrderItems)
-                                    {
-                                        <li class="list-group-item d-flex align-items-center">
-                                            <img src="/images/@item.Product.Image" alt="@item.Product.Nom" class="me-3" style="width: 40px; height: 40px; object-fit: cover;" />
-                                            <div class="flex-grow-1">@item.Product.Nom</div>
-                                            <span class="badge bg-primary rounded-pill">@item.Quantity</span>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
+        foreach (var order in Model.PendingOrders)
+        {
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-1">Commande #@order.OrderId</h5>
+                            <p class="mb-0 text-muted">Client : @order.Buyer.FirstName</p>
+                            <p class="mb-0 text-muted">Date : @order.OrderDate.ToString("g")</p>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        @if (!isLockedOut)
-                        {
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#loginConfirmModal">
-                                Accepter cette commande
-                            </button>
-                        }
-                        else
-                        {
-                            <button class="btn btn-secondary" disabled>
-                                Tentatives épuisées
-                            </button>
-                        }
-
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelStationConfirmModal">
-                            Annuler la commande
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#orderDetails-@order.OrderId">
+                            Détails
                         </button>
+                    </div>
 
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <div class="collapse mt-3" id="orderDetails-@order.OrderId">
+                        <p><strong>Lieu de livraison :</strong> @order.Location</p>
+                        <ul class="list-group mb-3">
+                            @foreach (var item in order.OrderItems)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    @item.Product.Nom
+                                    <span class="badge bg-secondary">@item.Quantity</span>
+                                </li>
+                            }
+                        </ul>
+                        <p><strong>Total :</strong> @order.TotalPrice.ToString("C")</p>
+
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#acceptModal-@order.OrderId">
+                            Accepter cette commande
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal de confirmation d'acceptation -->
+            <div class="modal fade" id="acceptModal-@order.OrderId" tabindex="-1" aria-labelledby="acceptModalLabel-@order.OrderId" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content shadow">
+                        <form method="post" asp-controller="Delivery" asp-action="ConfirmDelivery">
+                            <input type="hidden" name="orderId" value="@order.OrderId" />
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="acceptModalLabel-@order.OrderId">Confirmer l'acceptation</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Veuillez confirmer l'acceptation de la commande <strong>#@order.OrderId</strong>.</p>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Courriel</label>
+                                    <input type="email" name="email" class="form-control" required />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Mot de passe</label>
+                                    <input type="password" name="password" class="form-control" required />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-success">Confirmer</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                @for (int i = 1; i <= Model.PendingPageCount; i++)
+                {
+                    <li class="page-item @(i == Model.CurrentPendingPage ? "active" : "")">
+                        <a class="page-link" asp-controller="Delivery" asp-action="Index" asp-route-pendingPage="@i" asp-route-historyPage="@Model.CurrentHistoryPage">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>
+<hr class="my-5" />
+<h2 class="mb-4">Commandes en cours</h2>
+
+@if (!Model.InProgressOrders.Any())
+{
+    <div class="alert alert-warning">Aucune commande en cours pour le moment.</div>
+}
+else
+{
+    foreach (var order in Model.InProgressOrders)
+    {
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-1">Commande #@order.OrderId</h5>
+                        <p class="mb-0 text-muted">Client : @order.Buyer.FirstName</p>
+                        <p class="mb-0 text-muted">Date : @order.OrderDate.ToString("g")</p>
+                        <p class="mb-0 text-muted">Livreur : @order.Deliverer?.FullName</p>
+                    </div>
+                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#inProgressDetails-@order.OrderId">
+                        Détails
+                    </button>
+                </div>
+
+                <div class="collapse mt-3" id="inProgressDetails-@order.OrderId">
+                    <p><strong>Lieu de livraison :</strong> @order.Location</p>
+                    <ul class="list-group mb-3">
+                        @foreach (var item in order.OrderItems)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @item.Product.Nom
+                                <span class="badge bg-secondary">@item.Quantity</span>
+                            </li>
+                        }
+                    </ul>
+                    <p><strong>Total :</strong> @order.TotalPrice.ToString("C")</p>
+
+                    <!-- Action buttons -->
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal-@order.OrderId">Annuler</button>
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#terminateModal-@order.OrderId">Terminer</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal de confirmation -->
-        <div class="modal fade" id="loginConfirmModal" tabindex="-1" aria-labelledby="loginConfirmModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content shadow">
-                    <form method="post" asp-controller="Delivery" asp-action="ConfirmDelivery">
-                        <input type="hidden" name="orderId" value="@Model.NextOrder.OrderId" />
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="loginConfirmModalLabel">Confirmez votre identité</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Courriel</label>
-                                <input type="email" name="email" class="form-control" required />
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Mot de passe</label>
-                                <input type="password" name="password" class="form-control" required />
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-success">Confirmer</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal de confirmation d'annulation par le poste de livraison -->
-        <div class="modal fade" id="cancelStationConfirmModal" tabindex="-1" aria-labelledby="cancelStationConfirmModalLabel" aria-hidden="true">
+        <!-- Cancel Confirmation Modal -->
+        <div class="modal fade" id="cancelModal-@order.OrderId" tabindex="-1" aria-labelledby="cancelModalLabel-@order.OrderId" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content shadow">
                     <form method="post" asp-controller="Order" asp-action="CancelAsStation">
-                        <input type="hidden" name="orderId" value="@Model.NextOrder.OrderId" />
+                        <input type="hidden" name="orderId" value="@order.OrderId" />
                         <input type="hidden" name="returnUrl" value="@Url.Action("Index", "Delivery")" />
-
                         <div class="modal-header">
-                            <h5 class="modal-title" id="cancelStationConfirmModalLabel">Confirmation d'annulation</h5>
+                            <h5 class="modal-title">Confirmation d'annulation</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                         </div>
-
                         <div class="modal-body">
-                            Voulez-vous vraiment annuler la commande <strong>#@Model.NextOrder.OrderId</strong> ?
+                            Voulez-vous vraiment annuler la commande <strong>#@order.OrderId</strong> ?
                         </div>
-
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-danger">Oui, annuler</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
@@ -153,47 +162,26 @@
             </div>
         </div>
 
-    }
-
-    <hr class="my-5" />
-
-    <h4 class="mb-3">Commandes acceptées récemment</h4>
-
-    @if (!Model.AssignedOrders.Any())
-    {
-        <div class="alert alert-warning">Aucune commande acceptée pour le moment.</div>
-    }
-    else
-    {
-        <div class="list-group">
-            @foreach (var order in Model.AssignedOrders)
-            {
-                <div class="list-group-item d-flex justify-content-between">
-                    <span><strong>#@order.OrderId</strong> - @order.Buyer?.FirstName</span>
-                    <span class="text-muted small">@order.OrderDate.ToString("yyyy-MM-dd HH:mm")</span>
+        <!-- Terminate Confirmation Modal -->
+        <div class="modal fade" id="terminateModal-@order.OrderId" tabindex="-1" aria-labelledby="terminateModalLabel-@order.OrderId" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content shadow">
+                    <form method="post" asp-controller="Order" asp-action="TerminateOrder">
+                        <input type="hidden" name="orderId" value="@order.OrderId" />
+                        <div class="modal-header">
+                            <h5 class="modal-title">Terminer la commande</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                        </div>
+                        <div class="modal-body">
+                            Êtes-vous sûr de vouloir marquer la commande <strong>#@order.OrderId</strong> comme livrée ?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-success">Oui, terminer</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        </div>
+                    </form>
                 </div>
-            }
+            </div>
         </div>
     }
-
-</div>
-@section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
-    <script>
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/orderStatusHub")
-            .build();
-
-        connection.on("NouvelleCommandeDisponible", function () {
-            console.log("📦 Nouvelle commande reçue, rechargement de la page...");
-            location.replace(location.href);
-
-        });
-
-        connection.start()
-            .then(() => {
-                connection.invoke("JoinDeliveryStation");
-            })
-            .catch(err => console.error("SignalR error:", err));
-    </script>
 }
