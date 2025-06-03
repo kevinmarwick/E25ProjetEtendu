@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Localization;
 using E25ProjetEtendu.Binders;
 using E25ProjetEtendu.Configuration;
 using E25ProjetEtendu.Hubs;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,7 +55,12 @@ builder.Services.Configure<SmtpSettings>(
 builder.Services.Configure<AdminSettings>(builder.Configuration.GetSection("Admin"));
 
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddTransient<EmailSender>();
 builder.Services.AddSignalR();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login"; // ou autre chemin de connexion
+});
 
 
 
