@@ -76,7 +76,8 @@ namespace E25ProjetEtendu.Services
                 ValeurNutritive = vm.ValeurNutritive,
                 EstActif = vm.EstActif,
                 Image = fileName,
-                SKU = vm.SKU
+                SKU = vm.SKU,
+                CategoryId = vm.CategoryId
             };
 
             _context.produits.Add(product);
