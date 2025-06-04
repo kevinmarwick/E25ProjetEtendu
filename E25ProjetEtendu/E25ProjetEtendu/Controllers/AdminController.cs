@@ -120,17 +120,37 @@ namespace E25ProjetEtendu.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> GiveDelivererRole(string userId)
         {
-            var success = await _userService.GiveDelivererRights(userId);
-            if (!success)
+            try
             {
-                TempData["Error"] = "Échec lors de l'ajout du rôle 'Livreur'.";
+                ApplicationUser? user = await _userService.GetUserById(userId);
+
+                //Make sure the user has a phone number before giving the deliverer role
+                if (user != null && user.PhoneNumber != null)
+                {
+                    TempData["Error"] = "L'utilisateur doit avoir un numéro de téléphone sauvegardé";
+                    return RedirectToAction("IndexUsers");
+                }
+
+                //Give the deliverer role
+                bool success = await _userService.GiveDelivererRights(userId);
+
+                if (!success)
+                {
+                    TempData["Error"] = "Échec lors de l'ajout du rôle 'Livreur'.";
+                }
+                else
+                {
+                    TempData["Success"] = "Rôle 'Livreur' attribué avec succès.";
+                }
+
+                return RedirectToAction("IndexUsers");
             }
-            else
+            catch
             {
-                TempData["Success"] = "Rôle 'Livreur' attribué avec succès.";
+                TempData["Error"] = "Utilisateur non trouvé ou erreur lors de l'attribution du rôle 'Livreur'.";
+                return RedirectToAction("IndexUsers");
             }
 
-            return RedirectToAction("IndexUsers");
         }
 
         [HttpPost]

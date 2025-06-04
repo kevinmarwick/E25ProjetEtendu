@@ -92,7 +92,7 @@ namespace E25ProjetEtendu.Controllers
 		}
 
 
-		public async Task<IActionResult> DeliveryHistories()
+		public IActionResult DeliveryHistories()
 		{
 			return View();
 		}
@@ -173,7 +173,7 @@ namespace E25ProjetEtendu.Controllers
 
 			//Order Assigned successfully
 			TempData["Succès"] = "Commande acceptée avec succès.";
-			await _smsService.EnvoyerLienConfirmationAuLivreur(user.PhoneNumber, orderId);
+			await _smsService.EnvoyerLienConfirmationAuLivreur(user.PhoneNumber!, orderId);
 			return RedirectToAction("Index");
 		}
 	}
