@@ -3,6 +3,7 @@ using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services.IServices;
 using E25ProjetEtendu.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
@@ -19,14 +20,15 @@ namespace E25ProjetEtendu.Services
             _produitService = produitService;
         }
 
-
-
         public async Task<IEnumerable<Produit>> GetAllProducts()
         {
             return await _context.produits.OrderBy(p => p.Nom)
                                           .ToListAsync();
         }
-
+        public async Task<IEnumerable<Category>> GetAllCategory()
+        {
+            return await _context.Categories.OrderBy(c => c.Name).ToListAsync();
+        }
         public async Task UpdateInventoryAndPrice(int produitId, int qty, decimal prix)
         {
             Produit produit = await _produitService.GetProduitById(produitId);
@@ -59,6 +61,22 @@ namespace E25ProjetEtendu.Services
             return fileName;
         }
 
+        public async Task<Category> AddCategoryFromVM(AddCategoryVM vm)
+        {
+            bool nameExists = await _context.Categories.AnyAsync(c => c.Name == vm.Name);
+            if (nameExists)
+            {
+                throw new InvalidOperationException("Une catégorie avec ce nom existe déjà.");
+            }
+
+            var category = new Category
+            {
+                Name = vm.Name
+            };
+            _context.Categories.Add(category);
+            await  _context.SaveChangesAsync();
+            return category;
+        }
 
         public async Task<Produit> AddProductFromVM(AddProductVM vm)
         {
@@ -90,15 +108,34 @@ namespace E25ProjetEtendu.Services
             var produit = await _produitService.GetProduitById(id);
             if (produit == null) return null;
 
+            var categories = await _context.Categories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.CategoryId.ToString(),
+                    Text = c.Name
+                }).ToListAsync();
+
             return new EditProductVM
             {
                 ProduitId = produit.ProduitId,
                 Nom = produit.Nom,
                 ValeurNutritive = produit.ValeurNutritive,
                 CurrentImage = produit.Image,
-                SKU = produit.SKU
+                SKU = produit.SKU,
+                CategoryId = produit.CategoryId,
+                Categories = categories
             };
         }
+        public async Task<IEnumerable<SelectListItem>> GetCategoriesSelectList()
+        {
+            return await _context.Categories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.CategoryId.ToString(),
+                    Text = c.Name
+                }).ToListAsync();
+        }
+
 
         public async Task<Produit> EditProductFromVM(EditProductVM vm)
         {
@@ -110,15 +147,16 @@ namespace E25ProjetEtendu.Services
 
             // Vérifie si le SKU existe déjà pour un autre produit
             bool SKUexists = await _context.produits
-                .AnyAsync(p => p.SKU == vm.SKU);
+            .AnyAsync(p => p.SKU == vm.SKU && p.ProduitId != vm.ProduitId);
             if (SKUexists)
             {
                 throw new InvalidOperationException("Ce SKU existe déjà");
             }
-
+            
             product.Nom = vm.Nom;
             product.ValeurNutritive = vm.ValeurNutritive;
             product.SKU = vm.SKU;
+            product.CategoryId = vm.CategoryId;
 
             if (vm.NewImageFile != null && vm.NewImageFile.Length > 0)
             {

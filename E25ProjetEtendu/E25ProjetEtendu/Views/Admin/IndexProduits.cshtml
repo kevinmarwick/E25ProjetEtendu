@@ -15,8 +15,20 @@
 
 
 <p>
-    <a asp-action="AddProduct">Ajouter un produit</a>
+    <a asp-action="AddProduct" class="btn btn-primary mb-3">
+        <i class="fas fa-plus-circle"></i> Ajouter un produit
+    </a>
 </p>
+<p>
+    <a asp-action="AddCategory" class="btn btn-primary mb-3">
+        <i class="fas fa-plus-circle"></i> Ajouter une catégorie
+    </a>
+    <a asp-action="IndexCategories" class="btn btn-primary mb-3">
+         Catégories
+    </a>
+</p>
+
+
 <table id="productTable" class="table">
     <thead>
         <tr>

@@ -1,35 +1,40 @@
-﻿using E25ProjetEtendu.Models;
+﻿using E25ProjetEtendu.Data;
+using E25ProjetEtendu.Models;
 using E25ProjetEtendu.Services.IServices;
 using E25ProjetEtendu.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SQLitePCL;
 
 namespace E25ProjetEtendu.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminController : Controller
     {
         private readonly IAdminService _adminService;
         private readonly IProduitService _produitService;
         private readonly IUserService _userService;
+        private readonly ApplicationDbContext _context;
 
-        public AdminController(IAdminService adminService, IProduitService produitService, IUserService userService)
+        public AdminController(IAdminService adminService, IProduitService produitService, IUserService userService, ApplicationDbContext context)
         {
             _adminService = adminService;
             _produitService = produitService;
             _userService = userService;
+            _context = context;
         }
 
-        [Authorize(Roles = "Admin")]
+        
         public IActionResult Dashboard()
         {
             return View();
         }
 
 
-        [Authorize(Roles = "Admin")]
+        
         public async Task<IActionResult> EditProduct(int id)
         {
             var vm = await _adminService.GetEditProductVM(id);
@@ -39,13 +44,18 @@ namespace E25ProjetEtendu.Controllers
             return View(vm);
         }
 
-
+        [HttpGet]
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditProduct(EditProductVM vm)
         {
             if (!ModelState.IsValid)
+            {
+                vm.Categories = await _adminService.GetCategoriesSelectList(); // 🟢 ici
                 return View(vm);
+            }
+
             try
             {
                 await _adminService.EditProductFromVM(vm);
@@ -55,9 +65,9 @@ namespace E25ProjetEtendu.Controllers
             catch (InvalidOperationException ex)
             {
                 ModelState.AddModelError("SKU", ex.Message);
+                vm.Categories = await _adminService.GetCategoriesSelectList(); // 🟢 aussi ici
                 return View(vm);
             }
-
         }
 
 
@@ -66,10 +76,39 @@ namespace E25ProjetEtendu.Controllers
             IEnumerable<Produit> produits = await _adminService.GetAllProducts();
             return View(produits);
         }
+        public async Task<IActionResult> IndexCategories()
+        {
+            IEnumerable<Category> categories = await _adminService.GetAllCategory();
+            return View(categories);
+        }
 
+        [HttpGet]
+        public IActionResult AddCategory()
+        {
+            var vm = new AddCategoryVM();
+            return View(vm);
+        }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddCategory(AddCategoryVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+            try
+            {
+                await _adminService.AddCategoryFromVM(vm);
+                TempData["SuccessMessage"] = "Catégory ajoutée avec succès.";
+                return RedirectToAction("IndexProduits");
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError("Name", ex.Message);
+                return View(vm);
+            }
+        }
         [IgnoreAntiforgeryToken]
         public async Task<IActionResult> UpdateInventoryAndPrice(UpdateProductVM model)
         {
@@ -82,10 +121,25 @@ namespace E25ProjetEtendu.Controllers
 
 
         //GET
+        [HttpGet]
         public async Task<IActionResult> AddProduct()
         {
-            return View();
+            var categories = await _context.Categories
+                .Select(c => new SelectListItem
+                {
+                    Value = c.CategoryId.ToString(),
+                    Text = c.Name
+                })
+                .ToListAsync();
+
+            var vm = new AddProductVM
+            {
+                Categories = categories
+            };
+
+            return View(vm);
         }
+
 
 
         [HttpPost]
@@ -93,7 +147,17 @@ namespace E25ProjetEtendu.Controllers
         public async Task<IActionResult> AddProduct(AddProductVM vm)
         {
             if (!ModelState.IsValid)
+            {
+                vm.Categories = await _context.Categories
+                    .Select(c => new SelectListItem
+                    {
+                        Value = c.CategoryId.ToString(),
+                        Text = c.Name
+                    })
+                    .ToListAsync();
                 return View(vm);
+            }
+
             try
             {
                 await _adminService.AddProductFromVM(vm);
@@ -103,12 +167,19 @@ namespace E25ProjetEtendu.Controllers
             catch (InvalidOperationException ex)
             {
                 ModelState.AddModelError("SKU", ex.Message);
+
+                vm.Categories = await _context.Categories
+                    .Select(c => new SelectListItem
+                    {
+                        Value = c.CategoryId.ToString(),
+                        Text = c.Name
+                    })
+                    .ToListAsync();
+
                 return View(vm);
             }
-
-
-
         }
+
 
         public async Task<IActionResult> IndexUsers()
         {

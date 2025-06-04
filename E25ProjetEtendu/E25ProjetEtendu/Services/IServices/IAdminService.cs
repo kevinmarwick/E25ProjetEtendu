@@ -1,6 +1,7 @@
 using E25ProjetEtendu.Models;
 using E25ProjetEtendu.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace E25ProjetEtendu.Services.IServices
 {
@@ -12,6 +13,8 @@ namespace E25ProjetEtendu.Services.IServices
         Task<EditProductVM?> GetEditProductVM(int id);
         Task<Produit> EditProductFromVM(EditProductVM vm);
         Task<bool> AddBalance(string userId, decimal montant);
-
+        Task<IEnumerable<SelectListItem>> GetCategoriesSelectList();
+        Task<Category> AddCategoryFromVM(AddCategoryVM vm);
+        Task<IEnumerable<Category>> GetAllCategory();
     }
 }
