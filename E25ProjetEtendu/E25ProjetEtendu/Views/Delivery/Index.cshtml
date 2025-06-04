@@ -1,199 +1,327 @@
 ﻿@model E25ProjetEtendu.ViewModels.DeliveryVM
 
 @{
-    int maxAttempts = 3;
-    int? attempts = Context.Session.GetInt32("DeliveryLoginAttempts");
-    bool isLockedOut = attempts.HasValue && attempts.Value >= maxAttempts;
+    ViewData["Title"] = "Tableau de livraison";
+
+    var pendingHeaderClass = Model.PendingOrders.Any() ? "bg-warning bg-opacity-25" : "bg-success bg-opacity-25";
+    var inProgressHeaderClass = Model.InProgressOrders.Any() ? "bg-primary bg-opacity-25" : "bg-success bg-opacity-25";
+    var pendingBadgeClass = Model.PendingOrders.Any() ? "bg-warning text-dark" : "bg-success text-white";
+    var inProgressBadgeClass = Model.InProgressOrders.Any() ? "bg-primary text-dark" : "bg-success text-white";
+    var pendingEmptyClass = Model.PendingOrders.Any() ? "alert alert-info" : "p-3 rounded";
+    var inProgressEmptyClass = Model.InProgressOrders.Any() ? "alert alert-warning" : "p-3 rounded";
+    var pendingEmptyBg = Model.PendingOrders.Any() ? "" : "style='background-color: rgba(25,135,84,0.15)'";
+    var inProgressEmptyBg = Model.InProgressOrders.Any() ? "" : "style='background-color: rgba(25,135,84,0.15)'";
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Erreur :</strong> @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
+}
+else if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <strong>Succès :</strong> @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+    </div>
 }
 
-<div class="container mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Prochaine commande à livrer</h2>
-        <a class="btn btn-outline-dark" asp-controller="Delivery" asp-action="DeliveryHistories">
-            <i class="bi bi-clock-history me-1"></i> Historique des commandes
-        </a>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<a class="btn btn-outline-dark mb-3" data-bs-toggle="modal" data-bs-target="#historiqueModal">
+    <i class="bi bi-clock-history me-1"></i> Historique des commandes
+</a>
+
+<div class="container">
+    <div class="row g-4">
+        <!-- Commandes en attente -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header @pendingHeaderClass">
+                    <h5 class="mb-0">📦 Commandes en attente <span class="badge @pendingBadgeClass">@Model.TotalPending</span></h5>
+                </div>
+                <div class="card-body p-3">
+                    @if (!Model.PendingOrders.Any())
+                    {
+                        <div class="@pendingEmptyClass" @Html.Raw(pendingEmptyBg)>Aucune commande en attente.</div>
+                    }
+                    else
+                    {
+                        var expandedOrderId = Model.PendingOrders.First().OrderId;
+                        foreach (var order in Model.PendingOrders)
+                        {
+                            var isExpanded = order.OrderId == expandedOrderId;
+                            <div class="p-3 mb-3 rounded shadow-sm border bg-light-subtle">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div><strong>#@order.OrderId</strong> - @order.Buyer.FirstName</div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <small class="text-muted">@order.OrderDate.ToString("g")</small>
+                                        <button class="btn btn-sm btn-outline-secondary toggle-details @(isExpanded ? "d-none" : "")" type="button" data-target="details-@order.OrderId">Détails</button>
+                                    </div>
+                                </div>
+                                <div class="small">Lieu : @order.Location</div>
+
+                                <div class="order-details mt-2 @(isExpanded ? "d-block" : "d-none")" id="details-@order.OrderId">
+                                    <div class="d-flex flex-column gap-1 ps-1">
+                                        @foreach (var item in order.OrderItems)
+                                        {
+                                            <div class="d-flex justify-content-between align-items-center small px-1">
+                                                <span>@item.Product.Nom <span class="text-muted">×@item.Quantity</span></span>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="mt-2 text-end d-flex justify-content-end gap-2">
+                                        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#refuseModal-@order.OrderId">Refuser</button>
+                                        <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#acceptModal-@order.OrderId">Accepter</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="refuseModal-@order.OrderId" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <form method="post" asp-controller="Order" asp-action="CancelAsStation">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="orderId" value="@order.OrderId" />
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Confirmer le refus</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Êtes-vous sûr de vouloir refuser la commande <strong>#@order.OrderId</strong> ?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm">Oui, refuser</button>
+                                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annuler</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="acceptModal-@order.OrderId" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content shadow">
+                                        <form method="post" asp-controller="Delivery" asp-action="ConfirmDelivery">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="orderId" value="@order.OrderId" />
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Confirmer</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <p>Commande <strong>#@order.OrderId</strong></p>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Courriel</label>
+                                                    <input type="email" name="email" class="form-control form-control-sm" required />
+                                                </div>
+                                                <div class="mb-2">
+                                                    <label class="form-label">Mot de passe</label>
+                                                    <input type="password" name="password" class="form-control form-control-sm" required />
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="submit" class="btn btn-sm btn-success">Confirmer</button>
+                                                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Collapsible commandes en cours -->
+        <div class="col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header @inProgressHeaderClass">
+                    <h5 class="mb-0">🚚 Commandes en cours <span class="badge @inProgressBadgeClass">@Model.InProgressOrders.Count()</span></h5>
+                </div>
+                <div class="card-body p-3">
+                    @if (!Model.InProgressOrders.Any())
+                    {
+                        <div class="@inProgressEmptyClass" @Html.Raw(inProgressEmptyBg)>Aucune commande en cours.</div>
+                    }
+                    else
+                    {
+                        @foreach (var order in Model.InProgressOrders)
+                        {
+                            <div class="p-3 mb-3 rounded shadow-sm border bg-light-subtle">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div><strong>#@order.OrderId</strong> - @order.Buyer.FirstName</div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <small class="text-muted">@order.OrderDate.ToString("g")</small>
+                                        <button class="btn btn-sm btn-outline-secondary toggle-inprogress" type="button" data-target="progress-@order.OrderId">Détails</button>
+                                    </div>
+                                </div>
+                                <div class="small">Lieu : @order.Location</div>
+                                <div class="small">Livreur : @order.Deliverer?.FullName</div>
+                                <div class="inprogress-details d-none mt-2" id="progress-@order.OrderId">
+                                    <div class="d-flex flex-column gap-1 ps-1">
+                                        @foreach (var item in order.OrderItems)
+                                        {
+                                            <div class="d-flex justify-content-between align-items-center small px-1">
+                                                <span>@item.Product.Nom <span class="text-muted">×@item.Quantity</span></span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
     </div>
-
-    @if (TempData["Erreur"] != null)
-    {
-        <div class="alert alert-danger">@TempData["Erreur"]</div>
-    }
-    @if (TempData["Succès"] != null)
-    {
-        <div class="alert alert-success">@TempData["Succès"]</div>
-    }
-
-    @if (Model.NextOrder == null)
-    {
-        <div class="alert alert-info">Aucune commande disponible pour le moment.</div>
-    }
-    else
-    {
-        <div class="card shadow-sm">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h5 class="card-title mb-1">Commande #@Model.NextOrder.OrderId</h5>
-                    <p class="mb-0 text-muted">Client : @Model.NextOrder.Buyer?.UserName</p>
-                </div>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#commandeModal">
-                    Voir la commande
-                </button>
-            </div>
-        </div>
-
-        <!-- Modal Bootstrap -->
-        <div class="modal fade" id="commandeModal" tabindex="-1" aria-labelledby="commandeModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content shadow">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="commandeModalLabel">Détails de la commande #@Model.NextOrder.OrderId</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6 border-end">
-                                <p><strong>Client :</strong> @Model.NextOrder.Buyer?.UserName</p>
-                                <p><strong>Adresse de livraison :</strong> @Model.NextOrder.Location</p>
-                                <p><strong>Date :</strong> @Model.NextOrder.OrderDate.ToString("yyyy-MM-dd HH:mm")</p>
-                                <p><strong>Total :</strong> @Model.NextOrder.TotalPrice.ToString("C")</p>
-                            </div>
-
-                            <div class="col-md-6">
-                                <h6 class="mb-3">Produits :</h6>
-                                <ul class="list-group">
-                                    @foreach (var item in Model.NextOrder.OrderItems)
-                                    {
-                                        <li class="list-group-item d-flex align-items-center">
-                                            <img src="/images/@item.Product.Image" alt="@item.Product.Nom" class="me-3" style="width: 40px; height: 40px; object-fit: cover;" />
-                                            <div class="flex-grow-1">@item.Product.Nom</div>
-                                            <span class="badge bg-primary rounded-pill">@item.Quantity</span>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        @if (!isLockedOut)
-                        {
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#loginConfirmModal">
-                                Accepter cette commande
-                            </button>
-                        }
-                        else
-                        {
-                            <button class="btn btn-secondary" disabled>
-                                Tentatives épuisées
-                            </button>
-                        }
-
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#cancelStationConfirmModal">
-                            Annuler la commande
-                        </button>
-
-                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal de confirmation -->
-        <div class="modal fade" id="loginConfirmModal" tabindex="-1" aria-labelledby="loginConfirmModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content shadow">
-                    <form method="post" asp-controller="Delivery" asp-action="ConfirmDelivery">
-                        <input type="hidden" name="orderId" value="@Model.NextOrder.OrderId" />
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="loginConfirmModalLabel">Confirmez votre identité</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Courriel</label>
-                                <input type="email" name="email" class="form-control" required />
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Mot de passe</label>
-                                <input type="password" name="password" class="form-control" required />
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-success">Confirmer</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal de confirmation d'annulation par le poste de livraison -->
-        <div class="modal fade" id="cancelStationConfirmModal" tabindex="-1" aria-labelledby="cancelStationConfirmModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content shadow">
-                    <form method="post" asp-controller="Order" asp-action="CancelAsStation">
-                        <input type="hidden" name="orderId" value="@Model.NextOrder.OrderId" />
-                        <input type="hidden" name="returnUrl" value="@Url.Action("Index", "Delivery")" />
-
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="cancelStationConfirmModalLabel">Confirmation d'annulation</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-                        </div>
-
-                        <div class="modal-body">
-                            Voulez-vous vraiment annuler la commande <strong>#@Model.NextOrder.OrderId</strong> ?
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-danger">Oui, annuler</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-    }
-
-    <hr class="my-5" />
-
-    <h4 class="mb-3">Commandes acceptées récemment</h4>
-
-    @if (!Model.AssignedOrders.Any())
-    {
-        <div class="alert alert-warning">Aucune commande acceptée pour le moment.</div>
-    }
-    else
-    {
-        <div class="list-group">
-            @foreach (var order in Model.AssignedOrders)
-            {
-                <div class="list-group-item d-flex justify-content-between">
-                    <span><strong>#@order.OrderId</strong> - @order.Buyer?.FirstName</span>
-                    <span class="text-muted small">@order.OrderDate.ToString("yyyy-MM-dd HH:mm")</span>
-                </div>
-            }
-        </div>
-    }
-
 </div>
+
+<!-- Historique des commandes Modal -->
+<div class="modal fade" id="historiqueModal" tabindex="-1" aria-labelledby="historiqueModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content shadow">
+            <div class="modal-header">
+                <h5 class="modal-title" id="historiqueModalLabel">Historique des commandes</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            <div class="modal-body">
+                @if (Model.OrderHistory.Any())
+                {
+                    <table id="orderHistoryTable" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>Client</th>
+                                <th>Statut</th>
+                                <th>Total</th>
+                                <th>Lieu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.OrderHistory)
+                            {
+                                <tr>
+                                    <td>@order.OrderId</td>
+                                    <td>@order.OrderDate.ToString("dd MMMM yyyy HH'h' mm", System.Globalization.CultureInfo.GetCultureInfo("fr-CA"))</td>
+                                    <td>@order.Buyer?.UserName</td>
+                                    <td>@order.Status.GetDisplayName()</td>
+                                    <td>@order.TotalPrice.ToString("C")</td>
+                                    <td>@order.Location</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-info">Aucune commande terminée ou annulée.</div>
+                }
+            </div>
+            <div class="modal-footer d-flex justify-content-between">
+                <a asp-action="OrdersHistory" asp-controller="Delivery" class="btn btn-secondary">
+                    Voir tout l'historique
+                </a>
+                <button type="button" class="btn btn-outline-dark" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('.toggle-details').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const targetId = this.getAttribute('data-target');
+
+                    document.querySelectorAll('.order-details').forEach(el => {
+                        if (el.id === targetId) {
+                            el.classList.remove('d-none');
+                            el.classList.add('d-block');
+                        } else {
+                            el.classList.add('d-none');
+                            el.classList.remove('d-block');
+                        }
+                    });
+
+                    document.querySelectorAll('.toggle-details').forEach(b => b.classList.remove('d-none'));
+                    this.classList.add('d-none');
+                });
+            });
+
+            document.querySelectorAll('.toggle-inprogress').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const targetId = this.getAttribute('data-target');
+                    const target = document.getElementById(targetId);
+
+                    if (target.classList.contains('d-none')) {
+                        target.classList.remove('d-none');
+                        target.classList.add('d-block');
+                    } else {
+                        target.classList.add('d-none');
+                        target.classList.remove('d-block');
+                    }
+                });
+            });
+
+            $('#orderHistoryTable').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true,
+                responsive: true,
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json'
+                }
+            });
+
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/orderStatusHub")
+                .build();
+
+            function reload(reason) {
+                console.log(`🔄 Mise à jour requise : ${reason}`);
+                location.reload();
+            }
+
+            connection.on("NouvelleCommandeDisponible", () => reload("Nouvelle commande"));
+            connection.on("CommandeAnnuleeParClient", () => reload("Commande annulée par le client"));
+            connection.on("CommandeAnnuleeParLivreur", () => reload("Commande annulée par le livreur"));
+            connection.on("CommandeTermineeParLivreur", () => reload("Commande livrée"));
+
+            connection.start()
+                .then(() => {
+                    connection.invoke("JoinDeliveryStation");
+                })
+                .catch(err => console.error("Erreur SignalR :", err));
+        });
+    </script>
     <script>
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/orderStatusHub")
             .build();
 
         connection.on("NouvelleCommandeDisponible", function () {
-            console.log("📦 Nouvelle commande reçue, rechargement de la page...");
-            location.replace(location.href);
-
+            console.log(" Nouvelle commande reçue, rechargement de la page...");
+            location.reload();
         });
 
         connection.start()
             .then(() => {
                 connection.invoke("JoinDeliveryStation");
             })
-            .catch(err => console.error("SignalR error:", err));
+            .catch(err => console.error("Erreur SignalR :", err));
     </script>
 }
+
+

@@ -40,6 +40,60 @@ namespace E25ProjetEtendu.Services
             _adminSettings = adminSettings.Value;
         }
 
+        #region Get Methods
+
+        /// <summary>
+        /// Gets the order history of all users,including delivered and cancelled orders, for the delivery station.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Order>> GetOrdersHistory()
+        {
+            return await _context.Orders
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.Product)
+                .Include(o => o.Buyer)
+                .Include(o => o.Deliverer)
+                .Where(o => o.Status == OrderStatus.Delivered || o.Status == OrderStatus.Cancelled)
+                .OrderByDescending(o => o.OrderDate)
+                .ToListAsync();
+        }
+
+        public async Task<Order?> GetMostRecentOrder(string userId)
+        {
+            return await _context.Orders
+                .Where(o => o.BuyerId == userId)
+                .OrderByDescending(o => o.OrderDate)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<Order?> GetActiveOrder(string userId)
+        {
+            return await _context.Orders
+                 .Where(o => o.BuyerId == userId &&
+                             (o.Status == OrderStatus.Pending || o.Status == OrderStatus.InProgress))
+                 .OrderByDescending(o => o.OrderDate)
+                 .FirstOrDefaultAsync();
+        }
+
+        /// <summary>
+        /// Gets the next pending orders for the delivery station.
+        /// </summary>
+        /// <param name="count"></param>
+        /// <returns></returns>
+        public async Task<(List<Order> orders, int totalCount)> GetNextPendingOrders(int count = 5)
+        {
+            var query = _context.Orders
+                .Include(o => o.Buyer)
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.Product)
+                .Where(o => o.Status == OrderStatus.Pending)
+                .OrderBy(o => o.OrderDate);
+
+            var totalCount = await query.CountAsync();
+            var orders = await query.Take(count).ToListAsync();
+
+            return (orders, totalCount);
+        }
+
+
         public async Task<Order?> GetOrderById(int orderId)
         {
             return await _context.Orders
@@ -50,24 +104,9 @@ namespace E25ProjetEtendu.Services
                 .FirstOrDefaultAsync(o => o.OrderId == orderId);
         }
 
-        public async Task<bool> EndCompleteOrder(int orderId, string livreurId)
-        {
-            var commande = await _context.Orders
-                .FirstOrDefaultAsync(o => o.OrderId == orderId && o.DelivererId == livreurId);
+        #endregion
 
-            if (commande == null) return false;
-
-            commande.Status = OrderStatus.Delivered;
-            await _context.SaveChangesAsync();
-
-            // ✅ Envoie la notification SignalR à l'utilisateur concerné
-            await _hubContext.Clients.Group(commande.BuyerId)
-            .SendAsync("ReceiveOrderStatusUpdate", commande.OrderId, commande.Status.ToString());
-
-
-            return true;
-        }
-        
+        #region Create Order
 
         public async Task<Order> CreateOrder(OrderRequestDTO dto, string userId, List<Produit> products)
         {
@@ -102,21 +141,19 @@ namespace E25ProjetEtendu.Services
             try
             {
                 await _context.SaveChangesAsync();
-				await _hubContext.Clients.Group("DeliveryStation")
-	            .SendAsync("NouvelleCommandeDisponible");
+                await _hubContext.Clients.Group("DeliveryStation")
+                .SendAsync("NouvelleCommandeDisponible");
 
-			}
-			catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine("DB ERROR: " + ex.InnerException?.Message ?? ex.Message);
                 throw;
             }
-
             return order;
         }
 
         public async Task<bool> TryCreateOrderFromReservation(string userId, string location)
-
         {
             var tenMinutesAgo = DateTime.Now.AddMinutes(-10);
 
@@ -146,6 +183,40 @@ namespace E25ProjetEtendu.Services
             return true;
         }
 
+        #endregion
+
+        #region Complete Order
+
+        /// <summary>
+        /// Ends the order by marking it as delivered and notifying the user via SignalR.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="livreurId"></param>
+        /// <returns></returns>
+        public async Task<bool> EndCompleteOrder(int orderId, string livreurId)
+        {
+            var commande = await _context.Orders
+                .FirstOrDefaultAsync(o => o.OrderId == orderId && o.DelivererId == livreurId);
+
+            if (commande == null) return false;
+
+            commande.Status = OrderStatus.Delivered;
+            await _context.SaveChangesAsync();
+                        
+            // Notify the buyer about the order status update
+            await _hubContext.Clients.Group(commande.BuyerId)
+            .SendAsync("ReceiveOrderStatusUpdate", commande.OrderId, commande.Status.ToString());
+            // Notify the delivery station about the completed order
+            await _hubContext.Clients.Group("DeliveryStation")
+            .SendAsync("CommandeTermineeParLivreur");
+
+            return true;
+        }
+
+        #endregion
+
+        #region User Has Active Order Check
+
         /// <summary>
         /// Returns true if the user has an active order (not delivered or cancelled).
         /// </summary>
@@ -157,24 +228,15 @@ namespace E25ProjetEtendu.Services
                 .AnyAsync(o => o.BuyerId == userId && (o.Status != OrderStatus.Delivered || o.Status == OrderStatus.Cancelled));
         }
 
-        public async Task<Order?> GetMostRecentOrder(string userId)
-        {
-            return await _context.Orders
-                .Where(o => o.BuyerId == userId)
-                .OrderByDescending(o => o.OrderDate)
-                .FirstOrDefaultAsync();
-        }
+        #endregion
 
-        public async Task<Order?> GetActiveOrder(string userId)
-        {
-            return await _context.Orders
-                 .Where(o => o.BuyerId == userId &&
-                             (o.Status == OrderStatus.Pending || o.Status == OrderStatus.InProgress))
-                 .OrderByDescending(o => o.OrderDate)
-                 .FirstOrDefaultAsync();
+        #region Order Summary HTML
 
-        }
-
+        /// <summary>
+        /// Builds an HTML summary of the order details, including product names and total price.
+        /// </summary>
+        /// <param name="order"></param>
+        /// <returns></returns>
         public string BuildOrderSummaryHtml(Order order)
         {
             if (order.OrderItems == null || !order.OrderItems.Any())
@@ -192,6 +254,8 @@ namespace E25ProjetEtendu.Services
 
             return sb.ToString();
         }
+
+        #endregion
 
         #region Order Cancellation
 
@@ -300,9 +364,9 @@ namespace E25ProjetEtendu.Services
                     order
                 );
             }
-            
+
             // **** Replenish Inventory if needed ****
-            bool restockResult = returnInventory;            
+            bool restockResult = returnInventory;
             if (returnInventory)
             {
                 restockResult = await RestockInventory(order);
@@ -348,6 +412,18 @@ namespace E25ProjetEtendu.Services
             // Send a signal to the user when a change happen in the database
             await _hubContext.Clients.Group(order.BuyerId)
             .SendAsync("ReceiveOrderStatusUpdate", order.OrderId, order.Status.ToString());
+            // Notify the delivery station about the cancelled order
+            if (actorType == CancellationActor.Buyer)
+            {
+                await _hubContext.Clients.Group("DeliveryStation")
+                    .SendAsync("CommandeAnnuleeParClient");
+            }
+            else if (actorType == CancellationActor.Deliverer || actorType == CancellationActor.DeliveryStation)
+            {
+                await _hubContext.Clients.Group("DeliveryStation")
+                    .SendAsync("CommandeAnnuleeParLivreur");
+            }
+
             return null; /// null = success
         }
 
@@ -396,7 +472,7 @@ namespace E25ProjetEtendu.Services
                 else
                 {
                     // Return false if any product is not found.   
-                    return false;                                       /// Later, instead of returning false, we should pass a list of products to manually restock, and restock the rest. 
+                    return false;                                       /// *************** Later, instead of returning false, we should send to admin a list of products to manually restock, and restock the rest. ***************
                 }
             }
 
@@ -404,7 +480,7 @@ namespace E25ProjetEtendu.Services
             await _context.SaveChangesAsync();
             return true;
         }
+        #endregion              
 
-        #endregion
     }
 }

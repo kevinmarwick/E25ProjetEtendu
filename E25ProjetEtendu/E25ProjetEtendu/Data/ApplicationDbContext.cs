@@ -296,6 +296,163 @@ namespace E25ProjetEtendu.Data
                 .HasIndex(r => r.ReservedAt);
 
             #endregion
+
+            #region Mass Seed Data
+
+            //add 30 different users, named Client + i
+
+            var extraUsers = new List<ApplicationUser>();
+            var extraUserRoles = new List<IdentityUserRole<string>>();
+
+            for (int i = 1; i <= 30; i++)
+            {
+                var id = $"80000000-0000-0000-0000-{i.ToString("D12")}";
+                var email = $"client{i}@test.com";
+
+                extraUsers.Add(new ApplicationUser
+                {
+                    Id = id,
+                    UserName = email,
+                    FirstName = $"Client{i}",
+                    LastName = $"Testeur",
+                    NormalizedUserName = email.ToUpper(),
+                    Email = email,
+                    NormalizedEmail = email.ToUpper(),
+                    EmailConfirmed = true,
+                    PasswordHash = userPassword,
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    PhoneNumber = "5149465399"
+                });
+
+                extraUserRoles.Add(new IdentityUserRole<string>
+                {
+                    UserId = id,
+                    RoleId = "user-role-id"
+                });
+            }
+
+            modelBuilder.Entity<ApplicationUser>().HasData(extraUsers);
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(extraUserRoles);
+
+            var orders = new List<Order>();
+            var orderItems = new List<OrderItem>();
+            var rand = new Random();
+            int orderId = 3001;
+            int itemId = 1001;
+
+            // add 15 pending orders
+            
+            for (int i = 1; i <= 15; i++)
+            {
+                var userId = $"80000000-0000-0000-0000-{i.ToString("D12")}";
+                var currentOrderId = orderId;
+
+                orders.Add(new Order
+                {
+                    OrderId = currentOrderId,
+                    BuyerId = userId,
+                    DelivererId = null,
+                    OrderDate = DateTime.Now.AddMinutes(-i * 10),
+                    Status = OrderStatus.Pending,
+                    TotalPrice = 0, // On calcule à partir des items
+                    Location = $"D-{currentOrderId}"
+                });
+
+                decimal total = 0;
+
+                var usedProductIds = new HashSet<int>();
+                while (usedProductIds.Count < 5)
+                {
+                    int productId = rand.Next(1, 32); // [1, 31]
+                    if (usedProductIds.Contains(productId)) continue;
+
+                    usedProductIds.Add(productId);
+                    var unitPrice = rand.Next(1, 9); // simulate unit prices between 1$ and 8$
+                    var quantity = rand.Next(1, 4); // simulate quantity between 1 and 3
+
+                    total += unitPrice * quantity;
+
+                    orderItems.Add(new OrderItem
+                    {
+                        OrderItemId = itemId++,
+                        OrderId = currentOrderId,
+                        ProductId = productId,
+                        Quantity = quantity,
+                        UnitPrice = unitPrice
+                    });
+                }
+
+                orders.Last().TotalPrice = total;
+
+                orderId++;
+            }
+
+
+            // add 50 delivered orders
+            for (int i = 0; i < 50; i++)
+            {
+                var userIndex = (i % 30) + 1;
+                var userId = $"80000000-0000-0000-0000-{userIndex.ToString("D12")}";
+
+                orders.Add(new Order
+                {
+                    OrderId = orderId,
+                    BuyerId = userId,
+                    DelivererId = "43333333-3333-3333-3333-333333333333",
+                    OrderDate = DateTime.Now.AddDays(-i - 10),
+                    Status = OrderStatus.Delivered,
+                    TotalPrice = 5,
+                    Location = $"C-{orderId}"
+                });
+
+                orderItems.Add(new OrderItem
+                {
+                    OrderItemId = itemId++,
+                    OrderId = orderId,
+                    ProductId = 2,
+                    Quantity = 1,
+                    UnitPrice = 5
+                });
+
+                orderId++;
+            }
+
+            // Add 20 canceled orders
+            for (int i = 0; i < 20; i++)
+            {
+                var userIndex = (i % 30) + 1;
+                var userId = $"80000000-0000-0000-0000-{userIndex.ToString("D12")}";
+
+                orders.Add(new Order
+                {
+                    OrderId = orderId,
+                    BuyerId = userId,
+                    DelivererId = "43333333-3333-3333-3333-333333333333",
+                    OrderDate = DateTime.Now.AddDays(-i - 100),
+                    Status = OrderStatus.Cancelled,
+                    TotalPrice = 2,
+                    Location = $"X-{orderId}",
+                    CancellationActor = CancellationActor.DeliveryStation,
+                    CancellationDate = DateTime.Now.AddDays(-i - 99),
+                    CancellingUserId = "42222222-2222-2222-2222-222222222222" // Delivery station
+                });
+
+                orderItems.Add(new OrderItem
+                {
+                    OrderItemId = itemId++,
+                    OrderId = orderId,
+                    ProductId = 3,
+                    Quantity = 1,
+                    UnitPrice = 2
+                });
+
+                orderId++;
+            }
+
+            modelBuilder.Entity<Order>().HasData(orders);
+            modelBuilder.Entity<OrderItem>().HasData(orderItems);
+
+            #endregion
         }
     }
 }

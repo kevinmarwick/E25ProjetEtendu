@@ -1,0 +1,128 @@
+﻿@model List<E25ProjetEtendu.Models.Order>
+
+@{
+    ViewData["Title"] = "Tableau de bord de livraison";
+}
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+
+<h1 class="text-center mb-4">Tableau de bord de livraison</h1>
+
+@if (Model.Count == 0)
+{
+    <p class="text-muted text-center">Aucune commande à livrer.</p>
+}
+
+@if (Model.Any(o => o.Status == OrderStatus.Pending))
+{
+    <h3>Commandes à accepter</h3>
+    <div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
+        @foreach (var order in Model.Where(o => o.Status == OrderStatus.Pending))
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Commande #@order.OrderId</h5>
+                        <p><strong>Date :</strong> @order.OrderDate.ToString("g")</p>
+                        <p><strong>Client :</strong> @order.Buyer?.UserName</p>
+                        <p><strong>Lieu de livraison :</strong> @order.Location</p>
+                        <p><strong>Total :</strong> @order.TotalPrice.ToString("C")</p>
+                        <p><strong>Articles :</strong></p>
+                        <ul>
+                            @foreach (var item in order.OrderItems)
+                            {
+                                <li>@item.Product.Nom - @item.Quantity x @item.UnitPrice.ToString("C")</li>
+                            }
+                        </ul>
+                        <form asp-controller="Delivery" asp-action="AcceptOrder" method="post">
+                            <input type="hidden" name="orderId" value="@order.OrderId" />
+                            <button type="submit" class="btn btn-primary">Accepter la commande</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@if (Model.Any(o => o.Status == OrderStatus.InProgress))
+{
+    <h3>Commandes en cours</h3>
+    <div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
+        @foreach (var order in Model.Where(o => o.Status == OrderStatus.InProgress))
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Commande #@order.OrderId</h5>
+                        <p><strong>Date :</strong> @order.OrderDate.ToString("g")</p>
+                        <p><strong>Client :</strong> @order.Buyer?.UserName</p>
+                        <p><strong>Lieu de livraison :</strong> @order.Location</p>
+                        <p><strong>Total :</strong> @order.TotalPrice.ToString("C")</p>
+                        <p><strong>Articles :</strong></p>
+                        <ul>
+                            @foreach (var item in order.OrderItems)
+                            {
+                                <li>@item.Product.Nom - @item.Quantity x @item.UnitPrice.ToString("C")</li>
+                            }
+                        </ul>
+                        <form asp-controller="Delivery" asp-action="TerminateOrder" method="post" class="d-inline">
+                            <input type="hidden" name="orderId" value="@order.OrderId" />
+                            <button type="submit" class="btn btn-success">Marquer comme livrée</button>
+                        </form>
+                        <form asp-controller="Delivery" asp-action="CancelOrder" method="post" class="d-inline ms-2">
+                            <input type="hidden" name="orderId" value="@order.OrderId" />
+                            <button type="submit" class="btn btn-danger">Annuler la commande</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<h3>Historique des commandes</h3>
+<table id="orderHistoryTable"  class="table table-striped">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Date</th>
+            <th>Client</th>
+            <th>Statut</th>
+            <th>Total</th>
+            <th>Lieu</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model.Where(o => o.Status == OrderStatus.Delivered || o.Status == OrderStatus.Cancelled))
+        {
+            <tr>
+                <td>@order.OrderId</td>
+                <td>@order.OrderDate.ToString("g")</td>
+                <td>@order.Buyer?.UserName</td>
+                <td>@order.Status.GetDisplayName()</td>
+                <td>@order.TotalPrice.ToString("C")</td>
+                <td>@order.Location</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $('#orderHistoryTable').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            responsive: true,
+            language: {
+                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json'
+
+            }
+        });
+    });
+</script>
