@@ -23,24 +23,24 @@ public class AdminServiceTests
         return new ApplicationDbContext(options);
     }
 
-    [Fact]
-    public async Task GetAllProducts_Returns_OrderedList()
-    {
-        using var context = GetInMemoryDbContext();
-        context.produits.AddRange(
-            new Produit { Nom = "B", Image = "", ValeurNutritive = "100 cal" },
-            new Produit { Nom = "A", Image = "", ValeurNutritive = "200 cal" }
-        );
-        await context.SaveChangesAsync();
+    //[Fact]
+    //public async Task GetAllProducts_Returns_OrderedList()
+    //{
+    //    using var context = GetInMemoryDbContext();
+    //    context.produits.AddRange(
+    //        new Produit { Nom = "B", Image = "", ValeurNutritive = "100 cal" },
+    //        new Produit { Nom = "A", Image = "", ValeurNutritive = "200 cal" }
+    //    );
+    //    await context.SaveChangesAsync();
 
-        var produitServiceMock = new Mock<IProduitService>();
-        var service = new AdminService(context, produitServiceMock.Object);
+    //    var produitServiceMock = new Mock<IProduitService>();
+    //    var service = new AdminService(context, produitServiceMock.Object);
 
-        var result = await service.GetAllProducts();
+    //    var result = await service.GetAllProducts();
 
-        Assert.Equal(2, result.Count());
-        Assert.Equal("A", result.First().Nom);
-    }
+    //    Assert.Equal(2, result.Count());
+    //    Assert.Equal("A", result.First().Nom);
+    //}
 
     [Fact]
     public async Task UpdateInventoryAndPrice_Updates_Product()

@@ -7,7 +7,7 @@ namespace E25ProjetEtendu.Services.IServices
 {
     public interface IAdminService
     {
-        Task<List<Produit>> GetAllProduits(int? categoryId = null);
+        Task<List<Produit>> GetAllProduits(int? categoryId = null, decimal? minPrice = null, decimal? maxPrice = null);
         Task UpdateInventoryAndPrice(int produitId, int qty, decimal prix);        
         Task<Produit> AddProductFromVM(AddProductVM vm);
         Task<EditProductVM?> GetEditProductVM(int id);

@@ -101,14 +101,18 @@ namespace E25ProjetEtendu.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> IndexProduits(int? categoryId)
+        public async Task<IActionResult> IndexProduits(int? categoryId, decimal? minPrice, decimal? maxPrice)
+
         {
-            var produits = await _adminService.GetAllProduits(categoryId);
+            var produits = await _adminService.GetAllProduits(categoryId, minPrice, maxPrice);
             ViewBag.Categories = await _adminService.GetCategoriesSelectList();
             ViewBag.SelectedCategory = categoryId;
-
+            ViewBag.MinPrice = minPrice;
+            ViewBag.MaxPrice = maxPrice;
             return View(produits);
+
         }
+
 
         public async Task<IActionResult> IndexCategories()
         {

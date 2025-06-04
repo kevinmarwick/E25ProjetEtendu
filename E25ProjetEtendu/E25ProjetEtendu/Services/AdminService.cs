@@ -23,19 +23,25 @@ namespace E25ProjetEtendu.Services
         /// retourne la liste de produit
         /// </summary>
         /// <returns></returns>
-        public async Task<List<Produit>> GetAllProduits(int? categoryId = null)
+        public async Task<List<Produit>> GetAllProduits(int? categoryId = null, decimal? minPrice = null, decimal? maxPrice = null)
         {
             var query = _context.produits
                 .Include(p => p.Category)
                 .AsQueryable();
 
             if (categoryId.HasValue)
-            {
                 query = query.Where(p => p.CategoryId == categoryId.Value);
-            }
+
+            if (minPrice.HasValue)
+                query = query.Where(p => p.Prix >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(p => p.Prix <= maxPrice.Value);
 
             return await query.ToListAsync();
         }
+
+
 
         /// <summary>
         /// retourne la liste des category
