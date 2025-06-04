@@ -125,7 +125,7 @@ namespace E25ProjetEtendu.Controllers
                 ApplicationUser? user = await _userService.GetUserById(userId);
 
                 //Make sure the user has a phone number before giving the deliverer role
-                if (user != null && user.PhoneNumber != null)
+                if (user != null && user.PhoneNumber == null)
                 {
                     TempData["Error"] = "L'utilisateur doit avoir un numéro de téléphone sauvegardé";
                     return RedirectToAction("IndexUsers");

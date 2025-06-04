@@ -329,31 +329,52 @@ namespace E25ProjetEtendu.Data
             int itemId = 1001;
 
             // add 15 pending orders
+            
             for (int i = 1; i <= 15; i++)
             {
                 var userId = $"80000000-0000-0000-0000-{i.ToString("D12")}";
+                var currentOrderId = orderId;
+
                 orders.Add(new Order
                 {
-                    OrderId = orderId,
+                    OrderId = currentOrderId,
                     BuyerId = userId,
                     DelivererId = null,
                     OrderDate = DateTime.Now.AddMinutes(-i * 10),
                     Status = OrderStatus.Pending,
-                    TotalPrice = 3,
-                    Location = $"D-{orderId}"
+                    TotalPrice = 0, // On calcule à partir des items
+                    Location = $"D-{currentOrderId}"
                 });
 
-                orderItems.Add(new OrderItem
+                decimal total = 0;
+
+                var usedProductIds = new HashSet<int>();
+                while (usedProductIds.Count < 5)
                 {
-                    OrderItemId = itemId++,
-                    OrderId = orderId,
-                    ProductId = 1,
-                    Quantity = 1,
-                    UnitPrice = 3
-                });
+                    int productId = rand.Next(1, 32); // [1, 31]
+                    if (usedProductIds.Contains(productId)) continue;
+
+                    usedProductIds.Add(productId);
+                    var unitPrice = rand.Next(1, 9); // simulate unit prices between 1$ and 8$
+                    var quantity = rand.Next(1, 4); // simulate quantity between 1 and 3
+
+                    total += unitPrice * quantity;
+
+                    orderItems.Add(new OrderItem
+                    {
+                        OrderItemId = itemId++,
+                        OrderId = currentOrderId,
+                        ProductId = productId,
+                        Quantity = quantity,
+                        UnitPrice = unitPrice
+                    });
+                }
+
+                orders.Last().TotalPrice = total;
 
                 orderId++;
             }
+
 
             // add 50 delivered orders
             for (int i = 0; i < 50; i++)
@@ -418,8 +439,6 @@ namespace E25ProjetEtendu.Data
 
             modelBuilder.Entity<Order>().HasData(orders);
             modelBuilder.Entity<OrderItem>().HasData(orderItems);
-
-
 
             #endregion
         }

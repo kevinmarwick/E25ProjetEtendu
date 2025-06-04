@@ -41,8 +41,8 @@ namespace E25ProjetEtendu.Controllers
         /// <returns></returns>
         [HttpGet]
         [Authorize(Roles ="Deliverer")]
-		[Route("Order/EndOrder/{orderId:int}")] // Pour /Order/EndOrder/2007
-		[Route("Order/EndOrder")]               // Pour /Order/EndOrder?orderId=2007
+		[Route("Order/EndOrder/{orderId:int}")] /// Pour /Order/EndOrder/2007
+		[Route("Order/EndOrder")]               /// Pour /Order/EndOrder?orderId=2007
 		public async Task<IActionResult> EndOrder(int orderId)
         {            
             try
@@ -102,7 +102,13 @@ namespace E25ProjetEtendu.Controllers
             }
         }
 
+        /// <summary>
+        /// Creates a new order based on the provided OrderRequestDTO.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         [HttpPost("create")]
+
         public async Task<IActionResult> Create([FromBody] OrderRequestDTO dto)
         {
             try
@@ -225,8 +231,8 @@ namespace E25ProjetEtendu.Controllers
         [Authorize(Roles = "Deliverer")]
         public async Task<IActionResult> CancelAsDeliverer(int orderId, bool returnInventory = true)
         {
-            var userId = _userManager.GetUserId(User);
-            var result = await _orderService.CancelOrder(orderId, userId, CancellationActor.Deliverer, returnInventory);
+            string? userId = _userManager.GetUserId(User);
+            string? result = await _orderService.CancelOrder(orderId, userId, CancellationActor.Deliverer, returnInventory);
 
             if (result != null)
             {
@@ -247,7 +253,7 @@ namespace E25ProjetEtendu.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "DeliveryStation")]
-        public async Task<IActionResult> CancelAsStation(int orderId)
+        public async Task<IActionResult> CancelAsStation(int orderId, bool orderHasDeliverer)
         {
             var userId = _userManager.GetUserId(User)!;
             var result = await _orderService.CancelOrder(orderId, userId, CancellationActor.DeliveryStation, returnInventory: true);
