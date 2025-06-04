@@ -44,9 +44,13 @@ namespace E25ProjetEtendu.Services
         /// <param name="page">la pagination</param>
         /// <param name="pageSize">le nombre de produit accepter dans une page</param>
         /// <returns></returns>
-        public async Task<(List<Produit> produits, int totalProduits)> GetFilteredProducts(string recherche, string tri, int page, int pageSize)
+        public async Task<(List<Produit> produits, int totalProduits)> GetFilteredProducts(
+     string recherche, string tri, int page, int pageSize,
+     int? categoryId = null, decimal? minPrice = null, decimal? maxPrice = null)
         {
-            IQueryable<Produit> query = _context.produits.Where(p => p.EstActif);
+            IQueryable<Produit> query = _context.produits
+                .Include(p => p.Category)
+                .Where(p => p.EstActif);
 
             if (!string.IsNullOrEmpty(recherche) && recherche.Length > 200)
             {
@@ -58,7 +62,21 @@ namespace E25ProjetEtendu.Services
                 query = query.Where(p => p.Nom.Contains(recherche));
             }
 
-            // tri
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            }
+
+            if (minPrice.HasValue)
+            {
+                query = query.Where(p => p.Prix >= minPrice.Value);
+            }
+
+            if (maxPrice.HasValue)
+            {
+                query = query.Where(p => p.Prix <= maxPrice.Value);
+            }
+
             query = tri?.ToLower() switch
             {
                 "prix" => query.OrderBy(p => p.Prix),
@@ -78,6 +96,7 @@ namespace E25ProjetEtendu.Services
 
             return (produits, totalProduits);
         }
+
 
         public async Task<List<Produit>> GetProduitsSimilairesAsync(Produit produit, int max = 3)
         {

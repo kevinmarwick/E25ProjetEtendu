@@ -6,64 +6,73 @@
     var totalPages = ViewBag.TotalPages as int? ?? 1;
     var recherche = ViewBag.Search as string ?? "";
     var tri = ViewBag.Sort as string ?? "";
+    var minPrice = ViewBag.MinPrice as decimal?;
+    var maxPrice = ViewBag.MaxPrice as decimal?;
+    var categories = ViewBag.Categories as IEnumerable<SelectListItem>;
+    var selectedCategory = ViewBag.SelectedCategory as int?;
 }
 
 <h2 class="mb-4">Produits disponibles</h2>
 
-<!-- 🔍 Barre de recherche -->
+<!-- 🔍 Barre de recherche + Dropdown de filtres -->
 <form asp-action="Index" method="get" class="row g-3 align-items-center mb-4">
-    <div class="col-auto">
+    <div class="col-md-3">
         <input type="text" name="recherche" value="@recherche" maxlength="200" class="form-control" placeholder="Rechercher un produit..." />
-
     </div>
-    <div class="col-auto">
-        <select name="tri" class="form-select" onchange="this.form.submit()">
-            <option disabled selected>Trier par...</option>
 
-            @if (tri == "prix")
-            {
-                <option value="prix" selected>Prix croissant</option>
-            }
-            else
-            {
-                <option value="prix">Prix croissant</option>
-            }
+    <div class="col-md-6">
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Filtres avancés
+            </button>
+            <div class="dropdown-menu p-3 shadow w-100" style="min-width: 300px;" onclick="event.stopPropagation();">
+                <div class="mb-3">
+                    <label for="categoryId" class="form-label">Catégorie :</label>
+                    <select name="categoryId" id="categoryId" class="form-select form-select-sm">
+                        <option value="">-- Toutes --</option>
+                        @foreach (var cat in categories)
+                        {
+                            var isSelected = selectedCategory?.ToString() == cat.Value;
+                            <option value="@cat.Value" selected="@(isSelected ? "selected" : null)">@cat.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Prix entre :</label>
+                    <div class="input-group input-group-sm">
+                        <input type="number" step="0.01" min="0" name="minPrice" class="form-control" placeholder="Min"
+                               value="@(minPrice?.ToString("0.##") ?? "")" />
+                        <span class="input-group-text">et</span>
+                        <input type="number" step="0.01" min="0" name="maxPrice" class="form-control" placeholder="Max"
+                               value="@(maxPrice?.ToString("0.##") ?? "")" />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Trier par :</label>
+                    <div class="btn-group w-100" role="group">
+                        <input type="radio" class="btn-check" name="tri" value="prix" id="triPrixUp" autocomplete="off" @(tri == "prix" ? "checked" : "") />
+                        <label class="btn btn-outline-primary" for="triPrixUp"><i class="fas fa-arrow-up"></i> Prix</label>
 
-            @if (tri == "prix_desc")
-            {
-                <option value="prix_desc" selected>Prix décroissant</option>
-            }
-            else
-            {
-                <option value="prix_desc">Prix décroissant</option>
-            }
+                        <input type="radio" class="btn-check" name="tri" value="prix_desc" id="triPrixDown" autocomplete="off" @(tri == "prix_desc" ? "checked" : "") />
+                        <label class="btn btn-outline-primary" for="triPrixDown"><i class="fas fa-arrow-down"></i> Prix</label>
 
-            @if (tri == "note")
-            {
-                <option value="note" selected>Note croissante</option>
-            }
-            else
-            {
-                <option value="note">Note croissante</option>
-            }
+                        <input type="radio" class="btn-check" name="tri" value="note" id="triNoteUp" autocomplete="off" @(tri == "note" ? "checked" : "") />
+                        <label class="btn btn-outline-secondary" for="triNoteUp"><i class="fas fa-arrow-up"></i> Note</label>
 
-            @if (tri == "note_desc")
-            {
-                <option value="note_desc" selected>Note décroissante</option>
-            }
-            else
-            {
-                <option value="note_desc">Note décroissante</option>
-            }
-        </select>
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Appliquer</button>
-    </div>
+                        <input type="radio" class="btn-check" name="tri" value="note_desc" id="triNoteDown" autocomplete="off" @(tri == "note_desc" ? "checked" : "") />
+                        <label class="btn btn-outline-secondary" for="triNoteDown"><i class="fas fa-arrow-down"></i> Note</label>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a href="@Url.Action("Index", "Produit")" class="btn btn-sm btn-outline-danger">Réinitialiser</a>
+                    <button type="submit" class="btn btn-sm btn-primary">Appliquer</button>
+                </div>
+            </div>
+        </div>
+    </div>    
 </form>
 
 <!--  Cartes des produits -->
-
 <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
     @foreach (var item in Model)
     {
@@ -79,17 +88,16 @@
                         {
                             if (i <= item.Note)
                             {
-                                <span class="text-warning">&#9733;</span> <!-- solid star -->
+                                <span class="text-warning">&#9733;</span>
                             }
                             else
                             {
-                                <span class="text-muted">&#9734;</span> <!-- empty star -->
+                                <span class="text-muted">&#9734;</span>
                             }
                         }
                     </td>
 
-                    <a class="btn btn-sm btn-outline-primary w-100 mb-1"
-                       asp-controller="Produit" asp-action="Details" asp-route-id="@item.ProduitId">
+                    <a class="btn btn-sm btn-outline-primary w-100 mb-1" asp-controller="Produit" asp-action="Details" asp-route-id="@item.ProduitId">
                         Détails
                     </a>
 
@@ -103,14 +111,11 @@
                     @(item.InventoryQuantity == 0 ? "disabled" : "")>
                         Ajouter
                     </button>
-
-
                 </div>
             </div>
         </div>
     }
 </div>
-
 
 <!--  Pagination -->
 <nav aria-label="Pagination">
@@ -118,53 +123,27 @@
         @if (currentPage > 1)
         {
             <li class="page-item">
-                <a class="page-link"
-                   asp-action="Index"
-                   asp-route-page="@(currentPage - 1)"
-                   asp-route-recherche="@recherche"
-                   asp-route-tri="@tri">
-                    Précédent
-                </a>
+                <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-recherche="@recherche" asp-route-tri="@tri">Précédent</a>
             </li>
         }
-
         @for (int i = 1; i <= totalPages; i++)
         {
             <li class="page-item @(i == currentPage ? "active" : "")">
-                <a class="page-link"
-                   asp-action="Index"
-                   asp-route-page="@i"
-                   asp-route-recherche="@recherche"
-                   asp-route-tri="@tri">
-                    @i
-                </a>
+                <a class="page-link" asp-action="Index" asp-route-page="@i" asp-route-recherche="@recherche" asp-route-tri="@tri">@i</a>
             </li>
         }
-
         @if (currentPage < totalPages)
         {
             <li class="page-item">
-                <a class="page-link"
-                   asp-action="Index"
-                   asp-route-page="@(currentPage + 1)"
-                   asp-route-recherche="@recherche"
-                   asp-route-tri="@tri">
-                    Suivant
-                </a>
+                <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-recherche="@recherche" asp-route-tri="@tri">Suivant</a>
             </li>
         }
     </ul>
 </nav>
 
-<!--  Script pour gérer le bouton Ajouter au panier -->
-<!--  Charge jQuery AVANT ton script -->
-<!-- expose l’ID utilisateur -->
 <script>
     var isAuthenticated = @User.Identity.IsAuthenticated.ToString().ToLower();
     var currentUserId = "@User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value";
 </script>
 
-
-
-
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />

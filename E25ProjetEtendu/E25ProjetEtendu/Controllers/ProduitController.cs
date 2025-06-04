@@ -4,16 +4,20 @@ using E25ProjetEtendu.Services.IServices;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using E25ProjetEtendu.Data;
 
 namespace E25ProjetEtendu.Controllers
 {
     public class ProduitController : Controller
     {
         private readonly IProduitService _produitService;
-
-        public ProduitController(IProduitService produitService)
+        private readonly ApplicationDbContext _context;
+        public ProduitController(IProduitService produitService, ApplicationDbContext context)
         {
             _produitService = produitService;
+            _context = context;
         }
         // GET: ProduitController
         /// <summary>
@@ -24,14 +28,27 @@ namespace E25ProjetEtendu.Controllers
         /// <param name="tri">l'option de tri choisi par l'utilisateur</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> Index(string recherche, string tri, int page = 1)
+        public async Task<IActionResult> Index(string recherche, string tri, int? categoryId, decimal? minPrice, decimal? maxPrice, int page = 1)
         {
-            var (produits, totalProduits) = await _produitService.GetFilteredProducts(recherche, tri, page, 20);
+            var (produits, totalProduits) = await _produitService
+           .GetFilteredProducts(recherche, tri, page, 20, categoryId, minPrice, maxPrice);
+
 
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalProduits / 20);
             ViewBag.Search = recherche;
             ViewBag.Sort = tri;
+            ViewBag.MinPrice = minPrice;
+            ViewBag.MaxPrice = maxPrice;
+            ViewBag.SelectedCategory = categoryId;
+
+            ViewBag.Categories = await _context.Categories
+                .Select(c => new SelectListItem
+                {
+                    Text = c.Name,
+                    Value = c.CategoryId.ToString()
+                }).ToListAsync();
+
 
             return View(produits);
         }
