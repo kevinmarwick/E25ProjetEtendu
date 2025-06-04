@@ -32,6 +32,7 @@ namespace E25ProjetEtendu.Controllers
         {
             return View();
         }
+        
 
         [HttpGet]
         public async Task<IActionResult> EditCategory(int id)
@@ -44,24 +45,24 @@ namespace E25ProjetEtendu.Controllers
             return View(vm);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]        
         public async Task<IActionResult> EditCategory(EditCategoryVM vm)
         {
             if (!ModelState.IsValid)
+                return View(vm);
+
+            var (success, errorMessage) = await _adminService.EditCategoryFromVM(vm);
+
+            if (!success)
             {
+                ModelState.AddModelError("Name", errorMessage); // ✅ lie l'erreur au champ Name
                 return View(vm);
             }
-            try
-            {
-                await _adminService.EditCategoryFromVM(vm);
-                TempData["SuccessMessage"] = "Categorie mis à jour avec succès.";
-                return RedirectToAction("IndexCategories");
-            }
-            catch(InvalidOperationException ex)
-            {
-                ModelState.AddModelError("Name", ex.Message);
-                return View(vm);
-            }
+
+            TempData["SuccessMessage"] = "Catégorie mise à jour avec succès.";
+            return RedirectToAction("IndexCategories");
         }
+
         [HttpGet]
         public async Task<IActionResult> EditProduct(int id)
         {

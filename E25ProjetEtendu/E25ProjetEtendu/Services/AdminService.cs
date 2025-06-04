@@ -187,23 +187,24 @@ namespace E25ProjetEtendu.Services
         /// <param name="vm"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task<Category> EditCategoryFromVM(EditCategoryVM vm)
+        public async Task<(bool Success, string? ErrorMessage)> EditCategoryFromVM(EditCategoryVM vm)
         {
             var category = await GetCategoryById(vm.CategoryId);
             if (category == null)
-            {
-                throw new Exception("Category non trouvé");
-            }
-            bool NameExist = await _context.Categories.AnyAsync(c => c.Name == vm.Name && c.CategoryId != vm.CategoryId);
-            if (NameExist)
-            {
-                throw new Exception("Cette categorie existe déja");
-            }
-            
+                return (false, "Catégorie introuvable");
+
+            bool nameExists = await _context.Categories
+                .AnyAsync(c => c.Name == vm.Name && c.CategoryId != vm.CategoryId);
+
+            if (nameExists)
+                return (false, "Ce nom de catégorie existe déjà");
+
             category.Name = vm.Name;
             await _context.SaveChangesAsync();
-            return category;
+
+            return (true, null);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -255,6 +256,9 @@ namespace E25ProjetEtendu.Services
             await _context.SaveChangesAsync();
             return product;
         }
+
+       
+
         /// <summary>
         /// ajoute une balance a un user
         /// </summary>

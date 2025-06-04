@@ -5,7 +5,7 @@
 }
 
 <h1>IndexCategories</h1>
-
+<a asp-action="IndexProduits" class="btn btn-secondary">Retour</a>
 <table class="table">
     <thead>
         <tr>
@@ -22,8 +22,7 @@
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                    <a asp-action="EditCategory" asp-route-id="@item.CategoryId">Edit</a>
-                <a asp-action="Delete" asp-route-id="@item.CategoryId">Delete</a>
+                    <a asp-action="EditCategory" asp-route-id="@item.CategoryId">Edit</a>                
             </td>
         </tr>
 }
