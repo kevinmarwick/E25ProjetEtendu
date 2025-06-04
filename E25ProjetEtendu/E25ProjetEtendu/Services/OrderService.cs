@@ -202,11 +202,13 @@ namespace E25ProjetEtendu.Services
 
             commande.Status = OrderStatus.Delivered;
             await _context.SaveChangesAsync();
-
-            // Envoie la notification SignalR à l'utilisateur concerné
+                        
+            // Notify the buyer about the order status update
             await _hubContext.Clients.Group(commande.BuyerId)
             .SendAsync("ReceiveOrderStatusUpdate", commande.OrderId, commande.Status.ToString());
-
+            // Notify the delivery station about the completed order
+            await _hubContext.Clients.Group("DeliveryStation")
+            .SendAsync("CommandeTermineeParLivreur");
 
             return true;
         }
@@ -410,6 +412,18 @@ namespace E25ProjetEtendu.Services
             // Send a signal to the user when a change happen in the database
             await _hubContext.Clients.Group(order.BuyerId)
             .SendAsync("ReceiveOrderStatusUpdate", order.OrderId, order.Status.ToString());
+            // Notify the delivery station about the cancelled order
+            if (actorType == CancellationActor.Buyer)
+            {
+                await _hubContext.Clients.Group("DeliveryStation")
+                    .SendAsync("CommandeAnnuleeParClient");
+            }
+            else if (actorType == CancellationActor.Deliverer || actorType == CancellationActor.DeliveryStation)
+            {
+                await _hubContext.Clients.Group("DeliveryStation")
+                    .SendAsync("CommandeAnnuleeParLivreur");
+            }
+
             return null; /// null = success
         }
 

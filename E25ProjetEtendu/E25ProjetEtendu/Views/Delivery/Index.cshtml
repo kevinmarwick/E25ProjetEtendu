@@ -236,6 +236,8 @@ else if (TempData["Success"] != null)
 </div>
 
 @section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             document.querySelectorAll('.toggle-details').forEach(btn => {
@@ -282,6 +284,44 @@ else if (TempData["Success"] != null)
                     url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/fr-FR.json'
                 }
             });
+
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("/orderStatusHub")
+                .build();
+
+            function reload(reason) {
+                console.log(`🔄 Mise à jour requise : ${reason}`);
+                location.reload();
+            }
+
+            connection.on("NouvelleCommandeDisponible", () => reload("Nouvelle commande"));
+            connection.on("CommandeAnnuleeParClient", () => reload("Commande annulée par le client"));
+            connection.on("CommandeAnnuleeParLivreur", () => reload("Commande annulée par le livreur"));
+            connection.on("CommandeTermineeParLivreur", () => reload("Commande livrée"));
+
+            connection.start()
+                .then(() => {
+                    connection.invoke("JoinDeliveryStation");
+                })
+                .catch(err => console.error("Erreur SignalR :", err));
         });
     </script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/orderStatusHub")
+            .build();
+
+        connection.on("NouvelleCommandeDisponible", function () {
+            console.log(" Nouvelle commande reçue, rechargement de la page...");
+            location.reload();
+        });
+
+        connection.start()
+            .then(() => {
+                connection.invoke("JoinDeliveryStation");
+            })
+            .catch(err => console.error("Erreur SignalR :", err));
+    </script>
 }
+
+
