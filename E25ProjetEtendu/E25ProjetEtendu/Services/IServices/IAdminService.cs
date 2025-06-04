@@ -15,6 +15,8 @@ namespace E25ProjetEtendu.Services.IServices
         Task<bool> AddBalance(string userId, decimal montant);
         Task<IEnumerable<SelectListItem>> GetCategoriesSelectList();
         Task<Category> AddCategoryFromVM(AddCategoryVM vm);
+        Task<Category> EditCategoryFromVM(EditCategoryVM vm);
         Task<IEnumerable<Category>> GetAllCategory();
+        Task<EditCategoryVM> GetEditCategory(int id);
     }
 }

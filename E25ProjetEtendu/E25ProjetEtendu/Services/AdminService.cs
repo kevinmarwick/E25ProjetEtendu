@@ -19,16 +19,31 @@ namespace E25ProjetEtendu.Services
             _context = context;
             _produitService = produitService;
         }
-
+        /// <summary>
+        /// retourne la liste de produit
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<Produit>> GetAllProducts()
         {
             return await _context.produits.OrderBy(p => p.Nom)
                                           .ToListAsync();
         }
+        /// <summary>
+        /// retourne la liste des category
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<Category>> GetAllCategory()
         {
             return await _context.Categories.OrderBy(c => c.Name).ToListAsync();
         }
+        /// <summary>
+        /// Update l'inventaire
+        /// </summary>
+        /// <param name="produitId"></param>
+        /// <param name="qty"></param>
+        /// <param name="prix"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public async Task UpdateInventoryAndPrice(int produitId, int qty, decimal prix)
         {
             Produit produit = await _produitService.GetProduitById(produitId);
@@ -40,7 +55,11 @@ namespace E25ProjetEtendu.Services
 
             await _context.SaveChangesAsync();
         }
-
+        /// <summary>
+        /// sauvegarde un image
+        /// </summary>
+        /// <param name="imageFile"></param>
+        /// <returns></returns>
         public async Task<string> SaveImage(IFormFile imageFile)
         {
             if (imageFile == null || imageFile.Length == 0)
@@ -60,7 +79,12 @@ namespace E25ProjetEtendu.Services
 
             return fileName;
         }
-
+        /// <summary>
+        /// ajoute une category 
+        /// </summary>
+        /// <param name="vm"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public async Task<Category> AddCategoryFromVM(AddCategoryVM vm)
         {
             bool nameExists = await _context.Categories.AnyAsync(c => c.Name == vm.Name);
@@ -77,7 +101,12 @@ namespace E25ProjetEtendu.Services
             await  _context.SaveChangesAsync();
             return category;
         }
-
+        /// <summary>
+        /// ajoute un produit
+        /// </summary>
+        /// <param name="vm"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidOperationException"></exception>
         public async Task<Produit> AddProductFromVM(AddProductVM vm)
         {
             var fileName = await SaveImage(vm.ImageFile);
@@ -102,7 +131,11 @@ namespace E25ProjetEtendu.Services
             await _context.SaveChangesAsync();
             return product;
         }
-
+        /// <summary>
+        /// va chercher le produit a modifier
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<EditProductVM?> GetEditProductVM(int id)
         {
             var produit = await _produitService.GetProduitById(id);
@@ -126,6 +159,10 @@ namespace E25ProjetEtendu.Services
                 Categories = categories
             };
         }
+        /// <summary>
+        /// retourne un selectlist de category
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<SelectListItem>> GetCategoriesSelectList()
         {
             return await _context.Categories
@@ -135,8 +172,59 @@ namespace E25ProjetEtendu.Services
                     Text = c.Name
                 }).ToListAsync();
         }
-
-
+        /// <summary>
+        /// retourne une category avec un id specifique pour le modifier 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<Category> GetCategoryById(int id)
+        {
+            return await _context.Categories.FindAsync(id);
+        }
+        /// <summary>
+        /// modifier une category
+        /// </summary>
+        /// <param name="vm"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task<Category> EditCategoryFromVM(EditCategoryVM vm)
+        {
+            var category = await GetCategoryById(vm.CategoryId);
+            if (category == null)
+            {
+                throw new Exception("Category non trouvé");
+            }
+            bool NameExist = await _context.Categories.AnyAsync(c => c.Name == vm.Name && c.CategoryId != vm.CategoryId);
+            if (NameExist)
+            {
+                throw new Exception("Cette categorie existe déja");
+            }
+            
+            category.Name = vm.Name;
+            await _context.SaveChangesAsync();
+            return category;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<EditCategoryVM> GetEditCategory(int id)
+        {
+                var category = await GetCategoryById(id);
+            if(category == null)
+            {
+                return null;
+            }
+            return new EditCategoryVM { Name = category.Name, CategoryId = category.CategoryId};
+        }
+        /// <summary>
+        /// modifie un produit
+        /// </summary>
+        /// <param name="vm"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         public async Task<Produit> EditProductFromVM(EditProductVM vm)
         {
             var product = await _produitService.GetProduitById(vm.ProduitId);
@@ -167,6 +255,12 @@ namespace E25ProjetEtendu.Services
             await _context.SaveChangesAsync();
             return product;
         }
+        /// <summary>
+        /// ajoute une balance a un user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="montant"></param>
+        /// <returns></returns>
         public async Task<bool> AddBalance(string userId, decimal montant)
         {
             var user = await _context.Users.FindAsync(userId);

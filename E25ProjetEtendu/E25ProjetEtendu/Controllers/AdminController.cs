@@ -33,8 +33,36 @@ namespace E25ProjetEtendu.Controllers
             return View();
         }
 
-
-        
+        [HttpGet]
+        public async Task<IActionResult> EditCategory(int id)
+        {
+            var vm = await _adminService.GetEditCategory(id);
+            if(vm == null)
+            {
+                return NotFound();
+            }
+            return View(vm);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditCategory(EditCategoryVM vm)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(vm);
+            }
+            try
+            {
+                await _adminService.EditCategoryFromVM(vm);
+                TempData["SuccessMessage"] = "Categorie mis à jour avec succès.";
+                return RedirectToAction("IndexCategories");
+            }
+            catch(InvalidOperationException ex)
+            {
+                ModelState.AddModelError("Name", ex.Message);
+                return View(vm);
+            }
+        }
+        [HttpGet]
         public async Task<IActionResult> EditProduct(int id)
         {
             var vm = await _adminService.GetEditProductVM(id);
@@ -44,7 +72,7 @@ namespace E25ProjetEtendu.Controllers
             return View(vm);
         }
 
-        [HttpGet]
+       
         
         [HttpPost]
         [ValidateAntiForgeryToken]
