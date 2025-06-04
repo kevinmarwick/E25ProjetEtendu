@@ -100,11 +100,16 @@ namespace E25ProjetEtendu.Controllers
         }
 
 
-        public async Task<IActionResult> IndexProduits()
+        [HttpGet]
+        public async Task<IActionResult> IndexProduits(int? categoryId)
         {
-            IEnumerable<Produit> produits = await _adminService.GetAllProducts();
+            var produits = await _adminService.GetAllProduits(categoryId);
+            ViewBag.Categories = await _adminService.GetCategoriesSelectList();
+            ViewBag.SelectedCategory = categoryId;
+
             return View(produits);
         }
+
         public async Task<IActionResult> IndexCategories()
         {
             IEnumerable<Category> categories = await _adminService.GetAllCategory();

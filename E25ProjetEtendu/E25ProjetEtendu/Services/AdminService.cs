@@ -23,11 +23,20 @@ namespace E25ProjetEtendu.Services
         /// retourne la liste de produit
         /// </summary>
         /// <returns></returns>
-        public async Task<IEnumerable<Produit>> GetAllProducts()
+        public async Task<List<Produit>> GetAllProduits(int? categoryId = null)
         {
-            return await _context.produits.OrderBy(p => p.Nom)
-                                          .ToListAsync();
+            var query = _context.produits
+                .Include(p => p.Category)
+                .AsQueryable();
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            }
+
+            return await query.ToListAsync();
         }
+
         /// <summary>
         /// retourne la liste des category
         /// </summary>
