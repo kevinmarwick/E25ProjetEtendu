@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace E25ProjetEtendu.ViewModels
 {
@@ -20,5 +21,8 @@ namespace E25ProjetEtendu.ViewModels
         public string SKU { get;set; }
 
         public IFormFile? NewImageFile { get; set; }
+       
+        public int CategoryId { get; set; }
+        public IEnumerable<SelectListItem>? Categories { get; set; } 
     }
 }

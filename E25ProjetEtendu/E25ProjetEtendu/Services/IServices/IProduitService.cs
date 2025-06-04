@@ -6,8 +6,10 @@ namespace E25ProjetEtendu.Services.IServices
 {
     public interface IProduitService
     {
-        Task<IEnumerable<Produit>> GetAllActiveProduct();        
-        Task<(List<Produit> produits, int totalProduits)> GetFilteredProducts(string recherche, string tri, int page, int pageSize);
+        Task<IEnumerable<Produit>> GetAllActiveProduct();
+        Task<(List<Produit> produits, int totalProduits)> GetFilteredProducts(
+         string recherche, string tri, int page, int pageSize,
+         int? categoryId = null, decimal? minPrice = null, decimal? maxPrice = null);
         Task AddToCart(int productId, int quantity);
         List<PannierProduitVM> GetCartItems();
         void EnleverProduitPannier(int productId);

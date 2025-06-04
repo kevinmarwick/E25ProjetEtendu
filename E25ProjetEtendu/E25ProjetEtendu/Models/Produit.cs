@@ -38,6 +38,8 @@ namespace E25ProjetEtendu.Models
 
         //Navigation properties
         public List<OrderItem> OrderItems { get; set; }
+        public int CategoryId { get; set; } 
+        public Category Category { get; set; } 
 
     }
 }

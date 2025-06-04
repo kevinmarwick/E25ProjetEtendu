@@ -1,0 +1,26 @@
+﻿@using E25ProjetEtendu.ViewModels
+@model AddCategoryVM
+
+
+@{
+    ViewData["Title"] = "Ajouter une catégorie";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="AddCategory" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Name" class="form-label">Nom de la catégorie</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Créer</button>
+    <a asp-action="IndexCategories" class="btn btn-secondary">Retour</a>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

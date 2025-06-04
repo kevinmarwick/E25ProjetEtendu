@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using E25ProjetEtendu.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace E25ProjetEtendu.ViewModels
 {
@@ -27,6 +29,9 @@ namespace E25ProjetEtendu.ViewModels
         [Required(ErrorMessage = "Le SKU est requises")]
         [StringLength(20, MinimumLength = 6)]
         public string SKU { get; set; }
+        public int CategoryId { get; set; }
+        public IEnumerable<SelectListItem>? Categories { get; set; }
+
     }
 
 
