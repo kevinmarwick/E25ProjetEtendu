@@ -306,22 +306,7 @@ else if (TempData["Success"] != null)
                 .catch(err => console.error("Erreur SignalR :", err));
         });
     </script>
-    <script>
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/orderStatusHub")
-            .build();
-
-        connection.on("NouvelleCommandeDisponible", function () {
-            console.log(" Nouvelle commande reçue, rechargement de la page...");
-            location.reload();
-        });
-
-        connection.start()
-            .then(() => {
-                connection.invoke("JoinDeliveryStation");
-            })
-            .catch(err => console.error("Erreur SignalR :", err));
-    </script>
+  
 }
 
 
